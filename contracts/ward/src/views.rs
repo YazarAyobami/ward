@@ -1,9 +1,12 @@
 //! Views. (W-2.11)
 
 use near_sdk::json_types::U128;
-use near_sdk::{near, AccountId};
+use near_sdk::{env, near, AccountId};
 
-use crate::types::{ChildStatus, Request, Trust, TrustId};
+use crate::errors;
+use crate::rules;
+use crate::time;
+use crate::types::{ChildStatus, Request, Trust, TrustId, TrustStatus};
 use crate::{Contract, ContractExt};
 
 const DEFAULT_LIMIT: usize = 50;
@@ -41,13 +44,39 @@ impl Contract {
     }
 
     pub fn get_child_status(&self, trust_id: TrustId, child_idx: u8) -> ChildStatus {
-        let _ = (trust_id, child_idx);
-        todo!("W-2.11 wave 3")
+        let trust = self.trust_or_panic(trust_id);
+        let index = usize::from(child_idx);
+        let Some(child) = trust.children.get(index) else {
+            env::panic_str(errors::E36_CHILD_NOT_FOUND);
+        };
+
+        let age_years = time::age_years(
+            child.birth_ts.0,
+            env::block_timestamp(),
+            trust.rules.time_scale,
+        );
+        let payouts_open = matches!(trust.status, TrustStatus::Active | TrustStatus::Graduating);
+
+        ChildStatus {
+            age_years,
+            can_flag: child.account.is_some() && age_years >= trust.rules.flag_age_years,
+            can_graduate: child.account.is_some()
+                && child.alive
+                && payouts_open
+                && !trust.paused
+                && age_years >= trust.rules.majority_age_years
+                && child.tranches_paid < trust.rules.graduation_tranches,
+            remaining_share: U128(rules::remaining_share(&trust, index)),
+            tranches_left: trust
+                .rules
+                .graduation_tranches
+                .saturating_sub(child.tranches_paid),
+        }
     }
 
     pub fn get_allowance_due(&self, trust_id: TrustId) -> U128 {
-        let _ = trust_id;
-        todo!("W-2.11 wave 3")
+        let trust = self.trust_or_panic(trust_id);
+        U128(rules::allowance_due(&trust, env::block_timestamp()))
     }
 }
 
@@ -57,7 +86,15 @@ mod tests {
     use crate::test_utils::{
         account, insert_request, insert_trust, insert_trust_for, request, set_caller, trust,
     };
+    use crate::time::{NS_PER_MONTH, NS_PER_YEAR};
     use crate::types::RequestKind;
+    use near_sdk::json_types::U64;
+    use near_sdk::test_utils::VMContextBuilder;
+    use near_sdk::testing_env;
+
+    fn install_context(now_ns: u64) {
+        testing_env!(VMContextBuilder::new().block_timestamp(now_ns).build());
+    }
 
     fn contract_with_trusts() -> Contract {
         set_caller(account("settlor.near"));
@@ -122,5 +159,84 @@ mod tests {
             other_trust.iter().map(|r| r.id).collect::<Vec<_>>(),
             vec![5, 6]
         );
+    }
+
+    #[test]
+    fn child_status_reports_age() {
+        install_context(18 * NS_PER_YEAR);
+        let mut contract = Contract::new(None);
+        let mut trust = trust(0);
+        trust.status = TrustStatus::Active;
+        trust.activated_at = Some(U64(0));
+        trust.children[0].account = Some(account("ada.near"));
+        insert_trust(&mut contract, trust);
+
+        let status = contract.get_child_status(0, 0);
+
+        assert_eq!(status.age_years, 18);
+        assert!(status.can_flag);
+        assert!(status.can_graduate);
+        assert_eq!(status.remaining_share, U128(1_000_000_000));
+        assert_eq!(status.tranches_left, 3);
+    }
+
+    #[test]
+    fn child_status_blocks_actions_without_an_account() {
+        install_context(18 * NS_PER_YEAR);
+        let mut contract = Contract::new(None);
+        let mut trust = trust(0);
+        trust.status = TrustStatus::Active;
+        insert_trust(&mut contract, trust);
+
+        let status = contract.get_child_status(0, 0);
+
+        assert!(!status.can_flag);
+        assert!(!status.can_graduate);
+    }
+
+    #[test]
+    fn child_status_counts_tranches_left() {
+        install_context(18 * NS_PER_YEAR);
+        let mut contract = Contract::new(None);
+        let mut trust = trust(0);
+        trust.status = TrustStatus::Graduating;
+        trust.children[0].account = Some(account("ada.near"));
+        trust.children[0].tranches_paid = 2;
+        insert_trust(&mut contract, trust);
+
+        let status = contract.get_child_status(0, 0);
+
+        assert_eq!(status.tranches_left, 1);
+        assert!(status.can_graduate);
+    }
+
+    #[test]
+    #[should_panic(expected = "E36_CHILD_NOT_FOUND")]
+    fn child_status_rejects_unknown_index() {
+        install_context(0);
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, trust(0));
+        contract.get_child_status(0, 9);
+    }
+
+    #[test]
+    fn allowance_due_view() {
+        install_context(NS_PER_MONTH);
+        let mut contract = Contract::new(None);
+        let mut trust = trust(0);
+        trust.status = TrustStatus::Active;
+        trust.activated_at = Some(U64(0));
+        insert_trust(&mut contract, trust);
+
+        assert_eq!(contract.get_allowance_due(0), U128(150_000_000));
+    }
+
+    #[test]
+    fn allowance_due_view_is_zero_before_activation() {
+        install_context(NS_PER_MONTH);
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, trust(0));
+
+        assert_eq!(contract.get_allowance_due(0), U128(0));
     }
 }
