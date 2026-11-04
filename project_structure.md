@@ -95,12 +95,12 @@ Same as Admit's mock token: NEP-141/145 plus an open `mint`. Testnet and sandbox
 | `apps/api/src/routes/{receipts,ai,quote}.ts` | **Could only**: receipt storage, AI check, dry-run quote |
 | `scripts/{deploy-testnet,seed,demo}.ts`, `scripts/lib/*` | testnet automation; `demo.ts` = PRD §8 |
 
-Tests in `packages/*` and `apps/api` use `node:test` via `tsx`. Web tests wait on Vitest approval.
+Tests in `packages/*` and `apps/api` use `node:test` via `tsx`. Web tests use Vitest.
 
 ## 4. Root scripts
 | Script | Runs |
 |---|---|
-| `build` / `build:contract` | `cargo near build non-reproducible-wasm` per contract (**VERIFY** subcommand), then TS builds |
+| `build` / `build:contract` | `cargo near build non-reproducible-wasm` per contract (verified with cargo-near 0.22.0), then TS builds |
 | `check:contract` | `cargo check --workspace --target wasm32-unknown-unknown` |
 | `test` / `test:contract` | contract build + `cargo test --workspace`, then `pnpm -r test` |
 | `lint` | `cargo fmt --check`, `clippy -D warnings`, ESLint, `tsc -b` |

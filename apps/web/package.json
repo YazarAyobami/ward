@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node -e \"console.log('web tests pending approval of Vitest — W-7.9')\""
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@ward/core": "workspace:*",
@@ -16,7 +16,7 @@
     "@near-wallet-selector/meteor-wallet": "^10.1.4",
     "@near-wallet-selector/modal-ui": "^10.1.4",
     "@near-wallet-selector/my-near-wallet": "^10.1.4",
-    "next": "^16.4.5",
+    "next": "16.4.4",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
@@ -24,6 +24,7 @@
     "@tailwindcss/postcss": "^4.3.4",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "tailwindcss": "^4.3.4"
+    "tailwindcss": "^4.3.4",
+    "vitest": "^5.1.0"
   }
 }

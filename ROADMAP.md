@@ -6,10 +6,10 @@
 | | |
 |---|---|
 | **Last updated** | 2026-11-04 |
-| **Current phase** | P0–P1 (scaffold written; decisions pending) |
-| **Next task** | W-0.2 (approve Vitest + near-contract-standards), then W-1.2 `pnpm install` |
-| **Must progress** | 6 / 87 Must tasks done (7%) |
-| **Overall progress** | 6 / 91 tasks done (7%) — 87 Must · 2 Should · 2 Could |
+| **Current phase** | P1 — Scaffolding (toolchain installed, everything builds) |
+| **Next task** | W-1.5 (mock-ft NEP-141), W-1.6 (sandbox smoke test), then P2 |
+| **Must progress** | 11 / 87 Must tasks done (13%) |
+| **Overall progress** | 11 / 91 tasks done (12%) — 87 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 10 |
 
@@ -80,10 +80,10 @@ Ward is **100% ready** when all of these are true:
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
 |---|---|---|---|---|---|---|---|
 | W-0.1 | M | Confirm git identity (name/email) | Recorded in AGENTS.md Git section | — | ✅ | 2026-11-04 | Yazi <307877446+YazarAyobami@users.noreply.github.com>; GitHub YazarAyobami |
-| W-0.2 | M | Approve extra deps: Vitest, `near-contract-standards` | User approves; ARCHITECTURE §2 updated | — | ⬜ |  |  |
+| W-0.2 | M | Approve extra deps: Vitest, `near-contract-standards` | User approves; ARCHITECTURE §2 updated | — | ✅ | 2026-11-04 | Vitest 5.1 + near-contract-standards 5.30 approved and added |
 | W-0.3 | M | Verify Sputnik v2 factory accounts + fixed-weight (3) vote policy shape | Recorded; VERIFY tag removed | — | ⬜ |  |  |
 | W-0.4 | M | Pin Sputnik DAO v2 wasm (commit + sha256) | `res/` has wasm + SPUTNIK_VERSION.txt | W-1.4 | ⬜ |  |  |
-| W-0.5 | M | Verify `cargo-near` build subcommand | Recorded in project_structure §4 | — | 🟡 |  | near-sdk 5.30.0 + near-workspaces 0.24.0 chosen; cargo-near not installed |
+| W-0.5 | M | Verify `cargo-near` build subcommand | Recorded in project_structure §4 | — | ✅ | 2026-11-04 | cargo-near 0.22.0: `cargo near build non-reproducible-wasm` confirmed; near-cli-rs installed |
 | W-0.6 | M | Create + fund testnet accounts: deployer, ward, tusdc, settlor, 4 guardians, caregiver, child, school | Listed in `.env` (not committed) | — | ⬜ |  |  |
 | W-0.7 | S | Collect property-grabbing sources for README | Citations in README draft | — | ⬜ |  |  |
 
@@ -91,12 +91,12 @@ Ward is **100% ready** when all of these are true:
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
 |---|---|---|---|---|---|---|---|
 | W-1.1 | M | `git init`, ignores, editorconfig, nvmrc, MIT LICENSE | Repo initialised; no AI attribution | W-0.1 | ✅ | 2026-11-04 | git init; private repo YazarAyobami/ward |
-| W-1.2 | M | pnpm workspace + root scripts + TS/ESLint/Prettier config | `pnpm install` works | W-1.1 | 🟡 |  | files written; install not run |
+| W-1.2 | M | pnpm workspace + root scripts + TS/ESLint/Prettier config | `pnpm install` works | W-1.1 | ✅ | 2026-11-04 | pnpm 11.17 install OK; allowBuilds = esbuild only; next pinned 16.4.4 (release-age policy) |
 | W-1.3 | M | Rust workspace | `cargo check --target wasm32` passes | W-1.1 | ✅ | 2026-11-04 | cargo check --target wasm32 passes |
-| W-1.4 | M | `contracts/ward` skeleton per project_structure §2.1 | `pnpm build:contract` produces wasm | W-1.3, W-0.5 | 🟡 |  | compiles for wasm; cargo near build pending |
+| W-1.4 | M | `contracts/ward` skeleton per project_structure §2.1 | `pnpm build:contract` produces wasm | W-1.3, W-0.5 | ✅ | 2026-11-04 | contract wasm builds with cargo-near |
 | W-1.5 | M | `contracts/mock-ft` (NEP-141/145 + open mint) | Mint + transfer test passes | W-0.2 | 🟡 |  | stub compiles |
 | W-1.6 | M | Sandbox harness `tests/common/mod.rs` | Smoke test deploys ward + mock-ft + Sputnik | W-1.4, W-1.5, W-0.4 | 🟡 |  | harness + 36 named #[ignore] test skeletons |
-| W-1.7 | M | `packages/core`, `apps/web`, `apps/api`, `scripts` skeletons | `pnpm build` + `pnpm -r test` pass | W-1.2 | 🟡 |  | written; not built |
+| W-1.7 | M | `packages/core`, `apps/web`, `apps/api`, `scripts` skeletons | `pnpm build` + `pnpm -r test` pass | W-1.2 | ✅ | 2026-11-04 | tsc -b, eslint, next build, pnpm -r test all pass (tests are todo placeholders) |
 | W-1.8 | M | `.env.example` (source of truth) | Matches every var read in code | W-1.2 | ✅ | 2026-11-04 |  |
 | W-1.9 | M | CI workflow | Green on first push | W-1.6, W-1.7 | 🟡 |  | ci.yml drafted; manual-only (workflow_dispatch) until lockfile + cargo-near step exist |
 | W-1.10 | M | README stub + Contributing section (ROADMAP rule) | Present | W-1.1 | ✅ | 2026-11-04 |  |
@@ -229,5 +229,6 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-04 | W-0.2, W-0.5, W-1.2, W-1.4, W-1.7 | Approved deps added (Vitest, near-contract-standards); installed cargo-near 0.22.0 + near-cli-rs; pnpm install with build-script allow-list; pinned next 16.4.4 to respect pnpm's minimum release age; ignored next-env.d.ts; docs updated (AGENTS toolchain, ARCHITECTURE §2, project_structure). | cargo near build ✅ (2 contracts) · cargo test ✅ 0 failed (scaffold tests ignored) · tsc -b ✅ · eslint ✅ · next build ✅ · pnpm -r test ✅ 0 failed (todo placeholders) |
 | 2026-11-04 | W-0.1, W-1.1, W-1.9 | Git initialised; identity recorded in AGENTS.md; CI set to manual-only; first push to private repo YazarAyobami/ward. | n/a (no code change) |
 | 2026-11-04 | W-1.1–W-1.10, W-2.1, W-6.1, W-D.4, W-D.5 | Created ROADMAP.md and project_structure.md; scaffolded the repo (root config, Rust workspace, ward data model + method stubs, mock-ft stub, 36 named integration-test skeletons, @ward/core zod mirror, web routes, optional api, scripts, fixtures). Added the ROADMAP rule to all docs. | `cargo check --target wasm32-unknown-unknown` ✅; TS not installed yet |

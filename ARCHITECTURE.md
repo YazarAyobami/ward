@@ -40,6 +40,7 @@
 |---|---|---|
 | Contract | Rust, `near-sdk` 5.30, `cargo-near` | `ward.<you>.testnet` |
 | Tests | `near-workspaces` (sandbox, `fast_forward`), unit tests | Real Sputnik wasm in sandbox, pinned version |
+| Approved extra deps (2026-11-04) | `near-contract-standards` 5.30 (mock-ft NEP-141/145) · Vitest 5.1 (web tests) |
 | Token | Mock NEP-141 `tusdc.<you>.testnet` (6 dp, implements NEP-145 storage) | Mainnet USDC on NEAR **VERIFY** id |
 | Council | Sputnik DAO v2. **Demo uses one DAO** shared by the demo trusts | Factory **VERIFY** (`sputnik-v2.testnet` / `sputnik-dao.near`) |
 | Frontend | Next.js 16, TypeScript, Tailwind, `@near-wallet-selector`, `near-api-js` | Vercel |
