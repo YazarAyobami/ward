@@ -28,7 +28,12 @@ impl Contract {
 }
 
 impl Contract {
-    pub(crate) fn internal_deposit(&mut self, trust_id: TrustId, sender: AccountId, amount: U128) -> U128 {
+    pub(crate) fn internal_deposit(
+        &mut self,
+        trust_id: TrustId,
+        sender: AccountId,
+        amount: U128,
+    ) -> U128 {
         let _ = (trust_id, sender, amount);
         todo!("W-2.8")
     }

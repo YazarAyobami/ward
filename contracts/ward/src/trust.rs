@@ -22,7 +22,16 @@ impl Contract {
         rules: Rules,
         token: AccountId,
     ) -> TrustId {
-        let _ = (label, caregiver, caregiver_circle, guardians, children, payees, rules, token);
+        let _ = (
+            label,
+            caregiver,
+            caregiver_circle,
+            guardians,
+            children,
+            payees,
+            rules,
+            token,
+        );
         todo!("W-2.6")
     }
 

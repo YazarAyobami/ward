@@ -21,6 +21,9 @@ pub mod trust;
 pub mod types;
 pub mod views;
 
+#[cfg(test)]
+mod test_utils;
+
 use types::{Request, RequestId, Trust, TrustId};
 
 #[near(serializers = [borsh])]
@@ -59,7 +62,12 @@ impl Contract {
     }
 
     /// NEP-141 receiver. `msg` = `{"deposit": trust_id}`. Accepts only `trust.token`.
-    pub fn ft_on_transfer(&mut self, sender_id: AccountId, amount: U128, msg: String) -> PromiseOrValue<U128> {
+    pub fn ft_on_transfer(
+        &mut self,
+        sender_id: AccountId,
+        amount: U128,
+        msg: String,
+    ) -> PromiseOrValue<U128> {
         let _ = (sender_id, amount, msg);
         todo!("W-2.6: parse FtMessage → settlor::internal_deposit")
     }

@@ -59,7 +59,8 @@ ward/src/
 ├── requests.rs   # execute_request (internal) for every RequestKind
 ├── council.rs    # DAO-only: council_replace_guardian, council_set_caregiver, council_add_payee
 ├── token.rs      # ft_transfer / storage_deposit + on_payout callback; post_ai_review (Could)
-└── views.rs      # get_trust, get_trusts_for, get_requests, get_child_status, get_allowance_due
+├── views.rs      # get_trust, get_trusts_for, get_requests, get_child_status, get_allowance_due
+└── test_utils.rs # #[cfg(test)] builders (rules, guardians, trust, request) + mocked-env and insert helpers
 ward/tests/
 ├── common/mod.rs           # sandbox harness
 ├── circles.rs              # W-5.1

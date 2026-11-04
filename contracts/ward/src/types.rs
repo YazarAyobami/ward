@@ -29,7 +29,10 @@ pub enum Circle {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum TrustStatus {
     Funding,
-    DeathClaimed { claimed_at: U64, ends_at: U64 },
+    DeathClaimed {
+        claimed_at: U64,
+        ends_at: U64,
+    },
     Active,
     /// At least one child paid out; others pending.
     Graduating,

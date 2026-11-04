@@ -7,7 +7,12 @@ use crate::types::{AiReview, RequestId, TrustId};
 use crate::{Contract, ContractExt};
 
 impl Contract {
-    pub(crate) fn ft_transfer(&self, token: AccountId, receiver: AccountId, amount: U128) -> Promise {
+    pub(crate) fn ft_transfer(
+        &self,
+        token: AccountId,
+        receiver: AccountId,
+        amount: U128,
+    ) -> Promise {
         let _ = (token, receiver, amount);
         todo!("W-2.10")
     }
