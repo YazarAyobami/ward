@@ -144,6 +144,18 @@ pub(crate) fn insert_request(contract: &mut Contract, request: Request) {
     contract.requests.insert(request.id, request);
 }
 
+pub(crate) fn insert_trust_for(contract: &mut Contract, account_id: AccountId, trust_id: u64) {
+    let mut ids = contract
+        .by_account
+        .get(&account_id)
+        .cloned()
+        .unwrap_or_default();
+    if !ids.contains(&trust_id) {
+        ids.push(trust_id);
+        contract.by_account.insert(account_id, ids);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -112,8 +112,8 @@ Ward is **100% ready** when all of these are true:
 | W-2.7 | M | `add_child`, `set_dao` | Integration tests | W-2.6 | ⬜ |  |  |
 | W-2.8 | M | Deposits via `ft_on_transfer` (`{"deposit": id}`; wrong token rejected) | Integration tests | W-2.6 | ⬜ |  |  |
 | W-2.9 | M | Settlor `withdraw` (free cap / delay), `veto_withdrawal`, `execute_withdrawal`; blocked during claim | Integration tests | W-2.8 | ⬜ |  |  |
-| W-2.10 | M | `token.rs` transfers + storage_deposit + `on_payout` rollback | Failure-path test | W-2.8 | ⬜ |  |  |
-| W-2.11 | M | Views | Integration tests | W-2.6 | ⬜ |  |  |
+| W-2.10 | M | `token.rs` transfers + storage_deposit + `on_payout` rollback | Failure-path test | W-2.8 | 🟡 |  | `ft_transfer` + `storage_deposit` (10 mNEAR, registration-only) + mock-receipt tests done (#9, #10). Left: `on_payout` rollback (wave 2, #30) |
+| W-2.11 | M | Views | Integration tests | W-2.6 | 🟡 |  | `get_trust`, `get_trusts_for`, paginated `get_requests` + unit tests (#11–#13). Left: `get_child_status`, `get_allowance_due` (wave 3, #38/#39) |
 | W-2.12 | M | Unit-test state builders (`src/test_utils.rs`: make_trust, make_guardian, make_request, insert helpers) | Builders used by at least one unit test | W-2.1 | ✅ | 2026-11-04 | Builders + `set_caller` env helper + `insert_trust`/`insert_request`; used by access, rules and test_utils tests |
 
 ### P3 — Lifecycle & requests
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-04 | W-2.10 (partial), W-2.11 (partial) | NEP-141 `ft_transfer` and NEP-145 `storage_deposit` promises with mock-receipt tests; `get_trust`, `get_trusts_for` and paginated `get_requests` with unit tests (#9–#13). | `cargo test --lib` ✅ 42 passed · `cargo check --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets -A dead_code` ✅ |
 | 2026-11-04 | W-2.2, W-2.3, W-2.5, W-2.12; W-2.4 (partial) | Implemented NEP-297 `emit`, the time helpers, wave-1 rule functions (guardian/share/circle validation, two-circle and rejection predicates, `circle_of`), the five role guards, and unit-test builders with named unit tests (#14–#29 except the wave-2 rules). Clarified the duration convention in ARCHITECTURE §7 and applied rustfmt to the remaining contract stubs so `cargo fmt --check` is clean. | `cargo test --lib` ✅ 37 passed · `cargo check --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets` ✅ apart from 3 pre-existing dead-code warnings in unimplemented stubs (W-5.9) |
 | 2026-11-04 | W-2.12 (new) | Created 164 GitHub issues covering every open roadmap task (milestone per phase; labels phase/area/size/wave/maintainer; index in docs/ISSUES.md). Repo interaction limited to collaborators. Header rule changed: contributions update their row + Changelog only; maintainer recomputes the header with tools/roadmap.py. Added W-2.12 (test-state builders) so wave issues stay independent. | n/a (docs and process) |
 | 2026-11-04 | W-10.9 | Repo made public at github.com/YazarAyobami/ward on the user's explicit OK. | n/a |
