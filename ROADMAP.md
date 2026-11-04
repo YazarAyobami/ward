@@ -104,17 +104,17 @@ Ward is **100% ready** when all of these are true:
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
 |---|---|---|---|---|---|---|---|
 | W-2.1 | M | `types.rs` per ARCHITECTURE §4 | Compiles; mirrored in `types.ts` | W-1.4 | ✅ | 2026-11-04 | + Approval/DeathAttestation/CancelWindow structs instead of tuples; free-cap fields; activation_balance |
-| W-2.2 | M | `errors.rs`, `events.rs` (NEP-297 helper) | Event JSON unit test | W-2.1 | ⬜ |  |  |
-| W-2.3 | M | `time.rs` (scaled, age_years, periods_elapsed) | Unit tests incl. boundaries | W-2.1 | ⬜ |  |  |
-| W-2.4 | M | `rules.rs` pure engine (guardians, shares, circles, satisfaction, allowance due, remaining share) | One unit test per rule | W-2.3 | ⬜ |  |  |
-| W-2.5 | M | `access.rs` role guards | Unit tests | W-2.1 | ⬜ |  |  |
+| W-2.2 | M | `errors.rs`, `events.rs` (NEP-297 helper) | Event JSON unit test | W-2.1 | ✅ | 2026-11-04 | `emit` logs `EVENT_JSON:` payload; unit test asserts standard, version, event, data array |
+| W-2.3 | M | `time.rs` (scaled, age_years, periods_elapsed) | Unit tests incl. boundaries | W-2.1 | ✅ | 2026-11-04 | 10 tests incl. demo scale, zero scale, backwards time, saturation; conceptual-duration convention recorded in ARCHITECTURE §7 |
+| W-2.4 | M | `rules.rs` pure engine (guardians, shares, circles, satisfaction, allowance due, remaining share) | One unit test per rule | W-2.3 | 🟡 |  | Wave 1 done (issues #19–#24): validate_guardians, validate_shares, distinct_circles, is_rejected, requires_two_circles, circle_of. Left: is_satisfied, allowance_due, remaining_share (wave 2, #31–#33) |
+| W-2.5 | M | `access.rs` role guards | Unit tests | W-2.1 | ✅ | 2026-11-04 | Five guards, 11 tests incl. panic codes |
 | W-2.6 | M | `create_trust` (validation, storage + ops_balance, payee storage_deposit) | Integration tests | W-2.4, W-2.5, W-1.6 | ⬜ |  |  |
 | W-2.7 | M | `add_child`, `set_dao` | Integration tests | W-2.6 | ⬜ |  |  |
 | W-2.8 | M | Deposits via `ft_on_transfer` (`{"deposit": id}`; wrong token rejected) | Integration tests | W-2.6 | ⬜ |  |  |
 | W-2.9 | M | Settlor `withdraw` (free cap / delay), `veto_withdrawal`, `execute_withdrawal`; blocked during claim | Integration tests | W-2.8 | ⬜ |  |  |
 | W-2.10 | M | `token.rs` transfers + storage_deposit + `on_payout` rollback | Failure-path test | W-2.8 | ⬜ |  |  |
 | W-2.11 | M | Views | Integration tests | W-2.6 | ⬜ |  |  |
-| W-2.12 | M | Unit-test state builders (`src/test_utils.rs`: make_trust, make_guardian, make_request, insert helpers) | Builders used by at least one unit test | W-2.1 | ⬜ |  |  |
+| W-2.12 | M | Unit-test state builders (`src/test_utils.rs`: make_trust, make_guardian, make_request, insert helpers) | Builders used by at least one unit test | W-2.1 | ✅ | 2026-11-04 | Builders + `set_caller` env helper + `insert_trust`/`insert_request`; used by access, rules and test_utils tests |
 
 ### P3 — Lifecycle & requests
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-04 | W-2.2, W-2.3, W-2.5, W-2.12; W-2.4 (partial) | Implemented NEP-297 `emit`, the time helpers, wave-1 rule functions (guardian/share/circle validation, two-circle and rejection predicates, `circle_of`), the five role guards, and unit-test builders with named unit tests (#14–#29 except the wave-2 rules). Clarified the duration convention in ARCHITECTURE §7 and applied rustfmt to the remaining contract stubs so `cargo fmt --check` is clean. | `cargo test --lib` ✅ 37 passed · `cargo check --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets` ✅ apart from 3 pre-existing dead-code warnings in unimplemented stubs (W-5.9) |
 | 2026-11-04 | W-2.12 (new) | Created 164 GitHub issues covering every open roadmap task (milestone per phase; labels phase/area/size/wave/maintainer; index in docs/ISSUES.md). Repo interaction limited to collaborators. Header rule changed: contributions update their row + Changelog only; maintainer recomputes the header with tools/roadmap.py. Added W-2.12 (test-state builders) so wave issues stay independent. | n/a (docs and process) |
 | 2026-11-04 | W-10.9 | Repo made public at github.com/YazarAyobami/ward on the user's explicit OK. | n/a |
 | 2026-11-04 | W-0.2, W-0.5, W-1.2, W-1.4, W-1.7 | Approved deps added (Vitest, near-contract-standards); installed cargo-near 0.22.0 + near-cli-rs; pnpm install with build-script allow-list; pinned next 16.4.4 to respect pnpm's minimum release age; ignored next-env.d.ts; docs updated (AGENTS toolchain, ARCHITECTURE §2, project_structure). | cargo near build ✅ (2 contracts) · cargo test ✅ 0 failed (scaffold tests ignored) · tsc -b ✅ · eslint ✅ · next build ✅ · pnpm -r test ✅ 0 failed (todo placeholders) |

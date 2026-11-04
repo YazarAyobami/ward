@@ -16,7 +16,12 @@ impl Contract {
         let _ = account;
         todo!("W-2.11")
     }
-    pub fn get_requests(&self, trust_id: TrustId, from_index: Option<u64>, limit: Option<u64>) -> Vec<Request> {
+    pub fn get_requests(
+        &self,
+        trust_id: TrustId,
+        from_index: Option<u64>,
+        limit: Option<u64>,
+    ) -> Vec<Request> {
         let _ = (trust_id, from_index, limit);
         todo!("W-2.11")
     }

@@ -207,7 +207,7 @@ pub struct Request {
 Each child's share is snapshotted at activation: `share = balance_at_activation × share_bps`. Allowance and approved spends are drawn from the common balance, and each child's remaining share is scaled proportionally. Graduation pays `remaining_share / tranches_left`.
 
 ## 7. Time
-- **Durations:** stored as nanoseconds divided by `time_scale`. Ages are computed with the inverse scaling.
+- **Durations:** `Rules` holds conceptual nanoseconds (e.g. `NS_PER_MONTH`). `time::scaled` divides by `time_scale` wherever a duration becomes a chain deadline. `time::age_years` and `time::periods_elapsed` multiply elapsed chain time by `time_scale` to get conceptual time.
 - **`time_scale`:** immutable, and shown on the public page ("DEMO MODE ×43,200").
 - **Payout ceiling:** a boundary test asserts the allowance never pays more than the balance.
 
