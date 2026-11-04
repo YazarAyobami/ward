@@ -2,7 +2,7 @@
 
 > This is where every file lives and what it's responsible for. Read it before creating a file.
 > If you add, move or rename a file, update this document in the same change.
-> Every contribution must also update `ROADMAP.md` (task status, header progress, Changelog line). See `ROADMAP.md` §1.
+> Every contribution must also update `ROADMAP.md` (your task row + Changelog line). See `ROADMAP.md` §1.
 
 ---
 
@@ -16,6 +16,8 @@ ward/
 ├── ARCHITECTURE_ESSENTIALS.md    # short reference for agents
 ├── project_structure.md          # this file
 ├── ROADMAP.md                    # live task list + status — UPDATE IN EVERY CONTRIBUTION
+├── tools/roadmap.py              # updates ROADMAP rows; recomputes the header after merges
+├── docs/ISSUES.md                # index of GitHub issues by phase, wave and roadmap ID
 ├── README.md  LICENSE
 ├── package.json  pnpm-workspace.yaml  tsconfig.base.json  tsconfig.json
 ├── eslint.config.mjs  .prettierrc  .editorconfig  .nvmrc  .gitignore
@@ -113,7 +115,7 @@ Tests in `packages/*` and `apps/api` use `node:test` via `tsx`. Web tests use Vi
 ## 6. Where new code goes
 | You're adding… | Put it in… | Also update |
 |---|---|---|
-| **Anything at all** | — | **`ROADMAP.md`**: task status, header progress, Changelog line |
+| **Anything at all** | — | **`ROADMAP.md`**: your task row + Changelog line |
 | A contract method | its role module (`settlor.rs`, `guardian.rs`, …) | `tests/<area>.rs`, `contract.ts`, ARCHITECTURE §5 |
 | A type or field | `types.rs` | `types.ts`, ARCHITECTURE §4 |
 | An approval rule | `rules.rs` **and** `rules.ts` | ARCHITECTURE §6, ESSENTIALS "Rules" |
