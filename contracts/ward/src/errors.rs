@@ -42,3 +42,4 @@ pub const E33_WITHDRAWAL_PENDING: &str =
 pub const E34_NO_PENDING_WITHDRAWAL: &str = "E34_NO_PENDING_WITHDRAWAL: no withdrawal is pending";
 pub const E35_DUPLICATE_GUARDIAN: &str =
     "E35_DUPLICATE_GUARDIAN: each guardian must be a distinct account";
+pub const E36_CHILD_NOT_FOUND: &str = "E36_CHILD_NOT_FOUND: child index does not exist";

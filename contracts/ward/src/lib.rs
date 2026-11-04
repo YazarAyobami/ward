@@ -3,7 +3,7 @@
 
 use near_sdk::json_types::U128;
 use near_sdk::store::{IterableMap, LookupMap};
-use near_sdk::{env, near, AccountId, BorshStorageKey, PanicOnDefault, PromiseOrValue};
+use near_sdk::{env, near, require, AccountId, BorshStorageKey, PanicOnDefault, PromiseOrValue};
 
 pub mod access;
 pub mod caregiver;
@@ -24,9 +24,9 @@ pub mod views;
 #[cfg(test)]
 mod test_utils;
 
-use types::{Request, RequestId, Trust, TrustId};
+use types::{FtMessage, Request, RequestId, Trust, TrustId};
 
-use crate::errors::E01_TRUST_NOT_FOUND;
+use crate::errors::{E01_TRUST_NOT_FOUND, E24_WRONG_TOKEN, E28_INVALID_MESSAGE};
 
 #[near(serializers = [borsh])]
 #[derive(BorshStorageKey)]
@@ -70,8 +70,18 @@ impl Contract {
         amount: U128,
         msg: String,
     ) -> PromiseOrValue<U128> {
-        let _ = (sender_id, amount, msg);
-        todo!("W-2.6: parse FtMessage → settlor::internal_deposit")
+        let trust_id = match near_sdk::serde_json::from_str::<FtMessage>(&msg) {
+            Ok(FtMessage::Deposit(trust_id)) => trust_id,
+            Err(_) => env::panic_str(E28_INVALID_MESSAGE),
+        };
+        let trust = self.trust_or_panic(trust_id);
+        require!(
+            env::predecessor_account_id() == trust.token,
+            E24_WRONG_TOKEN
+        );
+
+        self.internal_deposit(trust_id, sender_id, amount);
+        PromiseOrValue::Value(U128(0))
     }
 }
 
@@ -94,5 +104,69 @@ impl Contract {
             ids.push(trust_id);
             self.by_account.insert(account.clone(), ids);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::test_utils::{account, insert_trust, trust};
+    use near_sdk::test_utils::VMContextBuilder;
+    use near_sdk::testing_env;
+
+    fn env_with(predecessor: &str) {
+        testing_env!(VMContextBuilder::new()
+            .predecessor_account_id(account(predecessor))
+            .build());
+    }
+
+    #[test]
+    fn ft_on_transfer_accepts_the_trust_token() {
+        env_with("tusdc.near");
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, trust(0));
+
+        let result = contract.ft_on_transfer(
+            account("settlor.near"),
+            U128(500),
+            r#"{"deposit":0}"#.to_string(),
+        );
+
+        assert!(matches!(result, PromiseOrValue::Value(U128(0))));
+        assert_eq!(contract.get_trust(0).unwrap().balance, U128(2_000_000_500));
+    }
+
+    #[test]
+    #[should_panic(expected = "E24_WRONG_TOKEN")]
+    fn ft_on_transfer_rejects_wrong_token() {
+        env_with("fake.near");
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, trust(0));
+        let _ = contract.ft_on_transfer(
+            account("settlor.near"),
+            U128(500),
+            r#"{"deposit":0}"#.to_string(),
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "E28_INVALID_MESSAGE")]
+    fn ft_on_transfer_rejects_malformed_message() {
+        env_with("tusdc.near");
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, trust(0));
+        let _ = contract.ft_on_transfer(account("settlor.near"), U128(500), "not-json".to_string());
+    }
+
+    #[test]
+    #[should_panic(expected = "E01_TRUST_NOT_FOUND")]
+    fn ft_on_transfer_rejects_unknown_trust() {
+        env_with("tusdc.near");
+        let mut contract = Contract::new(None);
+        let _ = contract.ft_on_transfer(
+            account("settlor.near"),
+            U128(500),
+            r#"{"deposit":9}"#.to_string(),
+        );
     }
 }

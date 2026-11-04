@@ -3,6 +3,7 @@
 use near_sdk::json_types::{U128, U64};
 use near_sdk::{env, near, require, AccountId, NearToken};
 
+use crate::access;
 use crate::errors;
 use crate::events::{self, WardEvent};
 use crate::rules::{validate_guardians, validate_shares};
@@ -112,14 +113,56 @@ impl Contract {
 
     /// Settlor, while Funding. New shares for all children must still sum to 10000.
     pub fn add_child(&mut self, trust_id: TrustId, child: ChildInput, new_shares_bps: Vec<u16>) {
-        let _ = (trust_id, child, new_shares_bps);
-        todo!("W-2.7")
+        let mut trust = self.trust_or_panic(trust_id);
+        access::assert_settlor(&trust);
+        require!(
+            matches!(trust.status, TrustStatus::Funding),
+            errors::E12_INVALID_STATUS
+        );
+        require!(
+            new_shares_bps.len() == trust.children.len() + 1,
+            errors::E10_SHARES_SUM
+        );
+        let total = new_shares_bps
+            .iter()
+            .fold(0u32, |sum, bps| sum.saturating_add(u32::from(*bps)));
+        require!(total == 10_000, errors::E10_SHARES_SUM);
+
+        for (existing, share) in trust.children.iter_mut().zip(&new_shares_bps) {
+            existing.share_bps = *share;
+        }
+        let index = trust.children.len();
+        let share_bps = *new_shares_bps.last().expect("length checked above");
+        trust.children.push(Child {
+            label: child.label,
+            account: None,
+            birth_ts: child.birth_ts,
+            share_bps,
+            paid_out: U128(0),
+            tranches_paid: 0,
+            alive: true,
+        });
+        self.save_trust(trust);
+
+        events::emit(WardEvent::ChildAdded {
+            trust_id,
+            child: u8::try_from(index).expect("child index fits u8"),
+        });
     }
 
     /// Settlor, once, while Funding.
     pub fn set_dao(&mut self, trust_id: TrustId, dao: AccountId) {
-        let _ = (trust_id, dao);
-        todo!("W-2.7")
+        let mut trust = self.trust_or_panic(trust_id);
+        access::assert_settlor(&trust);
+        require!(
+            matches!(trust.status, TrustStatus::Funding),
+            errors::E12_INVALID_STATUS
+        );
+        require!(trust.dao.is_none(), errors::E12_INVALID_STATUS);
+
+        trust.dao = Some(dao.clone());
+        self.save_trust(trust);
+        self.index_account(&dao, trust_id);
     }
 
     /// Anyone, after `ends_at` → Active; snapshots activation_balance.
@@ -133,9 +176,10 @@ impl Contract {
 mod tests {
     use super::*;
     use crate::test_utils::{
-        account, child_input, demo_payees, guardian, guardians, rules, set_creator, trust,
+        account, child_input, demo_payees, guardian, guardians, insert_trust, rules, set_caller,
+        set_creator, trust,
     };
-    use near_sdk::test_utils::get_created_receipts;
+    use near_sdk::test_utils::{get_created_receipts, get_logs};
 
     fn create_args() -> (Vec<Guardian>, Vec<ChildInput>, Vec<Payee>, Rules) {
         (
@@ -293,5 +337,120 @@ mod tests {
     #[test]
     fn test_helpers_still_build_a_trust() {
         assert_eq!(trust(7).id, 7);
+    }
+
+    #[test]
+    fn add_child_while_funding() {
+        set_caller(account("settlor.near"));
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, trust(0));
+
+        contract.add_child(0, child_input("Kemi", 2_500), vec![4_000, 3_500, 2_500]);
+
+        let stored = contract.get_trust(0).unwrap();
+        assert_eq!(stored.children.len(), 3);
+        assert_eq!(
+            stored
+                .children
+                .iter()
+                .map(|child| child.share_bps)
+                .collect::<Vec<_>>(),
+            vec![4_000, 3_500, 2_500]
+        );
+        assert_eq!(stored.children[2].label, "Kemi");
+        assert_eq!(stored.children[2].share_bps, 2_500);
+        assert!(get_logs().iter().any(|log| log.contains("child_added")));
+    }
+
+    #[test]
+    #[should_panic(expected = "E12_INVALID_STATUS")]
+    fn add_child_after_activation_fails() {
+        set_caller(account("settlor.near"));
+        let mut contract = Contract::new(None);
+        let mut stored = trust(0);
+        stored.status = TrustStatus::Active;
+        insert_trust(&mut contract, stored);
+
+        contract.add_child(0, child_input("Kemi", 2_500), vec![4_000, 3_500, 2_500]);
+    }
+
+    #[test]
+    #[should_panic(expected = "E10_SHARES_SUM")]
+    fn add_child_rejects_wrong_share_count() {
+        set_caller(account("settlor.near"));
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, trust(0));
+        contract.add_child(0, child_input("Kemi", 2_500), vec![5_000, 5_000]);
+    }
+
+    #[test]
+    #[should_panic(expected = "E10_SHARES_SUM")]
+    fn add_child_rejects_shares_not_summing_to_100_percent() {
+        set_caller(account("settlor.near"));
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, trust(0));
+        contract.add_child(0, child_input("Kemi", 2_500), vec![4_000, 4_000, 2_500]);
+    }
+
+    #[test]
+    #[should_panic(expected = "E02_NOT_SETTLOR")]
+    fn add_child_rejects_non_settlor() {
+        set_caller(account("stranger.near"));
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, trust(0));
+        contract.add_child(0, child_input("Kemi", 2_500), vec![4_000, 3_500, 2_500]);
+    }
+
+    #[test]
+    fn set_dao_once() {
+        set_caller(account("settlor.near"));
+        let mut contract = Contract::new(None);
+        let mut stored = trust(0);
+        stored.dao = None;
+        insert_trust(&mut contract, stored);
+
+        contract.set_dao(0, account("council.near"));
+
+        assert_eq!(
+            contract.get_trust(0).unwrap().dao,
+            Some(account("council.near"))
+        );
+        assert_eq!(
+            contract.get_trusts_for(account("council.near")).len(),
+            1,
+            "the DAO is indexed for the UI"
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "E12_INVALID_STATUS")]
+    fn set_dao_twice_fails() {
+        set_caller(account("settlor.near"));
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, trust(0)); // dao = dao.near
+        contract.set_dao(0, account("council.near"));
+    }
+
+    #[test]
+    #[should_panic(expected = "E12_INVALID_STATUS")]
+    fn set_dao_after_activation_fails() {
+        set_caller(account("settlor.near"));
+        let mut contract = Contract::new(None);
+        let mut stored = trust(0);
+        stored.dao = None;
+        stored.status = TrustStatus::Active;
+        insert_trust(&mut contract, stored);
+        contract.set_dao(0, account("council.near"));
+    }
+
+    #[test]
+    #[should_panic(expected = "E02_NOT_SETTLOR")]
+    fn set_dao_rejects_non_settlor() {
+        set_caller(account("stranger.near"));
+        let mut contract = Contract::new(None);
+        let mut stored = trust(0);
+        stored.dao = None;
+        insert_trust(&mut contract, stored);
+        contract.set_dao(0, account("council.near"));
     }
 }

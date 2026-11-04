@@ -6,6 +6,7 @@ use near_sdk::{env, near, require, AccountId};
 use crate::access;
 use crate::errors;
 use crate::events::{self, WardEvent};
+use crate::rules;
 use crate::time;
 use crate::types::{PendingWithdrawal, Trust, TrustId, TrustStatus};
 use crate::{Contract, ContractExt};
@@ -67,8 +68,36 @@ impl Contract {
 
     /// Anyone, after the delay, if not vetoed by 2 circles.
     pub fn execute_withdrawal(&mut self, trust_id: TrustId) {
-        let _ = trust_id;
-        todo!("W-2.9 wave 3")
+        let mut trust = self.trust_or_panic(trust_id);
+        let Some(pending) = trust.pending_withdrawal.clone() else {
+            env::panic_str(errors::E34_NO_PENDING_WITHDRAWAL);
+        };
+
+        require!(
+            rules::distinct_circles(&pending.vetoes) < 2,
+            errors::E16_WITHDRAW_VETOED
+        );
+        require!(
+            env::block_timestamp() >= pending.execute_after.0,
+            errors::E15_WITHDRAW_DELAY
+        );
+        require!(!trust.paused, errors::E18_PAUSED);
+        require!(
+            pending.amount.0 <= trust.balance.0,
+            errors::E23_INSUFFICIENT_BALANCE
+        );
+
+        trust.pending_withdrawal = None;
+        trust.balance = U128(trust.balance.0 - pending.amount.0);
+        let receiver = trust.settlor.clone();
+        let token = trust.token.clone();
+        self.save_trust(trust);
+
+        events::emit(WardEvent::WithdrawalExecuted {
+            trust_id,
+            amount: pending.amount,
+        });
+        let _ = self.payout(token, receiver, pending.amount, trust_id, None);
     }
 
     /// 1st cancel in window: immediate. 2nd: needs an approved VouchCancel (E14).
@@ -331,5 +360,99 @@ mod tests {
             near_sdk::env::attached_deposit(),
             NearToken::from_yoctonear(0)
         );
+    }
+
+    fn pending_withdrawal(amount: u128, execute_after: u64) -> PendingWithdrawal {
+        PendingWithdrawal {
+            amount: U128(amount),
+            requested_at: U64(0),
+            execute_after: U64(execute_after),
+            vetoes: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn execute_after_delay() {
+        env_for("stranger.near", crate::time::NS_PER_DAY);
+        let mut contract = Contract::new(None);
+        let mut trust = funded_trust(&mut contract, TrustStatus::Active);
+        trust.pending_withdrawal = Some(pending_withdrawal(100_000_000, crate::time::NS_PER_DAY));
+        insert_trust(&mut contract, trust);
+
+        contract.execute_withdrawal(0);
+
+        let stored = contract.get_trust(0).unwrap();
+        assert!(stored.pending_withdrawal.is_none());
+        assert_eq!(stored.balance, U128(1_900_000_000));
+        assert_eq!(get_created_receipts()[0].receiver_id, account("tusdc.near"));
+        assert!(get_logs()
+            .iter()
+            .any(|log| log.contains("withdrawal_executed")));
+    }
+
+    #[test]
+    #[should_panic(expected = "E15_WITHDRAW_DELAY")]
+    fn execute_before_delay_fails() {
+        env_for("stranger.near", crate::time::NS_PER_DAY - 1);
+        let mut contract = Contract::new(None);
+        let mut trust = funded_trust(&mut contract, TrustStatus::Active);
+        trust.pending_withdrawal = Some(pending_withdrawal(100_000_000, crate::time::NS_PER_DAY));
+        insert_trust(&mut contract, trust);
+        contract.execute_withdrawal(0);
+    }
+
+    #[test]
+    #[should_panic(expected = "E34_NO_PENDING_WITHDRAWAL")]
+    fn execute_without_pending_fails() {
+        env_for("stranger.near", crate::time::NS_PER_DAY);
+        let mut contract = Contract::new(None);
+        funded_trust(&mut contract, TrustStatus::Active);
+        contract.execute_withdrawal(0);
+    }
+
+    #[test]
+    #[should_panic(expected = "E16_WITHDRAW_VETOED")]
+    fn execute_with_two_circle_vetoes_fails() {
+        env_for("stranger.near", crate::time::NS_PER_DAY);
+        let mut contract = Contract::new(None);
+        let mut trust = funded_trust(&mut contract, TrustStatus::Active);
+        let mut pending = pending_withdrawal(100_000_000, 0);
+        pending.vetoes = vec![
+            crate::types::Approval {
+                account: account("aunt.near"),
+                circle: crate::types::Circle::Maternal,
+            },
+            crate::types::Approval {
+                account: account("teacher.near"),
+                circle: crate::types::Circle::Institution,
+            },
+        ];
+        trust.pending_withdrawal = Some(pending);
+        insert_trust(&mut contract, trust);
+        contract.execute_withdrawal(0);
+    }
+
+    #[test]
+    #[should_panic(expected = "E18_PAUSED")]
+    fn execute_while_paused_fails() {
+        env_for("stranger.near", crate::time::NS_PER_DAY);
+        let mut contract = Contract::new(None);
+        let mut trust = funded_trust(&mut contract, TrustStatus::Active);
+        trust.paused = true;
+        trust.pending_withdrawal = Some(pending_withdrawal(100_000_000, 0));
+        insert_trust(&mut contract, trust);
+        contract.execute_withdrawal(0);
+    }
+
+    #[test]
+    #[should_panic(expected = "E23_INSUFFICIENT_BALANCE")]
+    fn execute_with_insufficient_balance_fails() {
+        env_for("stranger.near", crate::time::NS_PER_DAY);
+        let mut contract = Contract::new(None);
+        let mut trust = funded_trust(&mut contract, TrustStatus::Active);
+        trust.balance = U128(50_000_000);
+        trust.pending_withdrawal = Some(pending_withdrawal(100_000_000, 0));
+        insert_trust(&mut contract, trust);
+        contract.execute_withdrawal(0);
     }
 }
