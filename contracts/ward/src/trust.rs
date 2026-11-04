@@ -167,8 +167,24 @@ impl Contract {
 
     /// Anyone, after `ends_at` → Active; snapshots activation_balance.
     pub fn finalize_activation(&mut self, trust_id: TrustId) {
-        let _ = trust_id;
-        todo!("W-3.3")
+        let mut trust = self.trust_or_panic(trust_id);
+        let TrustStatus::DeathClaimed { ends_at, .. } = trust.status else {
+            env::panic_str(errors::E12_INVALID_STATUS);
+        };
+        let now = env::block_timestamp();
+        require!(now >= ends_at.0, errors::E13_CLAIM_PENDING);
+
+        trust.activated_at = Some(U64(now));
+        trust.activation_balance = Some(trust.balance);
+        trust.status = TrustStatus::Active;
+        trust.death_attestations.clear();
+        trust.cancel_window = None;
+        self.save_trust(trust.clone());
+
+        events::emit(WardEvent::TrustActivated {
+            trust_id,
+            balance: trust.balance,
+        });
     }
 }
 
@@ -179,7 +195,9 @@ mod tests {
         account, child_input, demo_payees, guardian, guardians, insert_trust, rules, set_caller,
         set_creator, trust,
     };
+    use near_sdk::test_utils::VMContextBuilder;
     use near_sdk::test_utils::{get_created_receipts, get_logs};
+    use near_sdk::testing_env;
 
     fn create_args() -> (Vec<Guardian>, Vec<ChildInput>, Vec<Payee>, Rules) {
         (
@@ -452,5 +470,51 @@ mod tests {
         stored.dao = None;
         insert_trust(&mut contract, stored);
         contract.set_dao(0, account("council.near"));
+    }
+
+    fn claimed_trust() -> Trust {
+        let mut stored = trust(0);
+        stored.status = TrustStatus::DeathClaimed {
+            claimed_at: U64(0),
+            ends_at: U64(crate::time::NS_PER_DAY),
+        };
+        stored
+    }
+
+    fn env_at(now: u64) {
+        testing_env!(VMContextBuilder::new().block_timestamp(now).build());
+    }
+
+    #[test]
+    fn finalize_activates_and_snapshots_the_balance() {
+        env_at(crate::time::NS_PER_DAY);
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, claimed_trust());
+
+        contract.finalize_activation(0);
+
+        let stored = contract.get_trust(0).unwrap();
+        assert_eq!(stored.status, TrustStatus::Active);
+        assert_eq!(stored.activation_balance, Some(U128(2_000_000_000)));
+        assert_eq!(stored.activated_at, Some(U64(crate::time::NS_PER_DAY)));
+        assert!(get_logs().iter().any(|log| log.contains("trust_activated")));
+    }
+
+    #[test]
+    #[should_panic(expected = "E13_CLAIM_PENDING")]
+    fn finalize_before_the_waiting_period_fails() {
+        env_at(crate::time::NS_PER_DAY - 1);
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, claimed_trust());
+        contract.finalize_activation(0);
+    }
+
+    #[test]
+    #[should_panic(expected = "E12_INVALID_STATUS")]
+    fn finalize_without_a_claim_fails() {
+        env_at(crate::time::NS_PER_DAY);
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, trust(0));
+        contract.finalize_activation(0);
     }
 }

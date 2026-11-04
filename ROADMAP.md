@@ -119,16 +119,16 @@ Ward is **100% ready** when all of these are true:
 ### P3 — Lifecycle & requests
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
 |---|---|---|---|---|---|---|---|
-| W-3.1 | M | `attest_death` (3 → DeathClaimed) | Tests | W-2.6 | ⬜ |  |  |
-| W-3.2 | M | `cancel_death_claim` + `VouchCancel` for 2nd cancel in window | Tests | W-3.1, W-3.6 | ⬜ |  |  |
-| W-3.3 | M | `finalize_activation` (snapshot activation_balance) | Tests | W-3.1 | ⬜ |  |  |
-| W-3.4 | M | `claim_allowance` (1 period arrears max; works while paused; ≤ balance) | Tests | W-3.3 | ⬜ |  |  |
-| W-3.5 | M | `create_request` (limit on open requests) | Tests | W-3.3 | ⬜ |  |  |
-| W-3.6 | M | `approve` / `reject` / `execute_request` for every RequestKind | Tests per kind | W-3.5, W-2.10 | ⬜ |  |  |
-| W-3.7 | M | `pause` + `Unpause` request | Tests | W-3.6 | ⬜ |  |  |
-| W-3.8 | M | Child `flag` (≥14) → 2-circle rule | Tests | W-3.6 | ⬜ |  |  |
-| W-3.9 | M | `claim_graduation` tranches (≥18), pausable | Tests | W-3.6 | ⬜ |  |  |
-| W-3.10 | M | `ChildDeceased` → share to siblings, then fallback | Tests | W-3.6 | ⬜ |  |  |
+| W-3.1 | M | `attest_death` (3 → DeathClaimed) | Tests | W-2.6 | ✅ | 2026-11-04 | 3 distinct attestations set `DeathClaimed` with `ends_at = now + scaled(waiting_period)`; duplicate E17; blocked while a claim is pending (E13) (#44) |
+| W-3.2 | M | `cancel_death_claim` + `VouchCancel` for 2nd cancel in window | Tests | W-3.1, W-3.6 | ✅ | 2026-11-04 | First cancel restores the pre-claim status and opens the window; a second cancel inside the window needs an executed `VouchCancel` (E14); attestations cleared (#46, #54) |
+| W-3.3 | M | `finalize_activation` (snapshot activation_balance) | Tests | W-3.1 | ✅ | 2026-11-04 | Anyone after `ends_at`; snapshots `activation_balance`, sets `activated_at`, clears claim state; before the deadline E13 (#47) |
+| W-3.4 | M | `claim_allowance` (1 period arrears max; works while paused; ≤ balance) | Tests | W-3.3 | ✅ | 2026-11-04 | Caregiver-only; pays `allowance_due`, advances the clock to `now` (arrears are not banked), works while paused; failed transfer restores balance and clock (#48) |
+| W-3.5 | M | `create_request` (limit on open requests) | Tests | W-3.3 | ✅ | 2026-11-04 | Caregiver or guardian (E37); Active/Graduating only; per-kind validation (E20/E32/E36/E40); open Pending+Approved requests capped by `max_open_requests` (E19) (#49) |
+| W-3.6 | M | `approve` / `reject` / `execute_request` for every RequestKind | Tests per kind | W-3.5, W-2.10 | ✅ | 2026-11-04 | All six kinds execute; 2-circle rejections (E21 for repeat votes); paused trusts defer everything except `Unpause`; failed payouts restore state; `ChildDeceased` bps redistribution + fallback (#45, #50–#55, #57) |
+| W-3.7 | M | `pause` + `Unpause` request | Tests | W-3.6 | ✅ | 2026-11-04 | Any guardian pauses Active/Graduating trusts; `Unpause` needs 2 circles and executes while paused; allowance still pays (#55, #56) |
+| W-3.8 | M | Child `flag` (≥14) → 2-circle rule | Tests | W-3.6 | ✅ | 2026-11-04 | Registered child only (E05), age gate E22, flags Pending/Approved requests and drops an Approved request back to Pending when one circle is no longer enough (#58) |
+| W-3.9 | M | `claim_graduation` tranches (≥18), pausable | Tests | W-3.6 | ✅ | 2026-11-04 | One tranche per allowance period from activation (E41), `remaining_share / tranches_left`, closes at balance 0 with all tranches; failed transfer restores balance, `paid_out` and tranche count (#59) |
+| W-3.10 | M | `ChildDeceased` → share to siblings, then fallback | Tests | W-3.6 | ✅ | 2026-11-04 | Dead child's bps redistributed pro rata to living siblings (remainder to the last); no siblings → remaining share split across `fallback`; dead payouts excluded from `remaining_share` (#45) |
 
 ### P4 — DAO & testnet
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-04 | W-3.1–W-3.10 | Wave 4: death attestation/claim/finalize/cancel + vouch; allowance; request creation/approval/rejection/execution for all six kinds; pause/unpause; child flag and graduation tranches; sibling/fallback inheritance; payout rollback callbacks for allowance and graduation. Added E37–E41 and corrected `remaining_share` to add back living children's payouts only. (#44–#59) | `cargo test --workspace` ✅ 181 unit tests · `cargo check --workspace --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets` ✅ |
 | 2026-11-04 | W-2.7, W-2.8, W-2.9, W-2.11 | Wave 3: `get_child_status` and `get_allowance_due`; `add_child` and `set_dao`; `ft_on_transfer` parsing + token check; `execute_withdrawal` (#38–#43). Added E36. | `cargo test --workspace` ✅ 111 unit tests · `cargo check --workspace --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets -A dead_code` ✅ (one expected dead-code warning until Phase 3 wires `execute_request`) |
 | 2026-11-04 | W-2.4, W-2.10; W-2.6, W-2.8, W-2.9 (partial) | Wave 2: `is_satisfied`, `allowance_due` and `remaining_share`; `create_trust` with deposit accounting and payee registration; `internal_deposit`; settlor `withdraw` (free cap, pending above cap, period rollover) and guardian `veto_withdrawal` (2 circles); `payout` + `on_payout` rollback (#30–#37). Added E31–E35. | `cargo test --lib` ✅ 86 passed · `cargo check --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets -A dead_code` ✅ (2 expected dead-code warnings until wave 3 wires `ft_on_transfer` and `execute_request`) |
 | 2026-11-04 | W-2.10 (partial), W-2.11 (partial) | NEP-141 `ft_transfer` and NEP-145 `storage_deposit` promises with mock-receipt tests; `get_trust`, `get_trusts_for` and paginated `get_requests` with unit tests (#9–#13). | `cargo test --lib` ✅ 42 passed · `cargo check --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets -A dead_code` ✅ |

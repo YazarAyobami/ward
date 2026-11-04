@@ -1,9 +1,9 @@
 //! NEP-141/145 promises + #[private] callbacks restoring state on failure. (W-2.10)
 
-use near_sdk::json_types::U128;
+use near_sdk::json_types::{U128, U64};
 use near_sdk::{env, ext_contract, near, AccountId, Gas, NearToken, Promise, PromiseError};
 
-use crate::types::{AiReview, RequestId, RequestStatus, TrustId};
+use crate::types::{AiReview, RequestId, RequestStatus, TrustId, TrustStatus};
 use crate::{Contract, ContractExt};
 
 /// Covers one NEP-145 registration. NEP-145 refunds any excess when `registration_only` is set.
@@ -22,6 +22,8 @@ pub trait FungibleToken {
 #[ext_contract(ext_self)]
 pub trait WardCallbacks {
     fn on_payout(&mut self, trust_id: TrustId, amount: U128, request_id: Option<RequestId>);
+    fn on_allowance_payout(&mut self, trust_id: TrustId, amount: U128, previous_claim: U64);
+    fn on_graduation_payout(&mut self, trust_id: TrustId, amount: U128, child: u8);
 }
 
 impl Contract {
@@ -58,6 +60,38 @@ impl Contract {
                 .on_payout(trust_id, amount, request_id),
         )
     }
+
+    /// Allowance payout: on failure restores the balance and the claim clock.
+    pub(crate) fn payout_allowance(
+        &self,
+        token: AccountId,
+        receiver: AccountId,
+        amount: U128,
+        trust_id: TrustId,
+        previous_claim: U64,
+    ) -> Promise {
+        self.ft_transfer(token, receiver, amount).then(
+            ext_self::ext(env::current_account_id())
+                .with_static_gas(ON_PAYOUT_GAS)
+                .on_allowance_payout(trust_id, amount, previous_claim),
+        )
+    }
+
+    /// Graduation payout: on failure restores the balance, `paid_out` and the tranche count.
+    pub(crate) fn payout_graduation(
+        &self,
+        token: AccountId,
+        receiver: AccountId,
+        amount: U128,
+        trust_id: TrustId,
+        child: u8,
+    ) -> Promise {
+        self.ft_transfer(token, receiver, amount).then(
+            ext_self::ext(env::current_account_id())
+                .with_static_gas(ON_PAYOUT_GAS)
+                .on_graduation_payout(trust_id, amount, child),
+        )
+    }
 }
 
 #[near]
@@ -72,6 +106,46 @@ impl Contract {
     ) {
         if result.is_err() {
             self.restore_payout(trust_id, amount, request_id);
+        }
+    }
+
+    #[private]
+    pub fn on_allowance_payout(
+        &mut self,
+        #[callback_result] result: Result<(), PromiseError>,
+        trust_id: TrustId,
+        amount: U128,
+        previous_claim: U64,
+    ) {
+        if result.is_err() {
+            let mut trust = self.trust_or_panic(trust_id);
+            trust.balance = U128(trust.balance.0.saturating_add(amount.0));
+            trust.allowance_claimed_until = previous_claim;
+            self.save_trust(trust);
+            env::log_str("allowance payout failed: state restored");
+        }
+    }
+
+    #[private]
+    pub fn on_graduation_payout(
+        &mut self,
+        #[callback_result] result: Result<(), PromiseError>,
+        trust_id: TrustId,
+        amount: U128,
+        child: u8,
+    ) {
+        if result.is_err() {
+            let mut trust = self.trust_or_panic(trust_id);
+            trust.balance = U128(trust.balance.0.saturating_add(amount.0));
+            if let Some(stored) = trust.children.get_mut(usize::from(child)) {
+                stored.paid_out = U128(stored.paid_out.0.saturating_sub(amount.0));
+                stored.tranches_paid = stored.tranches_paid.saturating_sub(1);
+            }
+            if trust.status == TrustStatus::Closed {
+                trust.status = TrustStatus::Graduating;
+            }
+            self.save_trust(trust);
+            env::log_str("graduation payout failed: state restored");
         }
     }
 }
@@ -110,6 +184,7 @@ mod tests {
     use super::*;
     use crate::test_utils::{account, insert_request, insert_trust, request, trust};
     use crate::types::{RequestKind, RequestStatus};
+    use near_sdk::json_types::U64;
     use near_sdk::mock::{MockAction, Receipt};
     use near_sdk::test_utils::{get_created_receipts, VMContextBuilder};
     use near_sdk::testing_env;
@@ -238,5 +313,39 @@ mod tests {
         contract.on_payout(Ok(()), 0, U128(250), None);
 
         assert_eq!(contract.get_trust(0).unwrap().balance, U128(500));
+    }
+
+    #[test]
+    fn on_allowance_payout_restores_balance_and_clock() {
+        let mut contract = contract();
+        let mut trust = trust(0);
+        trust.balance = U128(500);
+        trust.allowance_claimed_until = U64(42);
+        insert_trust(&mut contract, trust);
+
+        contract.on_allowance_payout(Err(PromiseError::Failed), 0, U128(250), U64(7));
+
+        let stored = contract.get_trust(0).unwrap();
+        assert_eq!(stored.balance, U128(750));
+        assert_eq!(stored.allowance_claimed_until, U64(7));
+    }
+
+    #[test]
+    fn on_graduation_payout_restores_tranche_state() {
+        let mut contract = contract();
+        let mut trust = trust(0);
+        trust.balance = U128(0);
+        trust.status = TrustStatus::Closed;
+        trust.children[0].paid_out = U128(1_000_000_000);
+        trust.children[0].tranches_paid = 3;
+        insert_trust(&mut contract, trust);
+
+        contract.on_graduation_payout(Err(PromiseError::Failed), 0, U128(333_333_334), 0);
+
+        let stored = contract.get_trust(0).unwrap();
+        assert_eq!(stored.balance, U128(333_333_334));
+        assert_eq!(stored.children[0].paid_out, U128(666_666_666));
+        assert_eq!(stored.children[0].tranches_paid, 2);
+        assert_eq!(stored.status, TrustStatus::Graduating);
     }
 }

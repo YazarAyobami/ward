@@ -140,10 +140,13 @@ pub fn allowance_due(trust: &Trust, now_ns: u64) -> u128 {
     trust.rules.allowance_amount.0.min(trust.balance.0)
 }
 
-/// Remaining share for a child, scaled by spends since activation.
+/// Remaining share for a child, scaled by shared spends since activation.
 ///
-/// The current balance already reflects every payout, so scaling it by `share_bps` is the
-/// proportional scaling from ARCHITECTURE §6; subtracting `paid_out` again would underpay.
+/// Shared spends (allowance, approved payments) reduce the common balance, so the child's claim
+/// scales with it. Living children's graduation payouts are added back to the pool before applying
+/// `share_bps` and each child's own payout is then subtracted: without that, a first-moving sibling
+/// would take part of the later sibling's share. A dead child's payouts are not added back; its
+/// share has already been redistributed to the living siblings.
 pub fn remaining_share(trust: &Trust, child_idx: usize) -> u128 {
     let Some(child) = trust.children.get(child_idx) else {
         return 0;
@@ -151,12 +154,19 @@ pub fn remaining_share(trust: &Trust, child_idx: usize) -> u128 {
     if !child.alive {
         return 0;
     }
+    let living_paid_out = trust
+        .children
+        .iter()
+        .filter(|stored| stored.alive)
+        .fold(0u128, |sum, stored| sum.saturating_add(stored.paid_out.0));
     trust
         .balance
         .0
+        .saturating_add(living_paid_out)
         .checked_mul(u128::from(child.share_bps))
         .map(|scaled| scaled / SHARES_TOTAL_BPS as u128)
         .unwrap_or(u128::MAX)
+        .saturating_sub(child.paid_out.0)
 }
 
 /// Circle of a guardian. The caregiver isn't a guardian (invariant 1).
@@ -530,5 +540,25 @@ mod tests {
         trust.children[1].alive = false;
         assert_eq!(remaining_share(&trust, 1), 0);
         assert_eq!(remaining_share(&trust, 9), 0);
+    }
+
+    #[test]
+    fn remaining_share_does_not_let_the_first_sibling_take_the_second_share() {
+        let mut trust = trust(0);
+        trust.children[0].paid_out = U128(333_333_333);
+        trust.balance = U128(2_000_000_000 - 333_333_333);
+
+        assert_eq!(remaining_share(&trust, 0), 666_666_667);
+        assert_eq!(remaining_share(&trust, 1), 1_000_000_000);
+    }
+
+    #[test]
+    fn fully_paid_child_has_nothing_left() {
+        let mut trust = trust(0);
+        trust.children[0].paid_out = U128(1_000_000_000);
+        trust.balance = U128(1_000_000_000);
+
+        assert_eq!(remaining_share(&trust, 0), 0);
+        assert_eq!(remaining_share(&trust, 1), 1_000_000_000);
     }
 }
