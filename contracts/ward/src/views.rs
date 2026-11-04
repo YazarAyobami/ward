@@ -50,12 +50,17 @@ impl Contract {
             env::panic_str(errors::E36_CHILD_NOT_FOUND);
         };
 
-        let age_years = time::age_years(
-            child.birth_ts.0,
-            env::block_timestamp(),
-            trust.rules.time_scale,
-        );
+        let now = env::block_timestamp();
+        let age_years = time::age_years(child.birth_ts.0, now, trust.rules.time_scale);
         let payouts_open = matches!(trust.status, TrustStatus::Active | TrustStatus::Graduating);
+        let unlocked = trust.activated_at.map_or(0, |activated_at| {
+            time::periods_elapsed(
+                activated_at.0,
+                now,
+                trust.rules.allowance_period.0,
+                trust.rules.time_scale,
+            )
+        });
 
         ChildStatus {
             age_years,
@@ -65,7 +70,8 @@ impl Contract {
                 && payouts_open
                 && !trust.paused
                 && age_years >= trust.rules.majority_age_years
-                && child.tranches_paid < trust.rules.graduation_tranches,
+                && child.tranches_paid < trust.rules.graduation_tranches
+                && unlocked > u64::from(child.tranches_paid),
             remaining_share: U128(rules::remaining_share(&trust, index)),
             tranches_left: trust
                 .rules
@@ -200,6 +206,7 @@ mod tests {
         let mut contract = Contract::new(None);
         let mut trust = trust(0);
         trust.status = TrustStatus::Graduating;
+        trust.activated_at = Some(U64(0));
         trust.children[0].account = Some(account("ada.near"));
         trust.children[0].tranches_paid = 2;
         insert_trust(&mut contract, trust);

@@ -26,7 +26,9 @@ mod test_utils;
 
 use types::{FtMessage, Request, RequestId, Trust, TrustId};
 
-use crate::errors::{E01_TRUST_NOT_FOUND, E24_WRONG_TOKEN, E28_INVALID_MESSAGE};
+use crate::errors::{
+    E01_TRUST_NOT_FOUND, E24_WRONG_TOKEN, E26_REQUEST_NOT_FOUND, E28_INVALID_MESSAGE,
+};
 
 #[near(serializers = [borsh])]
 #[derive(BorshStorageKey)]
@@ -91,6 +93,13 @@ impl Contract {
             .get(&trust_id)
             .cloned()
             .unwrap_or_else(|| env::panic_str(E01_TRUST_NOT_FOUND))
+    }
+
+    pub(crate) fn request_or_panic(&self, request_id: RequestId) -> Request {
+        self.requests
+            .get(&request_id)
+            .cloned()
+            .unwrap_or_else(|| env::panic_str(E26_REQUEST_NOT_FOUND))
     }
 
     pub(crate) fn save_trust(&mut self, trust: Trust) {

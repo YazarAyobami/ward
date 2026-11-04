@@ -43,3 +43,12 @@ pub const E34_NO_PENDING_WITHDRAWAL: &str = "E34_NO_PENDING_WITHDRAWAL: no withd
 pub const E35_DUPLICATE_GUARDIAN: &str =
     "E35_DUPLICATE_GUARDIAN: each guardian must be a distinct account";
 pub const E36_CHILD_NOT_FOUND: &str = "E36_CHILD_NOT_FOUND: child index does not exist";
+pub const E37_NOT_REQUESTER: &str =
+    "E37_NOT_REQUESTER: only the caregiver or a guardian can create requests";
+pub const E38_REQUEST_NOT_PENDING: &str = "E38_REQUEST_NOT_PENDING: request is not pending";
+pub const E39_INSUFFICIENT_OPS_BALANCE: &str =
+    "E39_INSUFFICIENT_OPS_BALANCE: ops balance cannot cover the storage deposit";
+pub const E40_REQUIRES_LARGE_SPEND: &str =
+    "E40_REQUIRES_LARGE_SPEND: amounts above the large threshold need a LargeSpend request";
+pub const E41_TRANCHE_NOT_DUE: &str =
+    "E41_TRANCHE_NOT_DUE: the next graduation tranche has not unlocked yet";

@@ -205,7 +205,7 @@ pub struct Request {
 | 2nd cancel in window | Needs `VouchCancel` (1 guardian) |
 | Council membership changes | Sputnik DAO, fixed weight 3, then `council_*`, then Ward re-validates the circle rules |
 
-Each child's share is snapshotted at activation: `share = balance_at_activation × share_bps`. Allowance and approved spends are drawn from the common balance, and each child's remaining share is scaled proportionally. Graduation pays `remaining_share / tranches_left`.
+Each child's share is snapshotted at activation: `share = balance_at_activation × share_bps`. Allowance and approved spends are drawn from the common balance, and each child's remaining share is scaled proportionally. Graduation pays `remaining_share / tranches_left`, where `remaining_share = (balance + living paid_out) × share_bps − paid_out`: living children's payouts are added back to the pool before proportional scaling and each child's own payout is then subtracted, so an earlier graduation does not shrink a sibling's share. A dead child's payouts are not added back; its share has already been redistributed to living siblings. One tranche unlocks per allowance period from activation.
 
 ## 7. Time
 - **Durations:** `Rules` holds conceptual nanoseconds (e.g. `NS_PER_MONTH`). `time::scaled` divides by `time_scale` wherever a duration becomes a chain deadline. `time::age_years` and `time::periods_elapsed` multiply elapsed chain time by `time_scale` to get conceptual time.

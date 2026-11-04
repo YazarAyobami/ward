@@ -8,7 +8,7 @@ use crate::errors;
 use crate::events::{self, WardEvent};
 use crate::rules;
 use crate::time;
-use crate::types::{PendingWithdrawal, Trust, TrustId, TrustStatus};
+use crate::types::{CancelWindow, PendingWithdrawal, Trust, TrustId, TrustStatus};
 use crate::{Contract, ContractExt};
 
 #[near]
@@ -102,8 +102,36 @@ impl Contract {
 
     /// 1st cancel in window: immediate. 2nd: needs an approved VouchCancel (E14).
     pub fn cancel_death_claim(&mut self, trust_id: TrustId) {
-        let _ = trust_id;
-        todo!("W-3.2")
+        let mut trust = self.trust_or_panic(trust_id);
+        access::assert_settlor(&trust);
+        require!(
+            matches!(trust.status, TrustStatus::DeathClaimed { .. }),
+            errors::E12_INVALID_STATUS
+        );
+
+        let now = env::block_timestamp();
+        if let Some(window) = &trust.cancel_window {
+            let inside_window = now < window.window_end.0;
+            // `VouchCancel` clears the window; a still-open window means no vouch yet.
+            require!(
+                !inside_window || window.cancels == 0,
+                errors::E14_VOUCH_REQUIRED
+            );
+        }
+
+        let window_end = now.saturating_add(time::scaled(
+            trust.rules.cancel_window.0,
+            trust.rules.time_scale,
+        ));
+        trust.cancel_window = Some(CancelWindow {
+            cancels: 1,
+            window_end: U64(window_end),
+        });
+        trust.status = status_after_cancelled_claim(&trust);
+        trust.death_attestations.clear();
+        self.save_trust(trust);
+
+        events::emit(WardEvent::DeathClaimCancelled { trust_id });
     }
 }
 
@@ -133,6 +161,17 @@ impl Contract {
 
         events::emit(WardEvent::Deposit { trust_id, amount });
         amount
+    }
+}
+
+/// Status to restore when a death claim is cancelled, derived from activation state.
+fn status_after_cancelled_claim(trust: &Trust) -> TrustStatus {
+    if trust.activation_balance.is_none() {
+        TrustStatus::Funding
+    } else if trust.children.iter().any(|child| child.paid_out.0 > 0) {
+        TrustStatus::Graduating
+    } else {
+        TrustStatus::Active
     }
 }
 
@@ -454,5 +493,120 @@ mod tests {
         trust.pending_withdrawal = Some(pending_withdrawal(100_000_000, 0));
         insert_trust(&mut contract, trust);
         contract.execute_withdrawal(0);
+    }
+
+    fn claimed_trust() -> Trust {
+        let mut trust = trust(0);
+        trust.status = TrustStatus::DeathClaimed {
+            claimed_at: U64(0),
+            ends_at: U64(crate::time::NS_PER_MONTH),
+        };
+        trust.activated_at = Some(U64(0));
+        trust.activation_balance = Some(U128(2_000_000_000));
+        trust.death_attestations = vec![crate::types::DeathAttestation {
+            guardian: account("aunt.near"),
+            evidence_hash: [1; 32],
+            at: U64(0),
+        }];
+        trust
+    }
+
+    #[test]
+    fn first_cancel_restores_activation_status() {
+        env_for("settlor.near", 0);
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, claimed_trust());
+
+        contract.cancel_death_claim(0);
+
+        let stored = contract.get_trust(0).unwrap();
+        assert_eq!(stored.status, TrustStatus::Active);
+        assert!(stored.death_attestations.is_empty());
+        let window = stored.cancel_window.expect("cancel window");
+        assert_eq!(window.cancels, 1);
+        assert_eq!(window.window_end.0, crate::time::NS_PER_DAY);
+        assert!(get_logs()
+            .iter()
+            .any(|log| log.contains("death_claim_cancelled")));
+    }
+
+    #[test]
+    fn first_cancel_before_activation_returns_to_funding() {
+        env_for("settlor.near", 0);
+        let mut contract = Contract::new(None);
+        let mut trust = claimed_trust();
+        trust.activated_at = None;
+        trust.activation_balance = None;
+        insert_trust(&mut contract, trust);
+
+        contract.cancel_death_claim(0);
+
+        assert_eq!(contract.get_trust(0).unwrap().status, TrustStatus::Funding);
+    }
+
+    #[test]
+    #[should_panic(expected = "E14_VOUCH_REQUIRED")]
+    fn second_cancel_inside_the_window_needs_a_vouch() {
+        env_for("settlor.near", 0);
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, claimed_trust());
+
+        contract.cancel_death_claim(0);
+        let mut stored = contract.get_trust(0).unwrap();
+        stored.status = claimed_trust().status;
+        insert_trust(&mut contract, stored);
+        contract.cancel_death_claim(0);
+    }
+
+    #[test]
+    fn a_vouch_clears_the_window_for_the_second_cancel() {
+        env_for("settlor.near", 0);
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, claimed_trust());
+        contract.cancel_death_claim(0);
+
+        let mut stored = contract.get_trust(0).unwrap();
+        stored.status = claimed_trust().status;
+        stored.cancel_window = None;
+        insert_trust(&mut contract, stored);
+
+        contract.cancel_death_claim(0);
+
+        assert_eq!(contract.get_trust(0).unwrap().status, TrustStatus::Active);
+    }
+
+    #[test]
+    fn a_cancel_after_the_window_needs_no_vouch() {
+        env_for("settlor.near", 0);
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, claimed_trust());
+        contract.cancel_death_claim(0);
+
+        let mut stored = contract.get_trust(0).unwrap();
+        stored.status = claimed_trust().status;
+        insert_trust(&mut contract, stored);
+        env_for("settlor.near", crate::time::NS_PER_DAY + 1);
+
+        contract.cancel_death_claim(0);
+
+        assert_eq!(contract.get_trust(0).unwrap().status, TrustStatus::Active);
+    }
+
+    #[test]
+    #[should_panic(expected = "E02_NOT_SETTLOR")]
+    fn cancel_rejects_non_settlor() {
+        env_for("stranger.near", 0);
+        let mut contract = Contract::new(None);
+        insert_trust(&mut contract, claimed_trust());
+        contract.cancel_death_claim(0);
+    }
+
+    #[test]
+    #[should_panic(expected = "E12_INVALID_STATUS")]
+    fn cancel_without_a_claim_fails() {
+        env_for("settlor.near", 0);
+        let mut contract = Contract::new(None);
+        funded_trust(&mut contract, TrustStatus::Active);
+        contract.cancel_death_claim(0);
     }
 }
