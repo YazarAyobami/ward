@@ -35,3 +35,10 @@ pub const E28_INVALID_MESSAGE: &str = "E28_INVALID_MESSAGE: ft_on_transfer messa
 pub const E29_INSUFFICIENT_DEPOSIT: &str =
     "E29_INSUFFICIENT_DEPOSIT: attached deposit does not cover storage and ops balance";
 pub const E30_NOTHING_DUE: &str = "E30_NOTHING_DUE: no allowance is due yet";
+pub const E31_INVALID_RULES: &str = "E31_INVALID_RULES: trust rules are invalid";
+pub const E32_INVALID_AMOUNT: &str = "E32_INVALID_AMOUNT: amount must be greater than zero";
+pub const E33_WITHDRAWAL_PENDING: &str =
+    "E33_WITHDRAWAL_PENDING: another withdrawal is already pending";
+pub const E34_NO_PENDING_WITHDRAWAL: &str = "E34_NO_PENDING_WITHDRAWAL: no withdrawal is pending";
+pub const E35_DUPLICATE_GUARDIAN: &str =
+    "E35_DUPLICATE_GUARDIAN: each guardian must be a distinct account";

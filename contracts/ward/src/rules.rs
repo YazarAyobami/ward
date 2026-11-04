@@ -4,7 +4,10 @@
 use near_sdk::AccountId;
 
 use crate::errors;
-use crate::types::{Approval, ChildInput, Circle, Guardian, Request, RequestKind, Trust};
+use crate::time;
+use crate::types::{
+    Approval, ChildInput, Circle, Guardian, Request, RequestKind, Trust, TrustStatus,
+};
 
 const CIRCLE_COUNT: usize = 4;
 const SHARES_TOTAL_BPS: u32 = 10_000;
@@ -18,7 +21,7 @@ pub fn circle_index(circle: Circle) -> usize {
     }
 }
 
-/// 3..=5 guardians, ≤2 per circle, ≥2 circles, caregiver not a guardian (E07–E09, E11).
+/// 3..=5 distinct guardians, ≤2 per circle, ≥2 circles, caregiver not a guardian (E07–E09, E11, E35).
 pub fn validate_guardians(
     guardians: &[Guardian],
     caregiver: &AccountId,
@@ -28,6 +31,16 @@ pub fn validate_guardians(
     }
     if guardians.iter().any(|g| &g.account == caregiver) {
         return Err(errors::E11_CAREGIVER_IS_GUARDIAN);
+    }
+
+    // A repeated account would shrink the real quorum while still passing the count check.
+    for (index, guardian) in guardians.iter().enumerate() {
+        if guardians[index + 1..]
+            .iter()
+            .any(|other| other.account == guardian.account)
+        {
+            return Err(errors::E35_DUPLICATE_GUARDIAN);
+        }
     }
 
     let mut per_circle = [0usize; CIRCLE_COUNT];
@@ -67,8 +80,22 @@ pub fn distinct_circles(approvals: &[Approval]) -> usize {
 
 /// Is the request's approval rule met (ARCHITECTURE §6)?
 pub fn is_satisfied(trust: &Trust, request: &Request) -> bool {
-    let _ = (trust, request);
-    todo!("W-2.4 wave 2")
+    if request.approvals.is_empty() {
+        return false;
+    }
+    match &request.kind {
+        RequestKind::PayeePayment { .. } | RequestKind::VouchCancel if !request.child_flagged => {
+            true
+        }
+        RequestKind::LargeSpend { .. } => {
+            distinct_circles(&request.approvals) >= 2
+                && request
+                    .approvals
+                    .iter()
+                    .any(|approval| approval.circle != trust.caregiver_circle)
+        }
+        _ => distinct_circles(&request.approvals) >= 2,
+    }
 }
 
 /// Rejected once 2 rejections from different circles.
@@ -91,14 +118,45 @@ pub fn requires_two_circles(kind: &RequestKind, child_flagged: bool) -> bool {
 
 /// Allowance due now (max 1 period of arrears, never above balance).
 pub fn allowance_due(trust: &Trust, now_ns: u64) -> u128 {
-    let _ = (trust, now_ns);
-    todo!("W-2.4 wave 2")
+    if !matches!(trust.status, TrustStatus::Active | TrustStatus::Graduating) {
+        return 0;
+    }
+    if trust.rules.allowance_period.0 == 0 {
+        return 0;
+    }
+    let start_ns = match trust.allowance_claimed_until.0 {
+        0 => trust.activated_at.map_or(trust.created_at.0, |at| at.0),
+        claimed => claimed,
+    };
+    let periods = time::periods_elapsed(
+        start_ns,
+        now_ns,
+        trust.rules.allowance_period.0,
+        trust.rules.time_scale,
+    );
+    if periods == 0 {
+        return 0;
+    }
+    trust.rules.allowance_amount.0.min(trust.balance.0)
 }
 
 /// Remaining share for a child, scaled by spends since activation.
+///
+/// The current balance already reflects every payout, so scaling it by `share_bps` is the
+/// proportional scaling from ARCHITECTURE §6; subtracting `paid_out` again would underpay.
 pub fn remaining_share(trust: &Trust, child_idx: usize) -> u128 {
-    let _ = (trust, child_idx);
-    todo!("W-2.4 wave 2")
+    let Some(child) = trust.children.get(child_idx) else {
+        return 0;
+    };
+    if !child.alive {
+        return 0;
+    }
+    trust
+        .balance
+        .0
+        .checked_mul(u128::from(child.share_bps))
+        .map(|scaled| scaled / SHARES_TOTAL_BPS as u128)
+        .unwrap_or(u128::MAX)
 }
 
 /// Circle of a guardian. The caregiver isn't a guardian (invariant 1).
@@ -114,7 +172,9 @@ pub fn circle_of(trust: &Trust, account: &AccountId) -> Option<Circle> {
 mod tests {
     use super::*;
     use crate::test_utils::{account, approval, child_input, guardian, guardians, request, trust};
+    use crate::time::NS_PER_MONTH;
     use crate::types::RequestStatus;
+    use near_sdk::json_types::{U128, U64};
 
     #[test]
     fn accepts_valid_set() {
@@ -199,6 +259,20 @@ mod tests {
         assert_eq!(
             validate_guardians(&guardians(), &caregiver),
             Err(errors::E11_CAREGIVER_IS_GUARDIAN)
+        );
+    }
+
+    #[test]
+    fn rejects_the_same_account_twice() {
+        let set = vec![
+            guardian("aunt.near", Circle::Maternal),
+            guardian("uncle.near", Circle::Paternal),
+            guardian("aunt.near", Circle::Community),
+            guardian("teacher.near", Circle::Institution),
+        ];
+        assert_eq!(
+            validate_guardians(&set, &account("caregiver.near")),
+            Err(errors::E35_DUPLICATE_GUARDIAN)
         );
     }
 
@@ -305,5 +379,156 @@ mod tests {
             request(0, RequestKind::Unpause).status,
             RequestStatus::Pending
         );
+    }
+
+    #[test]
+    fn payee_payment_needs_one() {
+        let trust = trust(0);
+        let mut req = request(
+            0,
+            RequestKind::PayeePayment {
+                payee: account("school.near"),
+                amount: U128(1_000),
+            },
+        );
+        assert!(!is_satisfied(&trust, &req));
+
+        req.approvals = vec![approval("pastor.near", Circle::Community)];
+        assert!(is_satisfied(&trust, &req));
+    }
+
+    #[test]
+    fn large_spend_needs_circle_other_than_caregivers() {
+        let trust = trust(0); // caregiver_circle = Paternal
+        let mut req = request(
+            0,
+            RequestKind::LargeSpend {
+                to: account("uncle.near"),
+                amount: U128(1_000),
+            },
+        );
+
+        req.approvals = vec![
+            approval("uncle.near", Circle::Paternal),
+            approval("aunt.near", Circle::Paternal),
+        ];
+        assert!(
+            !is_satisfied(&trust, &req),
+            "caregiver's circle alone must not satisfy"
+        );
+
+        req.approvals = vec![
+            approval("uncle.near", Circle::Paternal),
+            approval("aunt.near", Circle::Maternal),
+        ];
+        assert!(is_satisfied(&trust, &req));
+    }
+
+    #[test]
+    fn flagged_needs_two_circles() {
+        let trust = trust(0);
+        let mut req = request(
+            0,
+            RequestKind::PayeePayment {
+                payee: account("school.near"),
+                amount: U128(1_000),
+            },
+        );
+        req.child_flagged = true;
+        req.approvals = vec![approval("pastor.near", Circle::Community)];
+        assert!(!is_satisfied(&trust, &req));
+
+        req.approvals
+            .push(approval("teacher.near", Circle::Institution));
+        assert!(is_satisfied(&trust, &req));
+    }
+
+    #[test]
+    fn set_child_account_needs_two_circles() {
+        let trust = trust(0);
+        let mut req = request(
+            0,
+            RequestKind::SetChildAccount {
+                child: 0,
+                account: account("ada.near"),
+            },
+        );
+        req.approvals = vec![approval("aunt.near", Circle::Maternal)];
+        assert!(!is_satisfied(&trust, &req));
+
+        req.approvals.push(approval("uncle.near", Circle::Maternal));
+        assert!(
+            !is_satisfied(&trust, &req),
+            "two guardians in one circle are not two circles"
+        );
+
+        req.approvals
+            .push(approval("teacher.near", Circle::Institution));
+        assert!(is_satisfied(&trust, &req));
+    }
+
+    #[test]
+    fn vouch_cancel_needs_one() {
+        let trust = trust(0);
+        let mut req = request(0, RequestKind::VouchCancel);
+        assert!(!is_satisfied(&trust, &req));
+        req.approvals = vec![approval("pastor.near", Circle::Community)];
+        assert!(is_satisfied(&trust, &req));
+    }
+
+    fn active_trust() -> Trust {
+        let mut trust = trust(0);
+        trust.status = TrustStatus::Active;
+        trust.activated_at = Some(U64(0));
+        trust.created_at = U64(0);
+        trust
+    }
+
+    #[test]
+    fn allowance_one_period() {
+        let trust = active_trust();
+        assert_eq!(allowance_due(&trust, 0), 0);
+        assert_eq!(allowance_due(&trust, NS_PER_MONTH - 1), 0);
+        assert_eq!(allowance_due(&trust, NS_PER_MONTH), 150_000_000);
+    }
+
+    #[test]
+    fn allowance_max_one_arrears() {
+        let trust = active_trust();
+        assert_eq!(allowance_due(&trust, 5 * NS_PER_MONTH), 150_000_000);
+    }
+
+    #[test]
+    fn allowance_never_exceeds_balance() {
+        let mut trust = active_trust();
+        trust.balance = U128(100);
+        assert_eq!(allowance_due(&trust, NS_PER_MONTH), 100);
+    }
+
+    #[test]
+    fn allowance_works_while_paused() {
+        let mut trust = active_trust();
+        trust.paused = true;
+        assert_eq!(allowance_due(&trust, NS_PER_MONTH), 150_000_000);
+    }
+
+    #[test]
+    fn allowance_is_zero_before_activation() {
+        let trust = trust(0); // Funding
+        assert_eq!(allowance_due(&trust, NS_PER_MONTH), 0);
+    }
+
+    #[test]
+    fn remaining_share_scales_with_spends() {
+        let mut trust = trust(0);
+        assert_eq!(remaining_share(&trust, 0), 1_000_000_000);
+
+        trust.balance = U128(1_000_000_000);
+        assert_eq!(remaining_share(&trust, 0), 500_000_000);
+        assert_eq!(remaining_share(&trust, 1), 500_000_000);
+
+        trust.children[1].alive = false;
+        assert_eq!(remaining_share(&trust, 1), 0);
+        assert_eq!(remaining_share(&trust, 9), 0);
     }
 }

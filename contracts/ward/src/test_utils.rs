@@ -23,6 +23,16 @@ pub(crate) fn set_caller(caller: AccountId) {
     testing_env!(context);
 }
 
+/// Installs a mocked environment whose predecessor is `caller` and that carries `attached`.
+pub(crate) fn set_creator(caller: AccountId, attached: NearToken) {
+    let context = VMContextBuilder::new()
+        .predecessor_account_id(caller.clone())
+        .signer_account_id(caller)
+        .attached_deposit(attached)
+        .build();
+    testing_env!(context);
+}
+
 pub(crate) fn rules() -> Rules {
     Rules {
         allowance_amount: U128(150_000_000),
@@ -56,6 +66,22 @@ pub(crate) fn guardians() -> Vec<Guardian> {
         guardian("uncle.near", Circle::Paternal),
         guardian("teacher.near", Circle::Institution),
         guardian("pastor.near", Circle::Community),
+    ]
+}
+
+/// Two registered payees, as a demo trust would have.
+pub(crate) fn demo_payees() -> Vec<Payee> {
+    vec![
+        Payee {
+            account: account("school.near"),
+            label: "School".to_string(),
+            kind: PayeeKind::School,
+        },
+        Payee {
+            account: account("clinic.near"),
+            label: "Clinic".to_string(),
+            kind: PayeeKind::Clinic,
+        },
     ]
 }
 

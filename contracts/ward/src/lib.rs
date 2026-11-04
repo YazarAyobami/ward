@@ -3,7 +3,7 @@
 
 use near_sdk::json_types::U128;
 use near_sdk::store::{IterableMap, LookupMap};
-use near_sdk::{near, AccountId, BorshStorageKey, PanicOnDefault, PromiseOrValue};
+use near_sdk::{env, near, AccountId, BorshStorageKey, PanicOnDefault, PromiseOrValue};
 
 pub mod access;
 pub mod caregiver;
@@ -25,6 +25,8 @@ pub mod views;
 mod test_utils;
 
 use types::{Request, RequestId, Trust, TrustId};
+
+use crate::errors::E01_TRUST_NOT_FOUND;
 
 #[near(serializers = [borsh])]
 #[derive(BorshStorageKey)]
@@ -70,5 +72,27 @@ impl Contract {
     ) -> PromiseOrValue<U128> {
         let _ = (sender_id, amount, msg);
         todo!("W-2.6: parse FtMessage → settlor::internal_deposit")
+    }
+}
+
+impl Contract {
+    pub(crate) fn trust_or_panic(&self, trust_id: TrustId) -> Trust {
+        self.trusts
+            .get(&trust_id)
+            .cloned()
+            .unwrap_or_else(|| env::panic_str(E01_TRUST_NOT_FOUND))
+    }
+
+    pub(crate) fn save_trust(&mut self, trust: Trust) {
+        self.trusts.insert(trust.id, trust);
+    }
+
+    /// Adds `trust_id` to the account's index once.
+    pub(crate) fn index_account(&mut self, account: &AccountId, trust_id: TrustId) {
+        let mut ids = self.by_account.get(account).cloned().unwrap_or_default();
+        if !ids.contains(&trust_id) {
+            ids.push(trust_id);
+            self.by_account.insert(account.clone(), ids);
+        }
     }
 }

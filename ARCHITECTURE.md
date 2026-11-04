@@ -151,17 +151,18 @@ pub struct Request {
 
 **Settlor**
 - `create_trust(caregiver, caregiver_circle, guardians, children, payees, rules, token)` with attached NEAR covering storage plus the `ops_balance`. Validates:
-  - 3–5 guardians, ≤2 per circle, ≥2 circles.
+  - 3–5 guardians, ≤2 per circle, ≥2 circles, all distinct accounts.
   - Child shares sum to 100%.
   - The caregiver isn't a guardian.
 
   It calls `token.storage_deposit` for each payee.
-- `ft_on_transfer(msg={"deposit": trust_id})`. Accepts `trust.token` only.
+- `ft_on_transfer(msg={"deposit": trust_id})`. Accepts `trust.token` only, and only while the trust is `Funding` (shares are snapshotted at activation).
 - `add_child(trust_id, child)` (status `Funding` only; rebalances shares by explicit new shares).
 - `set_dao(trust_id, dao)` (once, while `Funding`).
 - `withdraw(trust_id, amount)`:
   - Up to `withdraw_free_cap` per period: pays immediately.
   - Otherwise: creates a `PendingWithdrawal` with an event. Vetoes from 2 circles cancel it.
+  - Only one withdrawal may be in flight, and withdrawals are blocked while `paused`.
   - `execute_withdrawal` (anyone, after the delay, if not vetoed).
 - `cancel_death_claim(trust_id)`. The first cancel within the window works immediately. A second cancel within the window requires a `VouchCancel` approved by 1 guardian. While a claim is pending, `withdraw` is blocked.
 
