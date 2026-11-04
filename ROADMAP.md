@@ -8,8 +8,8 @@
 | **Last updated** | 2026-11-04 |
 | **Current phase** | P1 — Scaffolding (toolchain installed, everything builds) |
 | **Next task** | W-1.5 (mock-ft NEP-141), W-1.6 (sandbox smoke test), then P2 |
-| **Must progress** | 11 / 87 Must tasks done (13%) |
-| **Overall progress** | 11 / 91 tasks done (12%) — 87 Must · 2 Should · 2 Could |
+| **Must progress** | 12 / 87 Must tasks done (14%) |
+| **Overall progress** | 12 / 91 tasks done (13%) — 87 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 10 |
 
@@ -202,7 +202,7 @@ Ward is **100% ready** when all of these are true:
 | W-10.6 | M | Screenshots in README | Present | W-10.5 | ⬜ |  |  |
 | W-10.7 | M | Demo video (≤ 2 min) | Ready for user review | W-9.10 | ⬜ |  |  |
 | W-10.8 | M | X post draft | **Posted only with explicit OK** | W-10.7 | ⬜ |  |  |
-| W-10.9 | M | Make repo public | **Only with explicit OK** | W-11.4 | ⬜ |  |  |
+| W-10.9 | M | Make repo public | **Only with explicit OK** | W-11.4 | ✅ | 2026-11-04 | made public on user's explicit OK (2026-11-04); secrets scan clean |
 | W-10.10 | M | Submit hackathon form | **Only with explicit OK**; can't be edited | W-10.8, W-10.9 | ⬜ |  |  |
 
 ### P11 — Final QA
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-04 | W-10.9 | Repo made public at github.com/YazarAyobami/ward on the user's explicit OK. | n/a |
 | 2026-11-04 | W-0.2, W-0.5, W-1.2, W-1.4, W-1.7 | Approved deps added (Vitest, near-contract-standards); installed cargo-near 0.22.0 + near-cli-rs; pnpm install with build-script allow-list; pinned next 16.4.4 to respect pnpm's minimum release age; ignored next-env.d.ts; docs updated (AGENTS toolchain, ARCHITECTURE §2, project_structure). | cargo near build ✅ (2 contracts) · cargo test ✅ 0 failed (scaffold tests ignored) · tsc -b ✅ · eslint ✅ · next build ✅ · pnpm -r test ✅ 0 failed (todo placeholders) |
 | 2026-11-04 | W-0.1, W-1.1, W-1.9 | Git initialised; identity recorded in AGENTS.md; CI set to manual-only; first push to private repo YazarAyobami/ward. | n/a (no code change) |
 | 2026-11-04 | W-1.1–W-1.10, W-2.1, W-6.1, W-D.4, W-D.5 | Created ROADMAP.md and project_structure.md; scaffolded the repo (root config, Rust workspace, ward data model + method stubs, mock-ft stub, 36 named integration-test skeletons, @ward/core zod mirror, web routes, optional api, scripts, fixtures). Added the ROADMAP rule to all docs. | `cargo check --target wasm32-unknown-unknown` ✅; TS not installed yet |
