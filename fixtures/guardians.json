@@ -1,0 +1,12 @@
+{
+  "_note": "Fictional demo cast for scripts/seed.ts (W-4.3). Names are clearly fake.",
+  "trust": { "label": "Ada & Tobi", "children": [{ "label": "Ada", "share_bps": 5000 }, { "label": "Tobi", "share_bps": 5000 }] },
+  "guardians": [
+    { "label": "Aunt Demo", "circle": "Maternal" },
+    { "label": "Uncle Demo", "circle": "Paternal" },
+    { "label": "Teacher Demo", "circle": "Institution" },
+    { "label": "Pastor Demo", "circle": "Community" }
+  ],
+  "caregiver": { "label": "Uncle Caregiver Demo", "circle": "Paternal" },
+  "payees": [{ "label": "Demo School", "kind": "School" }]
+}

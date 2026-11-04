@@ -1,0 +1,233 @@
+# Ward — Roadmap to 100% readiness
+
+> **This file is the live plan and status of the project.**
+> **Every contribution (commit, PR or agent task) must update it in the same change.** See §1.
+
+| | |
+|---|---|
+| **Last updated** | 2026-11-04 |
+| **Current phase** | P0–P1 (scaffold written; decisions pending) |
+| **Next task** | W-0.2 (approve Vitest + near-contract-standards), then W-1.2 `pnpm install` |
+| **Must progress** | 6 / 87 Must tasks done (7%) |
+| **Overall progress** | 6 / 91 tasks done (7%) — 87 Must · 2 Should · 2 Could |
+| **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
+| **Days left** | 10 |
+
+---
+
+## 1. How to update this file (mandatory on every contribution)
+
+Every commit or PR that changes code, tests, config or docs must also update `ROADMAP.md` **in the same change**. A contribution without a roadmap update isn't done.
+
+1. **Tick and date the task.** Set its status (see legend) and add the date in the `Done` column, e.g. `2026-11-05`.
+2. **Partial work:** set the status to 🟡 and add a short note in `Notes` saying what's left.
+3. **New work discovered:** add a task with the next free ID in the right phase. Never reuse IDs.
+4. **Cut or deferred work:** never delete a row. Set ⛔ (cut) or ⏸ (deferred) and give the reason in `Notes`. Cutting a **Must** task needs the user's approval; record it in ARCHITECTURE §14 too.
+5. **Blocked:** set 🔴 and name what blocks it.
+6. **Recompute the header:** `Last updated`, `Current phase`, `Next task`, `Must progress`, `Overall progress`, `Days left`.
+   - Progress = tasks marked ✅ ÷ tasks not marked ⛔.
+   - Count Must and overall separately.
+7. **Add one line to the Changelog (§6)**, newest first: date, task IDs, what changed, test result.
+8. **Never tick a task whose "Done when" isn't fully met.** Never tick a task that has failing or skipped tests.
+
+**Status legend:** ⬜ todo · 🟡 in progress · ✅ done · 🔴 blocked · ⏸ deferred · ⛔ cut
+**Priority:** M = Must · S = Should · C = Could (from PRD §6)
+
+## 2. Definition of 100% readiness
+
+Ward is **100% ready** when all of these are true:
+
+1. Every **Must** task in §4 is ✅, and every Should task is ✅ or ⏸ with a reason.
+2. `pnpm lint` and `pnpm test` pass on a **fresh clone**, following only the README.
+3. The contracts are on testnet. `pnpm seed` and `pnpm demo` run the full PRD §8 story with no manual steps and exit 0.
+4. The web app is deployed (Vercel). The public ledger and the guardian inbox work on a phone.
+5. The README meets the hackathon checklist:
+   - Problem with sources (property-grabbing data).
+   - "Do X, see Y" steps.
+   - Architecture overview.
+   - Limitations: land and property, guardians who don't use crypto, legal status.
+   - Library and AI disclosure.
+   - LICENSE.
+6. An **independent AI-judge dry run** passes (W-11.3).
+7. The video and X post are published, the repo is public, and the form is submitted. **Each needs the user's explicit OK.**
+8. If both Ward and Admit (or Sealed Tip) are entered, each README names the other (hackathon rule: max 2 projects per person).
+
+## 3. Timeline
+
+| Date (Nov) | Phases | Exit criterion |
+|---|---|---|
+| 4 | P0, P1 | Decisions recorded; skeleton builds |
+| 5 | P2 | Trust creation, circle rules, deposits, settlor withdrawals with delay/veto |
+| 6 | P3 | Death flow, allowance, requests, pause, children and graduation |
+| 7 | P4, P5 | DAO membership changes; all Must-pass integration tests green; testnet deploy |
+| 8 | P6, P7 | Core TS package; create wizard + public ledger |
+| 9 | P7 | Role pages working against testnet |
+| 10 | P9 | `pnpm demo` passes |
+| 11 | P8 (if ahead) | Optional AI receipt check / quote |
+| 12 | P10, P11 | README; Vercel; fresh-clone + AI-judge dry run |
+| 13 | P10 | Video + X post (with OK); buffer |
+| 14 | P10 | Submit by 18:00 UTC (with OK) |
+
+**Cut order if behind schedule** (each needs the user's OK):
+1. P8 (optional features).
+2. Tasks marked S.
+3. The `/t/[id]/fund` quote display.
+4. The child page UI (keep the contract logic; drive it from the demo script).
+
+## 4. Phases and tasks
+
+### P0 — Decisions & verification
+| ID | Pri | Task | Done when | Depends | Status | Done | Notes |
+|---|---|---|---|---|---|---|---|
+| W-0.1 | M | Confirm git identity (name/email) | Recorded in AGENTS.md Git section | — | ✅ | 2026-11-04 | Yazi <307877446+YazarAyobami@users.noreply.github.com>; GitHub YazarAyobami |
+| W-0.2 | M | Approve extra deps: Vitest, `near-contract-standards` | User approves; ARCHITECTURE §2 updated | — | ⬜ |  |  |
+| W-0.3 | M | Verify Sputnik v2 factory accounts + fixed-weight (3) vote policy shape | Recorded; VERIFY tag removed | — | ⬜ |  |  |
+| W-0.4 | M | Pin Sputnik DAO v2 wasm (commit + sha256) | `res/` has wasm + SPUTNIK_VERSION.txt | W-1.4 | ⬜ |  |  |
+| W-0.5 | M | Verify `cargo-near` build subcommand | Recorded in project_structure §4 | — | 🟡 |  | near-sdk 5.30.0 + near-workspaces 0.24.0 chosen; cargo-near not installed |
+| W-0.6 | M | Create + fund testnet accounts: deployer, ward, tusdc, settlor, 4 guardians, caregiver, child, school | Listed in `.env` (not committed) | — | ⬜ |  |  |
+| W-0.7 | S | Collect property-grabbing sources for README | Citations in README draft | — | ⬜ |  |  |
+
+### P1 — Scaffolding
+| ID | Pri | Task | Done when | Depends | Status | Done | Notes |
+|---|---|---|---|---|---|---|---|
+| W-1.1 | M | `git init`, ignores, editorconfig, nvmrc, MIT LICENSE | Repo initialised; no AI attribution | W-0.1 | ✅ | 2026-11-04 | git init; private repo YazarAyobami/ward |
+| W-1.2 | M | pnpm workspace + root scripts + TS/ESLint/Prettier config | `pnpm install` works | W-1.1 | 🟡 |  | files written; install not run |
+| W-1.3 | M | Rust workspace | `cargo check --target wasm32` passes | W-1.1 | ✅ | 2026-11-04 | cargo check --target wasm32 passes |
+| W-1.4 | M | `contracts/ward` skeleton per project_structure §2.1 | `pnpm build:contract` produces wasm | W-1.3, W-0.5 | 🟡 |  | compiles for wasm; cargo near build pending |
+| W-1.5 | M | `contracts/mock-ft` (NEP-141/145 + open mint) | Mint + transfer test passes | W-0.2 | 🟡 |  | stub compiles |
+| W-1.6 | M | Sandbox harness `tests/common/mod.rs` | Smoke test deploys ward + mock-ft + Sputnik | W-1.4, W-1.5, W-0.4 | 🟡 |  | harness + 36 named #[ignore] test skeletons |
+| W-1.7 | M | `packages/core`, `apps/web`, `apps/api`, `scripts` skeletons | `pnpm build` + `pnpm -r test` pass | W-1.2 | 🟡 |  | written; not built |
+| W-1.8 | M | `.env.example` (source of truth) | Matches every var read in code | W-1.2 | ✅ | 2026-11-04 |  |
+| W-1.9 | M | CI workflow | Green on first push | W-1.6, W-1.7 | 🟡 |  | ci.yml drafted; manual-only (workflow_dispatch) until lockfile + cargo-near step exist |
+| W-1.10 | M | README stub + Contributing section (ROADMAP rule) | Present | W-1.1 | ✅ | 2026-11-04 |  |
+
+### P2 — Contract core
+| ID | Pri | Task | Done when | Depends | Status | Done | Notes |
+|---|---|---|---|---|---|---|---|
+| W-2.1 | M | `types.rs` per ARCHITECTURE §4 | Compiles; mirrored in `types.ts` | W-1.4 | ✅ | 2026-11-04 | + Approval/DeathAttestation/CancelWindow structs instead of tuples; free-cap fields; activation_balance |
+| W-2.2 | M | `errors.rs`, `events.rs` (NEP-297 helper) | Event JSON unit test | W-2.1 | ⬜ |  |  |
+| W-2.3 | M | `time.rs` (scaled, age_years, periods_elapsed) | Unit tests incl. boundaries | W-2.1 | ⬜ |  |  |
+| W-2.4 | M | `rules.rs` pure engine (guardians, shares, circles, satisfaction, allowance due, remaining share) | One unit test per rule | W-2.3 | ⬜ |  |  |
+| W-2.5 | M | `access.rs` role guards | Unit tests | W-2.1 | ⬜ |  |  |
+| W-2.6 | M | `create_trust` (validation, storage + ops_balance, payee storage_deposit) | Integration tests | W-2.4, W-2.5, W-1.6 | ⬜ |  |  |
+| W-2.7 | M | `add_child`, `set_dao` | Integration tests | W-2.6 | ⬜ |  |  |
+| W-2.8 | M | Deposits via `ft_on_transfer` (`{"deposit": id}`; wrong token rejected) | Integration tests | W-2.6 | ⬜ |  |  |
+| W-2.9 | M | Settlor `withdraw` (free cap / delay), `veto_withdrawal`, `execute_withdrawal`; blocked during claim | Integration tests | W-2.8 | ⬜ |  |  |
+| W-2.10 | M | `token.rs` transfers + storage_deposit + `on_payout` rollback | Failure-path test | W-2.8 | ⬜ |  |  |
+| W-2.11 | M | Views | Integration tests | W-2.6 | ⬜ |  |  |
+
+### P3 — Lifecycle & requests
+| ID | Pri | Task | Done when | Depends | Status | Done | Notes |
+|---|---|---|---|---|---|---|---|
+| W-3.1 | M | `attest_death` (3 → DeathClaimed) | Tests | W-2.6 | ⬜ |  |  |
+| W-3.2 | M | `cancel_death_claim` + `VouchCancel` for 2nd cancel in window | Tests | W-3.1, W-3.6 | ⬜ |  |  |
+| W-3.3 | M | `finalize_activation` (snapshot activation_balance) | Tests | W-3.1 | ⬜ |  |  |
+| W-3.4 | M | `claim_allowance` (1 period arrears max; works while paused; ≤ balance) | Tests | W-3.3 | ⬜ |  |  |
+| W-3.5 | M | `create_request` (limit on open requests) | Tests | W-3.3 | ⬜ |  |  |
+| W-3.6 | M | `approve` / `reject` / `execute_request` for every RequestKind | Tests per kind | W-3.5, W-2.10 | ⬜ |  |  |
+| W-3.7 | M | `pause` + `Unpause` request | Tests | W-3.6 | ⬜ |  |  |
+| W-3.8 | M | Child `flag` (≥14) → 2-circle rule | Tests | W-3.6 | ⬜ |  |  |
+| W-3.9 | M | `claim_graduation` tranches (≥18), pausable | Tests | W-3.6 | ⬜ |  |  |
+| W-3.10 | M | `ChildDeceased` → share to siblings, then fallback | Tests | W-3.6 | ⬜ |  |  |
+
+### P4 — DAO & testnet
+| ID | Pri | Task | Done when | Depends | Status | Done | Notes |
+|---|---|---|---|---|---|---|---|
+| W-4.1 | M | Council methods (replace guardian w/ circle re-validation, set caregiver, add payee + storage) | Tests incl. non-DAO rejected | W-2.6 | ⬜ |  |  |
+| W-4.2 | M | `scripts/deploy-testnet.ts` | Explorer links; idempotent | P5, W-0.6 | ⬜ |  |  |
+| W-4.3 | M | `scripts/seed.ts` (demo cast, shared DAO, 2 trusts) | `pnpm seed` exits 0 | W-4.2, W-0.3 | ⬜ |  |  |
+
+### P5 — Integration test suite
+| ID | Pri | Task | Done when | Depends | Status | Done | Notes |
+|---|---|---|---|---|---|---|---|
+| W-5.1 | M | `tests/circles.rs` | Green | W-2.6, W-4.1 | ⬜ |  |  |
+| W-5.2 | M | `tests/settlor_withdrawals.rs` | Green | W-2.9 | ⬜ |  |  |
+| W-5.3 | M | `tests/death_flow.rs` | Green | W-3.1–W-3.3 | ⬜ |  |  |
+| W-5.4 | M | `tests/allowance.rs` | Green | W-3.4 | ⬜ |  |  |
+| W-5.5 | M | `tests/requests.rs` | Green | W-3.5–W-3.7 | ⬜ |  |  |
+| W-5.6 | M | `tests/children.rs` | Green | W-3.8–W-3.10 | ⬜ |  |  |
+| W-5.7 | M | `tests/council.rs` (incl. real Sputnik proposal) | Green | W-4.1, W-0.4 | ⬜ |  |  |
+| W-5.8 | M | `tests/transfer_failures.rs` | Green | W-2.10 | ⬜ |  |  |
+| W-5.9 | M | clippy + fmt clean | Rust lint green | P2–P4 | ⬜ |  |  |
+
+### P6 — Shared TypeScript core (`@ward/core`)
+| ID | Pri | Task | Done when | Depends | Status | Done | Notes |
+|---|---|---|---|---|---|---|---|
+| W-6.1 | M | `types.ts` zod mirror | Parses real testnet views | W-4.2 | 🟡 |  | schemas written to match types.rs; not yet validated against chain |
+| W-6.2 | M | `rules.ts` mirror of `rules.rs` | Same test cases as Rust | W-2.4 | ⬜ |  |  |
+| W-6.3 | M | `contract.ts` views + call builders | Used by scripts and web | W-6.1 | ⬜ |  |  |
+| W-6.4 | M | `format.ts`, `config.ts` | Unit tests | W-1.7 | ⬜ |  |  |
+
+### P7 — Web app (`apps/web`)
+| ID | Pri | Task | Done when | Depends | Status | Done | Notes |
+|---|---|---|---|---|---|---|---|
+| W-7.1 | M | Layout, landing, DemoModeBanner | Renders mobile + desktop | W-6.4 | ⬜ |  |  |
+| W-7.2 | M | `/create` wizard with live circle/share checks | Creates a trust on testnet | W-6.2, W-6.3 | ⬜ |  |  |
+| W-7.3 | M | `/t/[id]` public ledger (rules in plain language, guardians by circle, timeline) | Matches chain state | W-6.3 | ⬜ |  |  |
+| W-7.4 | M | `/t/[id]/fund` deposit | Deposit succeeds | W-6.3 | ⬜ |  |  |
+| W-7.5 | M | `/t/[id]/guardian` inbox (attest, approve/reject with circle progress, veto, pause) | Each action succeeds | W-6.3 | ⬜ |  |  |
+| W-7.6 | M | `/t/[id]/caregiver` (allowance, new request, receipt hash) | Each action succeeds | W-6.3 | ⬜ |  |  |
+| W-7.7 | M | `/t/[id]/child` (flag, graduation) | Each action succeeds | W-6.3 | ⬜ |  |  |
+| W-7.8 | M | Accessibility + mobile pass | Checklist in Notes | W-7.1–W-7.7 | ⬜ |  |  |
+| W-7.9 | S | Web component tests (Vitest) | Green | W-0.2 | ⬜ |  |  |
+
+### P8 — Optional (Could)
+| ID | Pri | Task | Done when | Depends | Status | Done | Notes |
+|---|---|---|---|---|---|---|---|
+| W-8.1 | C | AI receipt check (NEAR AI Cloud attestation + signature; `post_ai_review`) | Verified panel renders | All M done | ⬜ |  |  |
+| W-8.2 | C | 1Click dry-run quote on `/fund` | Quote shown | All M done | ⬜ |  |  |
+
+### P9 — Demo script (PRD §8 = acceptance test)
+| ID | Pri | Task | Done when | Depends | Status | Done | Notes |
+|---|---|---|---|---|---|---|---|
+| W-9.1 | M | Step 1: create "Ada & Tobi" trust | Asserted | W-4.3 | ⬜ |  |  |
+| W-9.2 | M | Step 2: deposit 2,000 tUSDC | Asserted | W-9.1 | ⬜ |  |  |
+| W-9.3 | M | Step 3: 3 attestations → wait → Active | Asserted | W-9.2 | ⬜ |  |  |
+| W-9.4 | M | Step 4: allowance; uncle's 1,500 needs 2 circles; pastor rejects | Asserted | W-9.3 | ⬜ |  |  |
+| W-9.5 | M | Step 5: school fee paid directly to school | Asserted | W-9.3 | ⬜ |  |  |
+| W-9.6 | M | Step 6: paternal-side DAO proposal fails (needs 3) | Asserted | W-9.3 | ⬜ |  |  |
+| W-9.7 | M | Step 7: stolen-phone withdrawal delayed + vetoed (2nd trust) | Asserted | W-9.1 | ⬜ |  |  |
+| W-9.8 | M | Step 8: flag at 14; child account set; graduation tranches at 18 | Asserted | W-9.3 | ⬜ |  |  |
+| W-9.9 | M | Step 9: public ledger shows history | Screenshot | W-7.3 | ⬜ |  |  |
+| W-9.10 | M | `pnpm demo` exits non-zero on any unexpected state; < 5 min | Two clean consecutive runs | W-9.1–W-9.8 | ⬜ |  |  |
+
+### P10 — Documentation, deployment, submission
+| ID | Pri | Task | Done when | Depends | Status | Done | Notes |
+|---|---|---|---|---|---|---|---|
+| W-10.1 | M | README: problem + sources, how it works, diagram | Reviewed vs PRD §1 | P9 | ⬜ |  |  |
+| W-10.2 | M | README: "do X, see Y" quickstart | W-11.2 passes with only these steps | W-9.10 | ⬜ |  |  |
+| W-10.3 | M | README: limitations + threat model summary | Matches ARCHITECTURE §11 | W-10.1 | ⬜ |  |  |
+| W-10.4 | M | README: library + AI disclosure; name the other entered project | Present | W-10.1 | ⬜ |  |  |
+| W-10.5 | M | Deploy web to Vercel | Public URL works on a phone | P7 | ⬜ |  | Ask before deploying |
+| W-10.6 | M | Screenshots in README | Present | W-10.5 | ⬜ |  |  |
+| W-10.7 | M | Demo video (≤ 2 min) | Ready for user review | W-9.10 | ⬜ |  |  |
+| W-10.8 | M | X post draft | **Posted only with explicit OK** | W-10.7 | ⬜ |  |  |
+| W-10.9 | M | Make repo public | **Only with explicit OK** | W-11.4 | ⬜ |  |  |
+| W-10.10 | M | Submit hackathon form | **Only with explicit OK**; can't be edited | W-10.8, W-10.9 | ⬜ |  |  |
+
+### P11 — Final QA
+| ID | Pri | Task | Done when | Depends | Status | Done | Notes |
+|---|---|---|---|---|---|---|---|
+| W-11.1 | M | `pnpm lint && pnpm test` green; no skipped tests | Output in Changelog | All M | ⬜ |  |  |
+| W-11.2 | M | Fresh-clone test following only the README | Every step works | W-10.2 | ⬜ |  |  |
+| W-11.3 | M | AI-judge dry run (agent with only repo + README) | No failed claims | W-11.2 | ⬜ |  |  |
+| W-11.4 | M | Secrets audit of git history | Clean | W-11.1 | ⬜ |  |  |
+| W-11.5 | M | Docs consistency (PRD, ARCHITECTURE, ESSENTIALS, project_structure, AGENTS vs code) | Checklist in Notes | W-11.1 | ⬜ |  |  |
+| W-11.6 | M | Commit history check (conventional, no AI attribution) | Clean | W-11.1 | ⬜ |  |  |
+
+## 5. Already done (pre-code)
+| ID | Task | Done |
+|---|---|---|
+| W-D.1 | PRD.md | 2026-11-03 |
+| W-D.2 | ARCHITECTURE.md v2 + ESSENTIALS v2 | 2026-11-04 |
+| W-D.3 | AGENTS.md + CLAUDE.md | 2026-11-04 |
+| W-D.4 | project_structure.md | 2026-11-04 |
+| W-D.5 | ROADMAP.md | 2026-11-04 |
+
+(Pre-code docs are not counted in the progress totals.)
+
+## 6. Changelog (newest first)
+| Date | Tasks | Change | Tests |
+|---|---|---|---|
+| 2026-11-04 | W-0.1, W-1.1, W-1.9 | Git initialised; identity recorded in AGENTS.md; CI set to manual-only; first push to private repo YazarAyobami/ward. | n/a (no code change) |
+| 2026-11-04 | W-1.1–W-1.10, W-2.1, W-6.1, W-D.4, W-D.5 | Created ROADMAP.md and project_structure.md; scaffolded the repo (root config, Rust workspace, ward data model + method stubs, mock-ft stub, 36 named integration-test skeletons, @ward/core zod mirror, web routes, optional api, scripts, fixtures). Added the ROADMAP rule to all docs. | `cargo check --target wasm32-unknown-unknown` ✅; TS not installed yet |
