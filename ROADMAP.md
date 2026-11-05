@@ -5,13 +5,13 @@
 
 | | |
 |---|---|
-| **Last updated** | 2026-11-04 |
-| **Current phase** | P1 — Scaffolding (toolchain installed, everything builds) |
-| **Next task** | W-1.5 (mock-ft NEP-141), W-1.6 (sandbox smoke test), then P2 |
-| **Must progress** | 36 / 88 Must tasks done (41%) |
-| **Overall progress** | 36 / 92 tasks done (39%) — 88 Must · 2 Should · 2 Could |
+| **Last updated** | 2026-11-05 |
+| **Current phase** | P5 — Integration test suite |
+| **Next task** | W-5.1 (tests/circles.rs), W-5.7 (tests/council.rs), then remaining P5 tests |
+| **Must progress** | 37 / 88 Must tasks done (42%) |
+| **Overall progress** | 37 / 92 tasks done (40%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
-| **Days left** | 10 |
+| **Days left** | 9 |
 
 ---
 
