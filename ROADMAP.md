@@ -141,7 +141,7 @@ Ward is **100% ready** when all of these are true:
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
 |---|---|---|---|---|---|---|---|
 | W-5.1 | M | `tests/circles.rs` | Green | W-2.6, W-4.1 | ✅ | 2026-11-05 | 5 near-workspaces sandbox integration tests pass (#65–#69) |
-| W-5.2 | M | `tests/settlor_withdrawals.rs` | Green | W-2.9 | ⬜ |  |  |
+| W-5.2 | M | `tests/settlor_withdrawals.rs` | Green | W-2.9 | ✅ | 2026-11-05 | 4 near-workspaces sandbox integration tests pass (#70–#73) |
 | W-5.3 | M | `tests/death_flow.rs` | Green | W-3.1–W-3.3 | ⬜ |  |  |
 | W-5.4 | M | `tests/allowance.rs` | Green | W-3.4 | ⬜ |  |  |
 | W-5.5 | M | `tests/requests.rs` | Green | W-3.5–W-3.7 | ⬜ |  |  |
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-05 | W-5.2 | Implemented sandbox integration tests in contracts/ward/tests/settlor_withdrawals.rs: withdrawal_under_free_cap_is_instant, withdrawal_over_cap_is_delayed, two_circle_veto_cancels_withdrawal, no_withdrawal_while_death_claim_pending (#70–#73); updated ft_transfer to attach 1 yoctoNEAR per NEP-141. | cargo test -p ward --test settlor_withdrawals: 4 passed ✅ · pnpm lint ✅ |
 | 2026-11-05 | W-5.1 | Implemented near-workspaces sandbox integration tests in contracts/ward/tests/circles.rs: rejects_three_guardians_in_one_circle, rejects_guardians_from_one_circle_only, rejects_caregiver_as_guardian, rejects_shares_not_summing_to_100_percent, council_replace_breaking_circle_rule_fails. (#65–#69) | cargo test -p ward --test circles: 5 passed ✅ · pnpm lint ✅ |
 | 2026-11-05 | W-4.1 | Implemented council methods in contracts/ward/src/council.rs: council_replace_guardian (circle limit/diversity re-validation), council_set_caregiver, council_add_payee (storage_deposit from ops_balance); 10 unit tests pass. (#60, #61, #62) | cargo test -p ward council: 10 passed ✅ · pnpm lint ✅ · pnpm test:contract ✅ |
 | 2026-11-05 | W-1.9 | Configured CI workflow to install prebuilt cargo-near 0.22.0 with sha256 check and run lint + test on [push, pull_request]; updated package.json lint script to target wasm32 for clippy. (#7) | pnpm lint ✅ |

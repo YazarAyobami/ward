@@ -34,6 +34,7 @@ impl Contract {
         amount: U128,
     ) -> Promise {
         ext_ft::ext(token)
+            .with_attached_deposit(NearToken::from_yoctonear(1))
             .with_static_gas(FT_TRANSFER_GAS)
             .ft_transfer(receiver, amount, None)
     }
