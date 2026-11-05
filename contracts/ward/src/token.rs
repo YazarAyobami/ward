@@ -230,7 +230,7 @@ mod tests {
         let calls = function_calls(&receipts);
         assert_eq!(calls.len(), 1);
         assert_eq!(calls[0].0, "ft_transfer");
-        assert_eq!(calls[0].1, NearToken::from_yoctonear(0));
+        assert_eq!(calls[0].1, NearToken::from_yoctonear(1));
     }
 
     #[test]
