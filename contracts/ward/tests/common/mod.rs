@@ -49,11 +49,7 @@ pub async fn setup() -> Env {
         .transact()
         .await
         .expect("ward new");
-    assert!(
-        r.is_success(),
-        "ward new() failed: {:?}",
-        r.failures()
-    );
+    assert!(r.is_success(), "ward new() failed: {:?}", r.failures());
 
     let token = worker
         .dev_deploy(&read(FT_WASM))
