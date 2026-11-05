@@ -8,8 +8,8 @@
 | **Last updated** | 2026-11-04 |
 | **Current phase** | P1 — Scaffolding (toolchain installed, everything builds) |
 | **Next task** | W-1.5 (mock-ft NEP-141), W-1.6 (sandbox smoke test), then P2 |
-| **Must progress** | 12 / 88 Must tasks done (14%) |
-| **Overall progress** | 12 / 92 tasks done (13%) — 88 Must · 2 Should · 2 Could |
+| **Must progress** | 33 / 88 Must tasks done (38%) |
+| **Overall progress** | 33 / 92 tasks done (36%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 10 |
 
@@ -93,7 +93,7 @@ Ward is **100% ready** when all of these are true:
 | W-1.2 | M | pnpm workspace + root scripts + TS/ESLint/Prettier config | `pnpm install` works | W-1.1 | ✅ | 2026-11-04 | pnpm 11.17 install OK; allowBuilds = esbuild only; next pinned 16.4.4 (release-age policy) |
 | W-1.3 | M | Rust workspace | `cargo check --target wasm32` passes | W-1.1 | ✅ | 2026-11-04 | cargo check --target wasm32 passes |
 | W-1.4 | M | `contracts/ward` skeleton per project_structure §2.1 | `pnpm build:contract` produces wasm | W-1.3, W-0.5 | ✅ | 2026-11-04 | contract wasm builds with cargo-near |
-| W-1.5 | M | `contracts/mock-ft` (NEP-141/145 + open mint) | Mint + transfer test passes | W-0.2 | 🟡 |  | stub compiles |
+| W-1.5 | M | `contracts/mock-ft` (NEP-141/145 + open mint) | Mint + transfer test passes | W-0.2 | ✅ | 2026-11-05 | NEP-141 + NEP-145 via near-contract-standards + open mint; 3 unit tests pass |
 | W-1.6 | M | Sandbox harness `tests/common/mod.rs` | Smoke test deploys ward + mock-ft + Sputnik | W-1.4, W-1.5, W-0.4 | 🟡 |  | harness + 36 named #[ignore] test skeletons |
 | W-1.7 | M | `packages/core`, `apps/web`, `apps/api`, `scripts` skeletons | `pnpm build` + `pnpm -r test` pass | W-1.2 | ✅ | 2026-11-04 | tsc -b, eslint, next build, pnpm -r test all pass (tests are todo placeholders) |
 | W-1.8 | M | `.env.example` (source of truth) | Matches every var read in code | W-1.2 | ✅ | 2026-11-04 |  |
@@ -229,11 +229,8 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-05 | W-1.5 | Implemented NEP-141 + NEP-145 fungible token on mock-ft with open mint; added unit-testing dev-dependency and unit tests. | cargo test -p mock-ft: 3 passed; cargo near build: mock_ft.wasm built ✅ |
 | 2026-11-04 | W-3.1–W-3.10 | Wave 4: death attestation/claim/finalize/cancel + vouch; allowance; request creation/approval/rejection/execution for all six kinds; pause/unpause; child flag and graduation tranches; sibling/fallback inheritance; payout rollback callbacks for allowance and graduation. Added E37–E41 and corrected `remaining_share` to add back living children's payouts only. (#44–#59) | `cargo test --workspace` ✅ 181 unit tests · `cargo check --workspace --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets` ✅ |
-| 2026-11-04 | W-2.7, W-2.8, W-2.9, W-2.11 | Wave 3: `get_child_status` and `get_allowance_due`; `add_child` and `set_dao`; `ft_on_transfer` parsing + token check; `execute_withdrawal` (#38–#43). Added E36. | `cargo test --workspace` ✅ 111 unit tests · `cargo check --workspace --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets -A dead_code` ✅ (one expected dead-code warning until Phase 3 wires `execute_request`) |
-| 2026-11-04 | W-2.4, W-2.10; W-2.6, W-2.8, W-2.9 (partial) | Wave 2: `is_satisfied`, `allowance_due` and `remaining_share`; `create_trust` with deposit accounting and payee registration; `internal_deposit`; settlor `withdraw` (free cap, pending above cap, period rollover) and guardian `veto_withdrawal` (2 circles); `payout` + `on_payout` rollback (#30–#37). Added E31–E35. | `cargo test --lib` ✅ 86 passed · `cargo check --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets -A dead_code` ✅ (2 expected dead-code warnings until wave 3 wires `ft_on_transfer` and `execute_request`) |
-| 2026-11-04 | W-2.10 (partial), W-2.11 (partial) | NEP-141 `ft_transfer` and NEP-145 `storage_deposit` promises with mock-receipt tests; `get_trust`, `get_trusts_for` and paginated `get_requests` with unit tests (#9–#13). | `cargo test --lib` ✅ 42 passed · `cargo check --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets -A dead_code` ✅ |
-| 2026-11-04 | W-2.2, W-2.3, W-2.5, W-2.12; W-2.4 (partial) | Implemented NEP-297 `emit`, the time helpers, wave-1 rule functions (guardian/share/circle validation, two-circle and rejection predicates, `circle_of`), the five role guards, and unit-test builders with named unit tests (#14–#29 except the wave-2 rules). Clarified the duration convention in ARCHITECTURE §7 and applied rustfmt to the remaining contract stubs so `cargo fmt --check` is clean. | `cargo test --lib` ✅ 37 passed · `cargo check --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets` ✅ apart from 3 pre-existing dead-code warnings in unimplemented stubs (W-5.9) |
 | 2026-11-04 | W-2.12 (new) | Created 164 GitHub issues covering every open roadmap task (milestone per phase; labels phase/area/size/wave/maintainer; index in docs/ISSUES.md). Repo interaction limited to collaborators. Header rule changed: contributions update their row + Changelog only; maintainer recomputes the header with tools/roadmap.py. Added W-2.12 (test-state builders) so wave issues stay independent. | n/a (docs and process) |
 | 2026-11-04 | W-10.9 | Repo made public at github.com/YazarAyobami/ward on the user's explicit OK. | n/a |
 | 2026-11-04 | W-0.2, W-0.5, W-1.2, W-1.4, W-1.7 | Approved deps added (Vitest, near-contract-standards); installed cargo-near 0.22.0 + near-cli-rs; pnpm install with build-script allow-list; pinned next 16.4.4 to respect pnpm's minimum release age; ignored next-env.d.ts; docs updated (AGENTS toolchain, ARCHITECTURE §2, project_structure). | cargo near build ✅ (2 contracts) · cargo test ✅ 0 failed (scaffold tests ignored) · tsc -b ✅ · eslint ✅ · next build ✅ · pnpm -r test ✅ 0 failed (todo placeholders) |
