@@ -3,6 +3,7 @@
   "private": true,
   "description": "A children's trust on NEAR that no single relative can empty",
   "license": "MIT",
+  "packageManager": "pnpm@10.34.7",
   "engines": { "node": ">=22", "pnpm": ">=9" },
   "scripts": {
     "build": "pnpm build:contract && pnpm -r --filter ./packages/* --filter ./apps/* build",

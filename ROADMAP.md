@@ -133,7 +133,7 @@ Ward is **100% ready** when all of these are true:
 ### P4 — DAO & testnet
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
 |---|---|---|---|---|---|---|---|
-| W-4.1 | M | Council methods (replace guardian w/ circle re-validation, set caregiver, add payee + storage) | Tests incl. non-DAO rejected | W-2.6 | ⬜ |  |  |
+| W-4.1 | M | Council methods (replace guardian w/ circle re-validation, set caregiver, add payee + storage) | Tests incl. non-DAO rejected | W-2.6 | ✅ | 2026-11-05 | Implemented council_replace_guardian, council_set_caregiver, council_add_payee with DAO access guards and 10 unit tests (#60, #61, #62) |
 | W-4.2 | M | `scripts/deploy-testnet.ts` | Explorer links; idempotent | P5, W-0.6 | ⬜ |  |  |
 | W-4.3 | M | `scripts/seed.ts` (demo cast, shared DAO, 2 trusts) | `pnpm seed` exits 0 | W-4.2, W-0.3 | ⬜ |  |  |
 
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-05 | W-4.1 | Implemented council methods in contracts/ward/src/council.rs: council_replace_guardian (circle limit/diversity re-validation), council_set_caregiver, council_add_payee (storage_deposit from ops_balance); 10 unit tests pass. (#60, #61, #62) | cargo test -p ward council: 10 passed ✅ · pnpm lint ✅ · pnpm test:contract ✅ |
 | 2026-11-05 | W-1.9 | Configured CI workflow to install prebuilt cargo-near 0.22.0 with sha256 check and run lint + test on [push, pull_request]; updated package.json lint script to target wasm32 for clippy. (#7) | pnpm lint ✅ |
 | 2026-11-05 | W-1.6 | Implemented sandbox harness (tests/common/mod.rs) and smoke tests (tests/smoke.rs: contract_initialises, token_deploys_and_mints) for ward and mock-ft. (#6, #8) | cargo test --test smoke: 2 passed ✅ |
 | 2026-11-05 | W-0.4 | Pinned Sputnik DAO v2 wasm (sputnikdao2.wasm v2.0.0, sha256 08444147...) in contracts/ward/res/ for sandbox integration tests. | shasum -a 256 matches chain checksum ✅ |
