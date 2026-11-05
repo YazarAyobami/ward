@@ -8,8 +8,8 @@
 | **Last updated** | 2026-11-04 |
 | **Current phase** | P1 — Scaffolding (toolchain installed, everything builds) |
 | **Next task** | W-1.5 (mock-ft NEP-141), W-1.6 (sandbox smoke test), then P2 |
-| **Must progress** | 33 / 88 Must tasks done (38%) |
-| **Overall progress** | 33 / 92 tasks done (36%) — 88 Must · 2 Should · 2 Could |
+| **Must progress** | 34 / 88 Must tasks done (39%) |
+| **Overall progress** | 34 / 92 tasks done (37%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 10 |
 
@@ -81,7 +81,7 @@ Ward is **100% ready** when all of these are true:
 | W-0.1 | M | Confirm git identity (name/email) | Recorded in AGENTS.md Git section | — | ✅ | 2026-11-04 | Yazi <307877446+YazarAyobami@users.noreply.github.com>; GitHub YazarAyobami |
 | W-0.2 | M | Approve extra deps: Vitest, `near-contract-standards` | User approves; ARCHITECTURE §2 updated | — | ✅ | 2026-11-04 | Vitest 5.1 + near-contract-standards 5.30 approved and added |
 | W-0.3 | M | Verify Sputnik v2 factory accounts + fixed-weight (3) vote policy shape | Recorded; VERIFY tag removed | — | ⬜ |  |  |
-| W-0.4 | M | Pin Sputnik DAO v2 wasm (commit + sha256) | `res/` has wasm + SPUTNIK_VERSION.txt | W-1.4 | ⬜ |  |  |
+| W-0.4 | M | Pin Sputnik DAO v2 wasm (commit + sha256) | `res/` has wasm + SPUTNIK_VERSION.txt | W-1.4 | ✅ | 2026-11-05 | Pinned sputnikdao2.wasm v2.0.0; sha256 08444147... verified |
 | W-0.5 | M | Verify `cargo-near` build subcommand | Recorded in project_structure §4 | — | ✅ | 2026-11-04 | cargo-near 0.22.0: `cargo near build non-reproducible-wasm` confirmed; near-cli-rs installed |
 | W-0.6 | M | Create + fund testnet accounts: deployer, ward, tusdc, settlor, 4 guardians, caregiver, child, school | Listed in `.env` (not committed) | — | ⬜ |  |  |
 | W-0.7 | S | Collect property-grabbing sources for README | Citations in README draft | — | ⬜ |  |  |
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-05 | W-0.4 | Pinned Sputnik DAO v2 wasm (sputnikdao2.wasm v2.0.0, sha256 08444147...) in contracts/ward/res/ for sandbox integration tests. | shasum -a 256 matches chain checksum ✅ |
 | 2026-11-05 | W-1.5 | Implemented NEP-141 + NEP-145 fungible token on mock-ft with open mint; added unit-testing dev-dependency and unit tests. | cargo test -p mock-ft: 3 passed; cargo near build: mock_ft.wasm built ✅ |
 | 2026-11-04 | W-3.1–W-3.10 | Wave 4: death attestation/claim/finalize/cancel + vouch; allowance; request creation/approval/rejection/execution for all six kinds; pause/unpause; child flag and graduation tranches; sibling/fallback inheritance; payout rollback callbacks for allowance and graduation. Added E37–E41 and corrected `remaining_share` to add back living children's payouts only. (#44–#59) | `cargo test --workspace` ✅ 181 unit tests · `cargo check --workspace --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets` ✅ |
 | 2026-11-04 | W-2.12 (new) | Created 164 GitHub issues covering every open roadmap task (milestone per phase; labels phase/area/size/wave/maintainer; index in docs/ISSUES.md). Repo interaction limited to collaborators. Header rule changed: contributions update their row + Changelog only; maintainer recomputes the header with tools/roadmap.py. Added W-2.12 (test-state builders) so wave issues stay independent. | n/a (docs and process) |
