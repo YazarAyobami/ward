@@ -8,8 +8,8 @@
 | **Last updated** | 2026-11-04 |
 | **Current phase** | P1 — Scaffolding (toolchain installed, everything builds) |
 | **Next task** | W-1.5 (mock-ft NEP-141), W-1.6 (sandbox smoke test), then P2 |
-| **Must progress** | 34 / 88 Must tasks done (39%) |
-| **Overall progress** | 34 / 92 tasks done (37%) — 88 Must · 2 Should · 2 Could |
+| **Must progress** | 35 / 88 Must tasks done (40%) |
+| **Overall progress** | 35 / 92 tasks done (38%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 10 |
 
@@ -94,7 +94,7 @@ Ward is **100% ready** when all of these are true:
 | W-1.3 | M | Rust workspace | `cargo check --target wasm32` passes | W-1.1 | ✅ | 2026-11-04 | cargo check --target wasm32 passes |
 | W-1.4 | M | `contracts/ward` skeleton per project_structure §2.1 | `pnpm build:contract` produces wasm | W-1.3, W-0.5 | ✅ | 2026-11-04 | contract wasm builds with cargo-near |
 | W-1.5 | M | `contracts/mock-ft` (NEP-141/145 + open mint) | Mint + transfer test passes | W-0.2 | ✅ | 2026-11-05 | NEP-141 + NEP-145 via near-contract-standards + open mint; 3 unit tests pass |
-| W-1.6 | M | Sandbox harness `tests/common/mod.rs` | Smoke test deploys ward + mock-ft + Sputnik | W-1.4, W-1.5, W-0.4 | 🟡 |  | harness + 36 named #[ignore] test skeletons |
+| W-1.6 | M | Sandbox harness `tests/common/mod.rs` | Smoke test deploys ward + mock-ft + Sputnik | W-1.4, W-1.5, W-0.4 | ✅ | 2026-11-05 | Sandbox harness deploys ward, mock-ft, registers storage; 2 smoke tests pass |
 | W-1.7 | M | `packages/core`, `apps/web`, `apps/api`, `scripts` skeletons | `pnpm build` + `pnpm -r test` pass | W-1.2 | ✅ | 2026-11-04 | tsc -b, eslint, next build, pnpm -r test all pass (tests are todo placeholders) |
 | W-1.8 | M | `.env.example` (source of truth) | Matches every var read in code | W-1.2 | ✅ | 2026-11-04 |  |
 | W-1.9 | M | CI workflow | Green on first push | W-1.6, W-1.7 | 🟡 |  | ci.yml drafted; manual-only (workflow_dispatch) until lockfile + cargo-near step exist |
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-05 | W-1.6 | Implemented sandbox harness (tests/common/mod.rs) and smoke tests (tests/smoke.rs: contract_initialises, token_deploys_and_mints) for ward and mock-ft. (#6, #8) | cargo test --test smoke: 2 passed ✅ |
 | 2026-11-05 | W-0.4 | Pinned Sputnik DAO v2 wasm (sputnikdao2.wasm v2.0.0, sha256 08444147...) in contracts/ward/res/ for sandbox integration tests. | shasum -a 256 matches chain checksum ✅ |
 | 2026-11-05 | W-1.5 | Implemented NEP-141 + NEP-145 fungible token on mock-ft with open mint; added unit-testing dev-dependency and unit tests. | cargo test -p mock-ft: 3 passed; cargo near build: mock_ft.wasm built ✅ |
 | 2026-11-04 | W-3.1–W-3.10 | Wave 4: death attestation/claim/finalize/cancel + vouch; allowance; request creation/approval/rejection/execution for all six kinds; pause/unpause; child flag and graduation tranches; sibling/fallback inheritance; payout rollback callbacks for allowance and graduation. Added E37–E41 and corrected `remaining_share` to add back living children's payouts only. (#44–#59) | `cargo test --workspace` ✅ 181 unit tests · `cargo check --workspace --target wasm32-unknown-unknown` ✅ · `cargo clippy --all-targets` ✅ |
