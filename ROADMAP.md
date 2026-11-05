@@ -194,10 +194,10 @@ Ward is **100% ready** when all of these are true:
 ### P10 — Documentation, deployment, submission
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
 |---|---|---|---|---|---|---|---|
-| W-10.1 | M | README: problem + sources, how it works, diagram | Reviewed vs PRD §1 | P9 | ⬜ |  |  |
+| W-10.1 | M | README: problem + sources, how it works, diagram | Reviewed vs PRD §1 | P9 | ✅ | 2026-11-05 | Problem with sources, how it works, and Mermaid architecture diagram (#149, #150) |
 | W-10.2 | M | README: "do X, see Y" quickstart | W-11.2 passes with only these steps | W-9.10 | ⬜ |  |  |
-| W-10.3 | M | README: limitations + threat model summary | Matches ARCHITECTURE §11 | W-10.1 | ⬜ |  |  |
-| W-10.4 | M | README: library + AI disclosure; name the other entered project | Present | W-10.1 | ⬜ |  |  |
+| W-10.3 | M | README: limitations + threat model summary | Matches ARCHITECTURE §11 | W-10.1 | ✅ | 2026-11-05 | Non-goals and limitations (money only, no legal will status, social attestations) (#152) |
+| W-10.4 | M | README: library + AI disclosure; name the other entered project | Present | W-10.1 | ✅ | 2026-11-05 | Libraries, AI disclosure, and Sealed Tip reference (#153) |
 | W-10.5 | M | Deploy web to Vercel | Public URL works on a phone | P7 | ⬜ |  | Ask before deploying |
 | W-10.6 | M | Screenshots in README | Present | W-10.5 | ⬜ |  |  |
 | W-10.7 | M | Demo video (≤ 2 min) | Ready for user review | W-9.10 | ⬜ |  |  |
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-05 | W-10.1, W-10.3, W-10.4 | Expanded README.md with problem background and statistics, Mermaid architecture diagram, limitations/threat model, libraries and AI disclosure, and Sealed Tip reference. (#149, #150, #152, #153) | n/a (docs) · pnpm lint ✅ |
 | 2026-11-05 | W-5.2 | Implemented sandbox integration tests in contracts/ward/tests/settlor_withdrawals.rs: withdrawal_under_free_cap_is_instant, withdrawal_over_cap_is_delayed, two_circle_veto_cancels_withdrawal, no_withdrawal_while_death_claim_pending (#70–#73); updated ft_transfer to attach 1 yoctoNEAR per NEP-141. | cargo test -p ward --test settlor_withdrawals: 4 passed ✅ · pnpm lint ✅ |
 | 2026-11-05 | W-5.1 | Implemented near-workspaces sandbox integration tests in contracts/ward/tests/circles.rs: rejects_three_guardians_in_one_circle, rejects_guardians_from_one_circle_only, rejects_caregiver_as_guardian, rejects_shares_not_summing_to_100_percent, council_replace_breaking_circle_rule_fails. (#65–#69) | cargo test -p ward --test circles: 5 passed ✅ · pnpm lint ✅ |
 | 2026-11-05 | W-4.1 | Implemented council methods in contracts/ward/src/council.rs: council_replace_guardian (circle limit/diversity re-validation), council_set_caregiver, council_add_payee (storage_deposit from ops_balance); 10 unit tests pass. (#60, #61, #62) | cargo test -p ward council: 10 passed ✅ · pnpm lint ✅ · pnpm test:contract ✅ |
