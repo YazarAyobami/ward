@@ -8,8 +8,8 @@
 | **Last updated** | 2026-11-05 |
 | **Current phase** | P5 — Integration test suite |
 | **Next task** | W-5.3 (tests/death_flow.rs), W-5.4 (tests/allowance.rs), then remaining P5 tests |
-| **Must progress** | 39 / 88 Must tasks done (44%) |
-| **Overall progress** | 39 / 92 tasks done (42%) — 88 Must · 2 Should · 2 Could |
+| **Must progress** | 42 / 88 Must tasks done (48%) |
+| **Overall progress** | 42 / 92 tasks done (46%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 9 |
 
