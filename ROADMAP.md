@@ -142,7 +142,7 @@ Ward is **100% ready** when all of these are true:
 |---|---|---|---|---|---|---|---|
 | W-5.1 | M | `tests/circles.rs` | Green | W-2.6, W-4.1 | ✅ | 2026-11-05 | 5 near-workspaces sandbox integration tests pass (#65–#69) |
 | W-5.2 | M | `tests/settlor_withdrawals.rs` | Green | W-2.9 | ✅ | 2026-11-05 | 4 near-workspaces sandbox integration tests pass (#70–#73) |
-| W-5.3 | M | `tests/death_flow.rs` | Green | W-3.1–W-3.3 | ⬜ |  |  |
+| W-5.3 | M | `tests/death_flow.rs` | Green | W-3.1–W-3.3 | ✅ | 2026-11-05 | 4 near-workspaces sandbox integration tests pass (#74–#77) |
 | W-5.4 | M | `tests/allowance.rs` | Green | W-3.4 | ⬜ |  |  |
 | W-5.5 | M | `tests/requests.rs` | Green | W-3.5–W-3.7 | ⬜ |  |  |
 | W-5.6 | M | `tests/children.rs` | Green | W-3.8–W-3.10 | ⬜ |  |  |
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-05 | W-5.3 | Implemented sandbox integration tests in contracts/ward/tests/death_flow.rs: three_attestations_start_death_claim, settlor_cancel_returns_to_funding, second_cancel_without_vouch_fails, activation_after_waiting_period_snapshots_shares. (#74–#77) | cargo test -p ward --test death_flow: 4 passed ✅ · pnpm lint ✅ |
 | 2026-11-05 | W-10.1, W-10.3, W-10.4 | Expanded README.md with problem background and statistics, Mermaid architecture diagram, limitations/threat model, libraries and AI disclosure, and Sealed Tip reference. (#149, #150, #152, #153) | n/a (docs) · pnpm lint ✅ |
 | 2026-11-05 | W-5.2 | Implemented sandbox integration tests in contracts/ward/tests/settlor_withdrawals.rs: withdrawal_under_free_cap_is_instant, withdrawal_over_cap_is_delayed, two_circle_veto_cancels_withdrawal, no_withdrawal_while_death_claim_pending (#70–#73); updated ft_transfer to attach 1 yoctoNEAR per NEP-141. | cargo test -p ward --test settlor_withdrawals: 4 passed ✅ · pnpm lint ✅ |
 | 2026-11-05 | W-5.1 | Implemented near-workspaces sandbox integration tests in contracts/ward/tests/circles.rs: rejects_three_guardians_in_one_circle, rejects_guardians_from_one_circle_only, rejects_caregiver_as_guardian, rejects_shares_not_summing_to_100_percent, council_replace_breaking_circle_rule_fails. (#65–#69) | cargo test -p ward --test circles: 5 passed ✅ · pnpm lint ✅ |
