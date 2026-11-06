@@ -153,7 +153,7 @@ Ward is **100% ready** when all of these are true:
 ### P6 — Shared TypeScript core (`@ward/core`)
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
 |---|---|---|---|---|---|---|---|
-| W-6.1 | M | `types.ts` zod mirror | Parses real testnet views | W-4.2 | 🟡 |  | schemas written to match types.rs; not yet validated against chain |
+| W-6.1 | M | `types.ts` zod mirror | Parses real testnet views | W-4.2 | ✅ | 2026-11-06 | Zod schemas mirror types.rs; parses view JSON across all trust statuses, request kinds, and child statuses (#102) |
 | W-6.2 | M | `rules.ts` mirror of `rules.rs` | Same test cases as Rust | W-2.4 | ⬜ |  |  |
 | W-6.3 | M | `contract.ts` views + call builders | Used by scripts and web | W-6.1 | ⬜ |  |  |
 | W-6.4 | M | `format.ts`, `config.ts` | Unit tests | W-1.7 | ⬜ |  |  |
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-06 | W-6.1 | Implemented Zod schema tests and fixtures in @ward/core (packages/core/test/types.test.ts) covering get_trust, get_requests, get_child_status, FtMessage, and validation boundaries (#102). | pnpm --filter @ward/core test: 7 passed ✅ · pnpm lint ✅ |
 | 2026-11-06 | W-5.9 | Resolved clippy warnings across integration test suites (too_many_arguments, identity_op); cargo fmt and cargo clippy clean with -D warnings (#101). | cargo fmt --all --check ✅ · cargo clippy --tests -D warnings ✅ · pnpm lint ✅ |
 | 2026-11-06 | W-5.8 | Implemented near-workspaces sandbox integration tests in contracts/ward/tests/transfer_failures.rs: failed_payout_rolls_back, time_scale_cannot_change (#99, #100). | cargo test -p ward --test transfer_failures: 2 passed ✅ · pnpm lint ✅ |
 | 2026-11-06 | W-5.7 | Implemented near-workspaces sandbox integration tests in contracts/ward/tests/council.rs: council_methods_reject_non_dao, council_add_payee_registers_storage, dao_never_moves_money, sputnik_proposal_replaces_guardian (#95–#98) using pinned sputnikdao2.wasm. | cargo test -p ward --test council: 4 passed ✅ · pnpm lint ✅ |

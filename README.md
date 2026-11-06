@@ -76,8 +76,11 @@ pnpm install
 # 2. Build smart contracts
 pnpm build:contract
 
-# 3. Run all tests (unit tests + near-workspaces sandbox integration tests)
+# 3. Run all tests (Rust unit tests, sandbox integration tests, and @ward/core tests)
 pnpm test
+
+# Or run TypeScript core tests directly
+pnpm --filter @ward/core test
 
 # Or run individual sandbox test suites
 cargo test -p ward --test circles
