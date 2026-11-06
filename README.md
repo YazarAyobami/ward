@@ -86,6 +86,7 @@ cargo test -p ward --test death_flow
 cargo test -p ward --test allowance
 cargo test -p ward --test requests
 cargo test -p ward --test children
+cargo test -p ward --test council
 
 # 4. Run workspace linter and type-checker
 pnpm lint

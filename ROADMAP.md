@@ -146,7 +146,7 @@ Ward is **100% ready** when all of these are true:
 | W-5.4 | M | `tests/allowance.rs` | Green | W-3.4 | ✅ | 2026-11-06 | 4 near-workspaces sandbox integration tests pass (#78–#81) |
 | W-5.5 | M | `tests/requests.rs` | Green | W-3.5–W-3.7 | ✅ | 2026-11-06 | 7 near-workspaces sandbox integration tests pass (#82–#88) |
 | W-5.6 | M | `tests/children.rs` | Green | W-3.8–W-3.10 | ✅ | 2026-11-06 | 6 near-workspaces sandbox integration tests pass (#89–#94) |
-| W-5.7 | M | `tests/council.rs` (incl. real Sputnik proposal) | Green | W-4.1, W-0.4 | ⬜ |  |  |
+| W-5.7 | M | `tests/council.rs` (incl. real Sputnik proposal) | Green | W-4.1, W-0.4 | ✅ | 2026-11-06 | 4 near-workspaces sandbox integration tests pass (#95–#98) |
 | W-5.8 | M | `tests/transfer_failures.rs` | Green | W-2.10 | ⬜ |  |  |
 | W-5.9 | M | clippy + fmt clean | Rust lint green | P2–P4 | ⬜ |  |  |
 
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-06 | W-5.7 | Implemented near-workspaces sandbox integration tests in contracts/ward/tests/council.rs: council_methods_reject_non_dao, council_add_payee_registers_storage, dao_never_moves_money, sputnik_proposal_replaces_guardian (#95–#98) using pinned sputnikdao2.wasm. | cargo test -p ward --test council: 4 passed ✅ · pnpm lint ✅ |
 | 2026-11-06 | W-5.6 | Implemented near-workspaces sandbox integration tests in contracts/ward/tests/children.rs: set_child_account_needs_two_circles, child_flag_requires_age_14, flagged_request_needs_two_circles, graduation_pays_in_tranches, child_deceased_moves_share_to_siblings, add_child_only_while_funding (#89–#94). | cargo test -p ward --test children: 6 passed ✅ · pnpm lint ✅ |
 | 2026-11-06 | W-5.5 | Implemented near-workspaces sandbox integration tests in contracts/ward/tests/requests.rs: payee_payment_needs_one_guardian, large_spend_rejects_caregiver_circle_only, large_spend_with_two_circles_executes, two_circle_rejection_rejects, request_limit_enforced, pause_blocks_all_but_allowance, unpause_needs_two_circles (#82–#88). | cargo test -p ward --test requests: 7 passed ✅ · pnpm lint ✅ |
 | 2026-11-06 | W-5.4 | Implemented near-workspaces sandbox integration tests in contracts/ward/tests/allowance.rs: allowance_pays_once_per_period, allowance_max_one_period_arrears, allowance_works_while_paused, allowance_never_exceeds_balance (#78–#81). | cargo test -p ward --test allowance: 4 passed ✅ · pnpm lint ✅ |
