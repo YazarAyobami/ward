@@ -59,6 +59,13 @@ flowchart TD
 3. **Child Rights:** At age 14, children can flag requests, forcing 2-circle guardian consensus. At age 18, children unlock their share through graduation tranches.
 4. **DAO Separation:** Sputnik DAO handles guardian replacement, caregiver appointment, and payee addition. The DAO never moves money.
 
+### Web Application (`apps/web`)
+- **Landing Page (`/`):** Explains the property-grabbing problem, 4-step protection flow, and demo links.
+- **Trust Creation Wizard (`/create`):** Multi-step wizard with live validation from `@ward/core`:
+  - Validates child shares sum to exactly 10,000 bps (100%) via `rules.validateShares`.
+  - Validates 3–5 guardians across $\ge 2$ distinct circles with $\le 2$ per circle via `GuardianPicker` and `rules.validateGuardians`.
+  - Integrates NEAR wallet connection (MyNearWallet, Meteor, HOT) via `setupWallet`.
+
 ---
 
 ## 3. Quickstart — do X, see Y
