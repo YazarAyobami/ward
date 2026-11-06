@@ -6,6 +6,7 @@ use near_workspaces::types::NearToken;
 use near_workspaces::Account;
 use serde_json::json;
 
+#[allow(clippy::too_many_arguments)]
 async fn create_test_trust_with_dao(
     env: &common::Env,
     settlor: &Account,

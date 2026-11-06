@@ -590,7 +590,7 @@ async fn pause_blocks_all_but_allowance() {
 
     let mut rules = env.default_rules();
     rules["waiting_period"] = json!("0");
-    rules["allowance_period"] = json!((1 * common::NS_PER_SECOND).to_string());
+    rules["allowance_period"] = json!(common::NS_PER_SECOND.to_string());
     rules["allowance_amount"] = json!((100 * common::TUSDC).to_string());
 
     let guardians = [(&g1, "Maternal"), (&g2, "Paternal"), (&g3, "Community")];

@@ -69,6 +69,7 @@ async fn create_test_trust(
     trust_id
 }
 
+#[allow(clippy::too_many_arguments)]
 async fn setup_active_trust(
     env: &common::Env,
     settlor: &Account,
@@ -303,7 +304,7 @@ async fn allowance_works_while_paused() {
 
     let mut rules = env.default_rules();
     rules["waiting_period"] = json!("0");
-    rules["allowance_period"] = json!((1 * common::NS_PER_SECOND).to_string());
+    rules["allowance_period"] = json!(common::NS_PER_SECOND.to_string());
     rules["allowance_amount"] = json!((100 * common::TUSDC).to_string());
 
     let deposit_amount = 300 * common::TUSDC;
@@ -384,7 +385,7 @@ async fn allowance_never_exceeds_balance() {
 
     let mut rules = env.default_rules();
     rules["waiting_period"] = json!("0");
-    rules["allowance_period"] = json!((1 * common::NS_PER_SECOND).to_string());
+    rules["allowance_period"] = json!(common::NS_PER_SECOND.to_string());
     rules["allowance_amount"] = json!((150 * common::TUSDC).to_string());
 
     // Balance is only 60 tUSDC, less than allowance_amount (150 tUSDC)
