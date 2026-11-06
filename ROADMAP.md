@@ -6,10 +6,10 @@
 | | |
 |---|---|
 | **Last updated** | 2026-11-06 |
-| **Current phase** | P6 — Shared TypeScript core (`@ward/core`) |
-| **Next task** | W-6.4 (format.ts, config.ts), then P7 — Web app |
-| **Must progress** | 52 / 88 Must tasks done (59%) |
-| **Overall progress** | 52 / 92 tasks done (57%) — 88 Must · 2 Should · 2 Could |
+| **Current phase** | P7 — Web app (`apps/web`) |
+| **Next task** | W-7.1 (Layout, landing, DemoModeBanner), W-7.2 (/create wizard), then P7 routes |
+| **Must progress** | 53 / 88 Must tasks done (60%) |
+| **Overall progress** | 53 / 92 tasks done (58%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 9 |
 
