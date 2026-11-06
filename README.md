@@ -70,6 +70,10 @@ flowchart TD
   - Plain-language rules summary via `RulesSummary` (allowance, large spend threshold, death quorum, grace period).
   - Guardians grouped by circle with `CircleBadge` and child share allocations.
   - Activity timeline via `Timeline` tracking on-chain events and governance requests.
+- **Fund Deposit Portal (`/t/[id]/fund`):** Trust funding interface:
+  - Direct NEP-141 token deposits using `calls.deposit` and `ft_transfer_call`.
+  - Amount presets and raw unit parsing via `parseAmount`.
+  - Any-chain cross-chain quote slot for multichain funding simulations via NEAR Chain Signatures.
 
 ---
 
