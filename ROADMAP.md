@@ -7,9 +7,9 @@
 |---|---|
 | **Last updated** | 2026-11-06 |
 | **Current phase** | P6 — Shared TypeScript core (`@ward/core`) |
-| **Next task** | W-6.1 (types.ts zod mirror), W-6.2 (rules.ts), W-6.3, W-6.4 |
-| **Must progress** | 50 / 88 Must tasks done (57%) |
-| **Overall progress** | 50 / 92 tasks done (54%) — 88 Must · 2 Should · 2 Could |
+| **Next task** | W-6.3 (contract.ts views + call builders), W-6.4 (format.ts, config.ts), then P7 |
+| **Must progress** | 51 / 88 Must tasks done (58%) |
+| **Overall progress** | 51 / 92 tasks done (55%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 9 |
 
