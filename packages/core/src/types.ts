@@ -112,6 +112,7 @@ export const Request = z.object({
 });
 
 export const ChildInput = z.object({ label: z.string(), birth_ts: U64, share_bps: BasisPoints });
+export const FtMessage = z.object({ deposit: z.number().int().nonnegative() });
 export const ChildStatus = z.object({
   age_years: z.number().int(),
   can_flag: z.boolean(),
@@ -131,4 +132,5 @@ export type Trust = z.infer<typeof Trust>;
 export type RequestKind = z.infer<typeof RequestKind>;
 export type Request = z.infer<typeof Request>;
 export type ChildInput = z.infer<typeof ChildInput>;
+export type FtMessage = z.infer<typeof FtMessage>;
 export type ChildStatus = z.infer<typeof ChildStatus>;
