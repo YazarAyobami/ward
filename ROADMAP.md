@@ -163,7 +163,7 @@ Ward is **100% ready** when all of these are true:
 |---|---|---|---|---|---|---|---|
 | W-7.1 | M | Layout, landing, DemoModeBanner | Renders mobile + desktop | W-6.4 | ✅ | 2026-11-06 | #120, #121 |
 | W-7.2 | M | `/create` wizard with live circle/share checks | Creates a trust on testnet | W-6.2, W-6.3 | ✅ | 2026-11-06 | #122, #123, #124, #130 |
-| W-7.3 | M | `/t/[id]` public ledger (rules in plain language, guardians by circle, timeline) | Matches chain state | W-6.3 | ⬜ |  |  |
+| W-7.3 | M | `/t/[id]` public ledger (rules in plain language, guardians by circle, timeline) | Matches chain state | W-6.3 | ✅ | 2026-11-06 | #125, #126, #131 |
 | W-7.4 | M | `/t/[id]/fund` deposit | Deposit succeeds | W-6.3 | ⬜ |  |  |
 | W-7.5 | M | `/t/[id]/guardian` inbox (attest, approve/reject with circle progress, veto, pause) | Each action succeeds | W-6.3 | ⬜ |  |  |
 | W-7.6 | M | `/t/[id]/caregiver` (allowance, new request, receipt hash) | Each action succeeds | W-6.3 | ⬜ |  |  |
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-06 | W-7.3 | Implemented `/t/[id]` public trust ledger, `RulesSummary` plain-language component, and `Timeline` component in apps/web (#125, #126, #131). | pnpm --filter ./apps/web test: 24 passed ✅ · pnpm --filter ./apps/web build ✅ · pnpm lint ✅ |
 | 2026-11-06 | W-7.2 | Implemented `/create` trust wizard with live circle and share validation, `GuardianPicker`, `CircleBadge`, and wallet-selector integration in apps/web (#122, #123, #124, #130). | pnpm --filter ./apps/web test: 19 passed ✅ · pnpm --filter ./apps/web build ✅ · pnpm lint ✅ |
 | 2026-11-06 | W-7.1 | Implemented web landing page (problem statement, 4-step explanation, navigation) and `DemoModeBanner` component with Vitest suite in apps/web (#120, #121). | pnpm --filter ./apps/web test: 4 passed ✅ · next build ✅ · pnpm lint ✅ |
 | 2026-11-06 | W-6.4 | Implemented amount formatting and parsing (formatAmount, parseAmount) and network config/explorer URLs (explorerTxUrl, explorerAccountUrl) in @ward/core (packages/core/src/format.ts, config.ts) with full test coverage (#112–#115). | pnpm --filter @ward/core test: 43 passed ✅ · pnpm lint ✅ |
