@@ -84,6 +84,7 @@ cargo test -p ward --test circles
 cargo test -p ward --test settlor_withdrawals
 cargo test -p ward --test death_flow
 cargo test -p ward --test allowance
+cargo test -p ward --test requests
 
 # 4. Run workspace linter and type-checker
 pnpm lint
