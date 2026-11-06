@@ -7,9 +7,9 @@
 |---|---|
 | **Last updated** | 2026-11-06 |
 | **Current phase** | P5 — Integration test suite |
-| **Next task** | W-5.6 (tests/children.rs), then remaining P5 tests |
-| **Must progress** | 45 / 88 Must tasks done (51%) |
-| **Overall progress** | 45 / 92 tasks done (49%) — 88 Must · 2 Should · 2 Could |
+| **Next task** | W-5.7 (tests/council.rs), then remaining P5 tests |
+| **Must progress** | 46 / 88 Must tasks done (52%) |
+| **Overall progress** | 46 / 92 tasks done (50%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 9 |
 
