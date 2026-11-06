@@ -79,6 +79,12 @@ pnpm build:contract
 # 3. Run all tests (unit tests + near-workspaces sandbox integration tests)
 pnpm test
 
+# Or run individual sandbox test suites
+cargo test -p ward --test circles
+cargo test -p ward --test settlor_withdrawals
+cargo test -p ward --test death_flow
+cargo test -p ward --test allowance
+
 # 4. Run workspace linter and type-checker
 pnpm lint
 ```
