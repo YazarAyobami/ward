@@ -6,10 +6,10 @@
 | | |
 |---|---|
 | **Last updated** | 2026-11-06 |
-| **Current phase** | P5 — Integration test suite |
-| **Next task** | W-5.8 (tests/transfer_failures.rs), W-5.9 (clippy+fmt clean), then P6 |
-| **Must progress** | 48 / 88 Must tasks done (55%) |
-| **Overall progress** | 48 / 92 tasks done (52%) — 88 Must · 2 Should · 2 Could |
+| **Current phase** | P6 — Shared TypeScript core (`@ward/core`) |
+| **Next task** | W-6.1 (types.ts zod mirror), W-6.2 (rules.ts), W-6.3, W-6.4 |
+| **Must progress** | 49 / 88 Must tasks done (56%) |
+| **Overall progress** | 49 / 92 tasks done (53%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 9 |
 
