@@ -94,6 +94,11 @@ cargo test -p ward --test transfer_failures
 
 # 4. Run workspace linter and type-checker
 pnpm lint
+
+# 5. Run web app locally or run web component tests
+pnpm --filter @ward/web dev
+pnpm --filter @ward/web test
+pnpm --filter @ward/web build
 ```
 
 ---
