@@ -112,7 +112,7 @@ pnpm lint
 - **Smart Contract Framework:** `near-sdk` 5.30.0 with `near-contract-standards` (NEP-141 / NEP-145 / NEP-297).
 - **Integration Test Harness:** `near-workspaces` 0.16.1 sandbox environment.
 - **Governance:** Sputnik DAO v2 (`contracts/ward/res/sputnikdao2.wasm`, commit-pinned from testnet).
-- **Shared TypeScript Core (`@ward/core`):** Pure rule engine (`rules.ts`) mirroring smart contract invariants for instant UI previews, Zod schemas (`types.ts`) for deserializing on-chain trust state, and typed view/call helpers.
+- **Shared TypeScript Core (`@ward/core`):** Pure rule engine (`rules.ts`) mirroring smart contract invariants for instant UI previews, Zod schemas (`types.ts`) for deserializing on-chain trust state, and typed view/call helpers (`contract.ts`).
 - **Frontend / Fullstack:** Next.js 16.4.4, TypeScript, Tailwind CSS, Vitest.
 - **AI Tooling Disclosure:** Code scaffolding, test authoring, and documentation refinement assisted by DeepMind Antigravity AI pair programming.
 - **Other Entered Project:** The team is also submitting **Sealed Tip** (whistleblower bounties and private verification) in the *Privacy & Private AI* track.
