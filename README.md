@@ -65,6 +65,11 @@ flowchart TD
   - Validates child shares sum to exactly 10,000 bps (100%) via `rules.validateShares`.
   - Validates 3–5 guardians across $\ge 2$ distinct circles with $\le 2$ per circle via `GuardianPicker` and `rules.validateGuardians`.
   - Integrates NEAR wallet connection (MyNearWallet, Meteor, HOT) via `setupWallet`.
+- **Public Trust Ledger (`/t/[id]`):** Transparent on-chain explorer for any trust:
+  - Live status, token balance, and `DemoModeBanner` if accelerated.
+  - Plain-language rules summary via `RulesSummary` (allowance, large spend threshold, death quorum, grace period).
+  - Guardians grouped by circle with `CircleBadge` and child share allocations.
+  - Activity timeline via `Timeline` tracking on-chain events and governance requests.
 
 ---
 
