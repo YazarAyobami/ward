@@ -3,7 +3,7 @@
 import { useState, use } from "react";
 import Link from "next/link";
 import { calls } from "@ward/core";
-import { RequestCard, RequestCardData } from "@/components/RequestCard";
+import { RequestCard, RequestCardData } from "../../../../components/RequestCard";
 
 const SAMPLE_REQUESTS: RequestCardData[] = [
   {

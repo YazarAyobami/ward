@@ -79,6 +79,11 @@ flowchart TD
   - Review and vote on disbursement requests with `RequestCard` and live `ApprovalProgress`.
   - Veto pending over-cap settlor withdrawals (`calls.vetoWithdrawal`).
   - Invoke emergency pauses (`calls.pause`).
+- **Caregiver Portal (`/t/[id]/caregiver`):** Operations hub for designated caregivers:
+  - Claim scheduled maintenance living allowance with live claimable amount preview (`calls.claimAllowance`).
+  - Submit extraordinary disbursement requests (`PayeePayment`, `LargeSpend`, `SetChildAccount`) using `calls.createRequest`.
+  - In-browser SHA-256 document hashing for uploading tuition invoices and hospital receipts (`receipt_hash`).
+  - Track open and past requests with real-time guardian consensus progress.
 
 ---
 
