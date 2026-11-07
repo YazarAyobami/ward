@@ -8,8 +8,8 @@
 | **Last updated** | 2026-11-06 |
 | **Current phase** | P7 — Web app (`apps/web`) |
 | **Next task** | W-7.1 (Layout, landing, DemoModeBanner), W-7.2 (/create wizard), then P7 routes |
-| **Must progress** | 58 / 88 Must tasks done (66%) |
-| **Overall progress** | 58 / 92 tasks done (63%) — 88 Must · 2 Should · 2 Could |
+| **Must progress** | 59 / 88 Must tasks done (67%) |
+| **Overall progress** | 59 / 92 tasks done (64%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 9 |
 
