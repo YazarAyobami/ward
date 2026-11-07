@@ -74,6 +74,11 @@ flowchart TD
   - Direct NEP-141 token deposits using `calls.deposit` and `ft_transfer_call`.
   - Amount presets and raw unit parsing via `parseAmount`.
   - Any-chain cross-chain quote slot for multichain funding simulations via NEAR Chain Signatures.
+- **Guardian Governance Inbox (`/t/[id]/guardian`):** Multi-circle governance hub for council members:
+  - Submit and verify death attestations with certified hash proof (`calls.attestDeath`).
+  - Review and vote on disbursement requests with `RequestCard` and live `ApprovalProgress`.
+  - Veto pending over-cap settlor withdrawals (`calls.vetoWithdrawal`).
+  - Invoke emergency pauses (`calls.pause`).
 
 ---
 
