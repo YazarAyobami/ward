@@ -93,6 +93,14 @@ flowchart TD
   - WCAG touch target compliance ($\ge 44\text{px}$ tap targets for interactive elements).
   - Screen reader accessible with semantic headings, skip-to-content links, ARIA tablists, and live status banners.
 
+### Interface Preview
+
+#### Public Trust Ledger (`/t/[id]`)
+![Public Trust Ledger](docs/screenshots/public_ledger.svg)
+
+#### Guardian Governance Inbox (`/t/[id]/guardian`)
+![Guardian Governance Inbox](docs/screenshots/guardian_inbox.svg)
+
 ---
 
 ## 3. Quickstart — do X, see Y
@@ -142,6 +150,9 @@ pnpm seed
 pnpm --filter @ward/web dev
 pnpm --filter @ward/web test
 pnpm --filter @ward/web build
+
+# 8. Run PRD acceptance demo script (exits 0, < 5 minutes)
+pnpm demo
 ```
 
 ---

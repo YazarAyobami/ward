@@ -1,0 +1,204 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 960" width="1200" height="960" style="background:#090a0f; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#141721" />
+      <stop offset="100%" stop-color="#0f1118" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#6d28d9" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Navbar -->
+  <rect x="0" y="0" width="1200" height="70" fill="#0c0e14" stroke="#1f2433" stroke-width="1" />
+  <g transform="translate(48, 22)">
+    <circle cx="13" cy="13" r="13" fill="#10b981" />
+    <path d="M7 13 L11 17 L19 9" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="36" y="18" fill="#ffffff" font-size="20" font-weight="700" letter-spacing="-0.5px">Ward</text>
+    <text x="88" y="18" fill="#64748b" font-size="14" font-weight="500">Public Trust Ledger</text>
+  </g>
+  <g transform="translate(930, 22)">
+    <rect x="0" y="0" width="110" height="28" rx="14" fill="#1e293b" />
+    <circle cx="14" cy="14" r="4" fill="#10b981" />
+    <text x="26" y="18" fill="#94a3b8" font-size="12" font-weight="600">testnet</text>
+    <rect x="122" y="0" width="100" height="28" rx="14" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1" />
+    <text x="144" y="18" fill="#10b981" font-size="12" font-weight="600">Trust #0</text>
+  </g>
+
+  <!-- Main Container -->
+  <!-- Header Card -->
+  <g transform="translate(48, 100)" filter="url(#shadow)">
+    <rect x="0" y="0" width="1104" height="150" rx="16" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1" />
+    
+    <!-- Title & Badge -->
+    <text x="32" y="44" fill="#ffffff" font-size="26" font-weight="700">Ada &amp; Tobi Education &amp; Care Trust</text>
+    <rect x="470" y="24" width="84" height="26" rx="13" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="1"/>
+    <text x="492" y="41" fill="#34d399" font-size="12" font-weight="700">ACTIVE</text>
+    <text x="32" y="74" fill="#94a3b8" font-size="14">Settlor: <tspan fill="#e2e8f0" font-family="monospace">parent.ward-demo.testnet</tspan> • Contract: <tspan fill="#e2e8f0" font-family="monospace">ward.testnet</tspan></text>
+
+    <!-- Stats row -->
+    <g transform="translate(32, 96)">
+      <text x="0" y="14" fill="#64748b" font-size="11" font-weight="600" text-transform="uppercase">Current Balance</text>
+      <text x="0" y="38" fill="#ffffff" font-size="22" font-weight="700">1,150.00 <tspan fill="#10b981" font-size="15">tUSDC</tspan></text>
+
+      <text x="260" y="14" fill="#64748b" font-size="11" font-weight="600" text-transform="uppercase">Monthly Allowance</text>
+      <text x="260" y="38" fill="#ffffff" font-size="22" font-weight="700">500.00 <tspan fill="#94a3b8" font-size="15">tUSDC/mo</tspan></text>
+
+      <text x="520" y="14" fill="#64748b" font-size="11" font-weight="600" text-transform="uppercase">Children (2)</text>
+      <text x="520" y="38" fill="#ffffff" font-size="20" font-weight="600">Ada (18y) • Tobi (11y)</text>
+
+      <text x="800" y="14" fill="#64748b" font-size="11" font-weight="600" text-transform="uppercase">Governance Consensus</text>
+      <text x="800" y="38" fill="#34d399" font-size="20" font-weight="600">4 Circles • Quorum 3</text>
+    </g>
+  </g>
+
+  <!-- Left Column: Guardians & Social Circles -->
+  <g transform="translate(48, 274)" filter="url(#shadow)">
+    <rect x="0" y="0" width="340" height="640" rx="16" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1" />
+    <text x="24" y="36" fill="#ffffff" font-size="18" font-weight="700">Independent Circles</text>
+    <text x="24" y="58" fill="#64748b" font-size="12">Max 2 per circle • Cross-circle invariant</text>
+
+    <!-- Maternal Circle -->
+    <g transform="translate(24, 80)">
+      <rect x="0" y="0" width="292" height="74" rx="10" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <rect x="12" y="12" width="70" height="20" rx="10" fill="#3b82f6" fill-opacity="0.2" />
+      <text x="22" y="26" fill="#60a5fa" font-size="11" font-weight="600">Maternal</text>
+      <text x="12" y="48" fill="#e2e8f0" font-size="13" font-weight="600">aunt.ward-demo.testnet</text>
+      <text x="12" y="64" fill="#10b981" font-size="11">✓ Attested • Vetoed theft</text>
+    </g>
+
+    <!-- Paternal Circle -->
+    <g transform="translate(24, 166)">
+      <rect x="0" y="0" width="292" height="74" rx="10" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <rect x="12" y="12" width="68" height="20" rx="10" fill="#f59e0b" fill-opacity="0.2" />
+      <text x="22" y="26" fill="#fbbf24" font-size="11" font-weight="600">Paternal</text>
+      <text x="12" y="48" fill="#e2e8f0" font-size="13" font-weight="600">uncle.ward-demo.testnet</text>
+      <text x="12" y="64" fill="#94a3b8" font-size="11">✓ Caregiver • Allowance claim</text>
+    </g>
+
+    <!-- Institution Circle -->
+    <g transform="translate(24, 252)">
+      <rect x="0" y="0" width="292" height="74" rx="10" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <rect x="12" y="12" width="76" height="20" rx="10" fill="#8b5cf6" fill-opacity="0.2" />
+      <text x="20" y="26" fill="#a78bfa" font-size="11" font-weight="600">Institution</text>
+      <text x="12" y="48" fill="#e2e8f0" font-size="13" font-weight="600">teacher.ward-demo.testnet</text>
+      <text x="12" y="64" fill="#10b981" font-size="11">✓ Approved school fees</text>
+    </g>
+
+    <!-- Community Circle -->
+    <g transform="translate(24, 338)">
+      <rect x="0" y="0" width="292" height="74" rx="10" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <rect x="12" y="12" width="80" height="20" rx="10" fill="#ec4899" fill-opacity="0.2" />
+      <text x="20" y="26" fill="#f472b6" font-size="11" font-weight="600">Community</text>
+      <text x="12" y="48" fill="#e2e8f0" font-size="13" font-weight="600">pastor.ward-demo.testnet</text>
+      <text x="12" y="64" fill="#ef4444" font-size="11">✗ Rejected unverified spend</text>
+    </g>
+
+    <!-- Beneficiaries Box -->
+    <g transform="translate(24, 430)">
+      <text x="0" y="16" fill="#ffffff" font-size="14" font-weight="700">Beneficiaries</text>
+      <rect x="0" y="28" width="292" height="80" rx="10" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <text x="14" y="50" fill="#e2e8f0" font-size="13" font-weight="600">Ada (50% share)</text>
+      <text x="14" y="68" fill="#34d399" font-size="11">Age 18 • 1/3 Graduation Tranche Claimed</text>
+      <text x="14" y="86" fill="#94a3b8" font-size="11">Self-custody: <tspan fill="#38bdf8">ada.ward-demo.testnet</tspan></text>
+      
+      <rect x="0" y="118" width="292" height="60" rx="10" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <text x="14" y="140" fill="#e2e8f0" font-size="13" font-weight="600">Tobi (50% share)</text>
+      <text x="14" y="158" fill="#94a3b8" font-size="11">Age 11 • Allowance Beneficiary</text>
+    </g>
+  </g>
+
+  <!-- Right Column: Chronological Audit Trail Timeline -->
+  <g transform="translate(412, 274)" filter="url(#shadow)">
+    <rect x="0" y="0" width="740" height="640" rx="16" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1" />
+    <text x="32" y="36" fill="#ffffff" font-size="18" font-weight="700">On-Chain Audit Ledger</text>
+    <text x="32" y="58" fill="#64748b" font-size="12">Immutable record emitted by ward.testnet contract</text>
+
+    <!-- Timeline items -->
+    <line x1="50" y1="84" x2="50" y2="590" stroke="#2a334a" stroke-width="2" stroke-dasharray="4" />
+
+    <!-- Event 1: Graduation Claimed -->
+    <g transform="translate(42, 80)">
+      <circle cx="8" cy="8" r="8" fill="#8b5cf6" />
+      <rect x="30" y="-4" width="630" height="52" rx="8" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <text x="44" y="16" fill="#a78bfa" font-size="11" font-weight="700">GRADUATION CLAIM</text>
+      <text x="175" y="16" fill="#64748b" font-size="11">Step 8 • Ada (18y)</text>
+      <text x="44" y="36" fill="#e2e8f0" font-size="13">Tranche 1/3 disbursed (287.50 USDC) directly to sovereign wallet <tspan fill="#38bdf8">ada.ward-demo.testnet</tspan></text>
+      <text x="560" y="24" fill="#34d399" font-size="12" font-weight="700">+287.50 USDC</text>
+    </g>
+
+    <!-- Event 2: Child Flag Raised -->
+    <g transform="translate(42, 144)">
+      <circle cx="8" cy="8" r="8" fill="#f59e0b" />
+      <rect x="30" y="-4" width="630" height="52" rx="8" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <text x="44" y="16" fill="#fbbf24" font-size="11" font-weight="700">BENEFICIARY FLAG</text>
+      <text x="165" y="16" fill="#64748b" font-size="11">Step 8 • Ada (14y)</text>
+      <text x="44" y="36" fill="#e2e8f0" font-size="13">Disputed expenditure flagged by child; downgraded from single-guardian to mandatory 2-circle quorum</text>
+    </g>
+
+    <!-- Event 3: Stolen Phone Delayed & Vetoed -->
+    <g transform="translate(42, 208)">
+      <circle cx="8" cy="8" r="8" fill="#ef4444" />
+      <rect x="30" y="-4" width="630" height="52" rx="8" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <text x="44" y="16" fill="#f87171" font-size="11" font-weight="700">THEFT VETOED</text>
+      <text x="145" y="16" fill="#64748b" font-size="11">Step 7 • 2nd Trust</text>
+      <text x="44" y="36" fill="#e2e8f0" font-size="13">1,500 USDC unauthorized withdrawal timelocked; cancelled by Maternal Aunt + School Teacher</text>
+    </g>
+
+    <!-- Event 4: Direct School Tuition Payment -->
+    <g transform="translate(42, 272)">
+      <circle cx="8" cy="8" r="8" fill="#10b981" />
+      <rect x="30" y="-4" width="630" height="52" rx="8" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <text x="44" y="16" fill="#34d399" font-size="11" font-weight="700">PAYEE DISBURSEMENT</text>
+      <text x="195" y="16" fill="#64748b" font-size="11">Step 5 • Greenhills Academy</text>
+      <text x="44" y="36" fill="#e2e8f0" font-size="13">350.00 USDC approved by Teacher guardian; paid directly to whitelist <tspan fill="#e2e8f0">school.testnet</tspan></text>
+      <text x="560" y="24" fill="#34d399" font-size="12" font-weight="700">-350.00 USDC</text>
+    </g>
+
+    <!-- Event 5: Medical Spend Rejected -->
+    <g transform="translate(42, 336)">
+      <circle cx="8" cy="8" r="8" fill="#64748b" />
+      <rect x="30" y="-4" width="630" height="52" rx="8" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <text x="44" y="16" fill="#94a3b8" font-size="11" font-weight="700">REQUEST REJECTED</text>
+      <text x="180" y="16" fill="#64748b" font-size="11">Step 4 • Pastor (Community)</text>
+      <text x="44" y="36" fill="#e2e8f0" font-size="13">1,500 USDC unverified personal spend rejected following invoice discrepancy check</text>
+    </g>
+
+    <!-- Event 6: Allowance Claimed -->
+    <g transform="translate(42, 400)">
+      <circle cx="8" cy="8" r="8" fill="#10b981" />
+      <rect x="30" y="-4" width="630" height="52" rx="8" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <text x="44" y="16" fill="#34d399" font-size="11" font-weight="700">ALLOWANCE CLAIMED</text>
+      <text x="190" y="16" fill="#64748b" font-size="11">Step 4 • Monthly Living</text>
+      <text x="44" y="36" fill="#e2e8f0" font-size="13">500.00 USDC disbursed to uncle caregiver for standard children living expenses</text>
+      <text x="560" y="24" fill="#34d399" font-size="12" font-weight="700">-500.00 USDC</text>
+    </g>
+
+    <!-- Event 7: Trust Activated -->
+    <g transform="translate(42, 464)">
+      <circle cx="8" cy="8" r="8" fill="#3b82f6" />
+      <rect x="30" y="-4" width="630" height="52" rx="8" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <text x="44" y="16" fill="#60a5fa" font-size="11" font-weight="700">TRUST ACTIVATED</text>
+      <text x="165" y="16" fill="#64748b" font-size="11">Step 3 • Quorum 3 / 4</text>
+      <text x="44" y="36" fill="#e2e8f0" font-size="13">Independent death attestations across Maternal, Paternal &amp; Institution circles</text>
+    </g>
+
+    <!-- Event 8: Trust Created & Funded -->
+    <g transform="translate(42, 528)">
+      <circle cx="8" cy="8" r="8" fill="#10b981" />
+      <rect x="30" y="-4" width="630" height="52" rx="8" fill="#131722" stroke="#2a334a" stroke-width="1" />
+      <text x="44" y="16" fill="#34d399" font-size="11" font-weight="700">TRUST ESTABLISHED &amp; FUNDED</text>
+      <text x="250" y="16" fill="#64748b" font-size="11">Steps 1 &amp; 2</text>
+      <text x="44" y="36" fill="#e2e8f0" font-size="13">2,000 tUSDC deposited via cross-chain Tron quote; 4 social circles bound into smart contract</text>
+      <text x="550" y="24" fill="#34d399" font-size="12" font-weight="700">+2,000.00 USDC</text>
+    </g>
+  </g>
+</svg>

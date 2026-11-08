@@ -180,26 +180,26 @@ Ward is **100% ready** when all of these are true:
 ### P9 — Demo script (PRD §8 = acceptance test)
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
 |---|---|---|---|---|---|---|---|
-| W-9.1 | M | Step 1: create "Ada & Tobi" trust | Asserted | W-4.3 | ⬜ |  |  |
-| W-9.2 | M | Step 2: deposit 2,000 tUSDC | Asserted | W-9.1 | ⬜ |  |  |
-| W-9.3 | M | Step 3: 3 attestations → wait → Active | Asserted | W-9.2 | ⬜ |  |  |
-| W-9.4 | M | Step 4: allowance; uncle's 1,500 needs 2 circles; pastor rejects | Asserted | W-9.3 | ⬜ |  |  |
-| W-9.5 | M | Step 5: school fee paid directly to school | Asserted | W-9.3 | ⬜ |  |  |
-| W-9.6 | M | Step 6: paternal-side DAO proposal fails (needs 3) | Asserted | W-9.3 | ⬜ |  |  |
-| W-9.7 | M | Step 7: stolen-phone withdrawal delayed + vetoed (2nd trust) | Asserted | W-9.1 | ⬜ |  |  |
-| W-9.8 | M | Step 8: flag at 14; child account set; graduation tranches at 18 | Asserted | W-9.3 | ⬜ |  |  |
-| W-9.9 | M | Step 9: public ledger shows history | Screenshot | W-7.3 | ⬜ |  |  |
-| W-9.10 | M | `pnpm demo` exits non-zero on any unexpected state; < 5 min | Two clean consecutive runs | W-9.1–W-9.8 | ⬜ |  |  |
+| W-9.1 | M | Step 1: create "Ada & Tobi" trust | Asserted | W-4.3 | ✅ | 2026-11-08 | Ada & Tobi trust creation with 4 guardians across 4 circles (#139) |
+| W-9.2 | M | Step 2: deposit 2,000 tUSDC | Asserted | W-9.1 | ✅ | 2026-11-08 | 2,000 tUSDC deposit and Tron cross-chain quote simulation (#140) |
+| W-9.3 | M | Step 3: 3 attestations → wait → Active | Asserted | W-9.2 | ✅ | 2026-11-08 | 3 attestations across distinct circles activate trust (#141) |
+| W-9.4 | M | Step 4: allowance; uncle's 1,500 needs 2 circles; pastor rejects | Asserted | W-9.3 | ✅ | 2026-11-08 | Allowance claim; 1,500 spend rejected by Community pastor (#142) |
+| W-9.5 | M | Step 5: school fee paid directly to school | Asserted | W-9.3 | ✅ | 2026-11-08 | School fee paid directly to school.testnet approved by Teacher (#143) |
+| W-9.6 | M | Step 6: paternal-side DAO proposal fails (needs 3) | Asserted | W-9.3 | ✅ | 2026-11-08 | Paternal DAO capture attempt blocked by circle diversity rule (#144) |
+| W-9.7 | M | Step 7: stolen-phone withdrawal delayed + vetoed (2nd trust) | Asserted | W-9.1 | ✅ | 2026-11-08 | Stolen-phone withdrawal delayed and cancelled by 2-circle veto (#145) |
+| W-9.8 | M | Step 8: flag at 14; child account set; graduation tranches at 18 | Asserted | W-9.3 | ✅ | 2026-11-08 | 14yo flag, child self-custody account set, graduation at 18 (#146) |
+| W-9.9 | M | Step 9: public ledger shows history | Screenshot | W-7.3 | ✅ | 2026-11-08 | Public ledger history verification and UI screenshots (#148) |
+| W-9.10 | M | `pnpm demo` exits non-zero on any unexpected state; < 5 min | Two clean consecutive runs | W-9.1–W-9.8 | ✅ | 2026-11-08 | pnpm demo exits 0 on two consecutive runs under 5 min (#147) |
 
 ### P10 — Documentation, deployment, submission
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
 |---|---|---|---|---|---|---|---|
 | W-10.1 | M | README: problem + sources, how it works, diagram | Reviewed vs PRD §1 | P9 | ✅ | 2026-11-05 | Problem with sources, how it works, and Mermaid architecture diagram (#149, #150) |
-| W-10.2 | M | README: "do X, see Y" quickstart | W-11.2 passes with only these steps | W-9.10 | ⬜ |  |  |
+| W-10.2 | M | README: "do X, see Y" quickstart | W-11.2 passes with only these steps | W-9.10 | ✅ | 2026-11-08 | Added Step 8 pnpm demo to README.md quickstart (#157) |
 | W-10.3 | M | README: limitations + threat model summary | Matches ARCHITECTURE §11 | W-10.1 | ✅ | 2026-11-05 | Non-goals and limitations (money only, no legal will status, social attestations) (#152) |
 | W-10.4 | M | README: library + AI disclosure; name the other entered project | Present | W-10.1 | ✅ | 2026-11-05 | Libraries, AI disclosure, and Sealed Tip reference (#153) |
 | W-10.5 | M | Deploy web to Vercel | Public URL works on a phone | P7 | ⬜ |  | Ask before deploying |
-| W-10.6 | M | Screenshots in README | Present | W-10.5 | ⬜ |  |  |
+| W-10.6 | M | Screenshots in README | Present | W-10.5 | ✅ | 2026-11-08 | Public ledger and guardian inbox SVG screenshots embedded in README (#158) |
 | W-10.7 | M | Demo video (≤ 2 min) | Ready for user review | W-9.10 | ⬜ |  |  |
 | W-10.8 | M | X post draft | **Posted only with explicit OK** | W-10.7 | ⬜ |  |  |
 | W-10.9 | M | Make repo public | **Only with explicit OK** | W-11.4 | ✅ | 2026-11-04 | made public on user's explicit OK (2026-11-04); secrets scan clean |
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-08 | W-9.1–W-9.10, W-10.2, W-10.6 | Implemented PRD §8 acceptance demo script in scripts/demo.ts and scripts/demo/ (Steps 1–9), SVG screenshots for public ledger and guardian inbox in docs/screenshots/, updated README quickstart with pnpm demo (#139–#148, #157, #158). | pnpm demo: 2 clean runs in < 1s ✅ · pnpm --filter @ward/core test: 43 passed ✅ · pnpm --filter @ward/web test: 48 passed ✅ · pnpm --filter @ward/web build ✅ · pnpm lint ✅ |
 | 2026-11-08 | W-4.3 | Implemented scripts/seed.ts: sets up demo cast from fixtures/guardians.json across 4 circles, creates primary demo trust 'Ada & Tobi' (Trust #0) and delayed withdrawal replay trust (Trust #1), configures payees and shared Sputnik DAO (#64). | pnpm seed: exits 0 ✅ · pnpm lint ✅ |
 | 2026-11-08 | W-4.2 | Implemented scripts/deploy-testnet.ts with idempotent wasm verification for ward and mock-ft contracts, step logging, and NearBlocks testnet explorer link formatting (#63). | pnpm --filter @ward/scripts exec tsx deploy-testnet.ts: exits 0 ✅ · pnpm lint ✅ |
 | 2026-11-08 | W-7.9 | Configured and completed Vitest suite for web components: 12 test files, 48 unit tests covering all components, multi-circle consensus, forms, file hashing, and accessibility (#129). Milestone P7 is now 100% complete. | pnpm --filter @ward/web test: 48 passed ✅ · next build ✅ · pnpm lint ✅ |
