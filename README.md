@@ -88,6 +88,10 @@ flowchart TD
   - Exercise emergency flag veto on suspicious or unverified expense requests (available at age $\ge 14$, `calls.flag`), enforcing 2-circle multi-guardian consensus.
   - Claim adult graduation tranche payouts (available at age $\ge 18$, `calls.claimGraduation`) across annual disbursement milestones.
   - Multi-sibling profile switcher to inspect individual beneficiary share allocations and rights status.
+- **Accessibility & Mobile UX:**
+  - Audited down to 360px viewport widths with responsive single-column collapses.
+  - WCAG touch target compliance ($\ge 44\text{px}$ tap targets for interactive elements).
+  - Screen reader accessible with semantic headings, skip-to-content links, ARIA tablists, and live status banners.
 
 ---
 

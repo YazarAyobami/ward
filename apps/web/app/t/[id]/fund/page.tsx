@@ -164,7 +164,7 @@ export default function FundTrustPage({
               type="button"
               disabled={isSubmitting || rawAmount <= 0n}
               onClick={handleDeposit}
-              className="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-neutral-950 font-bold text-sm transition-colors shadow-sm"
+              className="w-full py-3 px-4 min-h-[44px] flex items-center justify-center rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-neutral-950 font-bold text-sm transition-colors shadow-sm"
             >
               {isSubmitting ? "Processing Deposit..." : `Deposit ${amountStr || "0"} USDC`}
             </button>

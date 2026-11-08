@@ -272,25 +272,25 @@ export default async function TrustPage({
           <div className="flex flex-wrap items-center gap-2">
             <Link
               href={`/t/${trust.id}/fund`}
-              className="px-3 py-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-colors"
+              className="px-3 py-2 min-h-[44px] flex items-center rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-colors"
             >
               Deposit Funds
             </Link>
             <Link
               href={`/t/${trust.id}/guardian`}
-              className="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-medium transition-colors"
+              className="px-3 py-2 min-h-[44px] flex items-center rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-medium transition-colors"
             >
               Guardian Inbox
             </Link>
             <Link
               href={`/t/${trust.id}/caregiver`}
-              className="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-medium transition-colors"
+              className="px-3 py-2 min-h-[44px] flex items-center rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-medium transition-colors"
             >
               Caregiver Portal
             </Link>
             <Link
               href={`/t/${trust.id}/child`}
-              className="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-medium transition-colors"
+              className="px-3 py-2 min-h-[44px] flex items-center rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-medium transition-colors"
             >
               Child Portal
             </Link>

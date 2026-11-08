@@ -270,7 +270,7 @@ export function CaregiverView({ trustId }: { trustId: number }) {
               type="button"
               onClick={handleClaimAllowance}
               disabled={dueAmountBigInt === 0n || isClaiming}
-              className={`w-full sm:w-auto px-6 py-2.5 rounded-lg text-sm font-semibold transition ${
+              className={`w-full sm:w-auto px-6 py-2.5 min-h-[44px] flex items-center justify-center rounded-lg text-sm font-semibold transition ${
                 dueAmountBigInt === 0n
                   ? "bg-slate-800 text-slate-500 cursor-not-allowed"
                   : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-950"
