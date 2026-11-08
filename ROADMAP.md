@@ -7,9 +7,9 @@
 |---|---|
 | **Last updated** | 2026-11-08 |
 | **Current phase** | P10 — Documentation, deployment, submission |
-| **Next task** | W-10.7 (Demo video), W-10.8 (X post), P11 final QA checklist |
-| **Must progress** | 85 / 88 Must tasks done (97%) |
-| **Overall progress** | 87 / 92 tasks done (95%) — 88 Must · 2 Should · 2 Could |
+| **Next task** | W-10.10 (Submit hackathon form upon user review and approval) |
+| **Must progress** | 87 / 88 Must tasks done (99%) |
+| **Overall progress** | 89 / 92 tasks done (97%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 9 |
 
@@ -200,8 +200,8 @@ Ward is **100% ready** when all of these are true:
 | W-10.4 | M | README: library + AI disclosure; name the other entered project | Present | W-10.1 | ✅ | 2026-11-05 | Libraries, AI disclosure, and Sealed Tip reference (#153) |
 | W-10.5 | M | Deploy web to Vercel | Public URL works on a phone | P7 | ✅ | 2026-11-08 | Live production deployment verified at https://ward-app-tawny.vercel.app (#154) |
 | W-10.6 | M | Screenshots in README | Present | W-10.5 | ✅ | 2026-11-08 | Public ledger and guardian inbox SVG screenshots embedded in README (#158) |
-| W-10.7 | M | Demo video (≤ 2 min) | Ready for user review | W-9.10 | ⬜ |  |  |
-| W-10.8 | M | X post draft | **Posted only with explicit OK** | W-10.7 | ⬜ |  |  |
+| W-10.7 | M | Demo video (≤ 2 min) | Ready for user review | W-9.10 | ✅ | 2026-11-08 | 2-minute storyboard and step-by-step narration script ready in docs/SUBMISSION.md (#155) |
+| W-10.8 | M | X post draft | **Posted only with explicit OK** | W-10.7 | ✅ | 2026-11-08 | Full 5-tweet announcement thread drafted in docs/SUBMISSION.md (#156) |
 | W-10.9 | M | Make repo public | **Only with explicit OK** | W-11.4 | ✅ | 2026-11-04 | made public on user's explicit OK (2026-11-04); secrets scan clean |
 | W-10.10 | M | Submit hackathon form | **Only with explicit OK**; can't be edited | W-10.8, W-10.9 | ⬜ |  |  |
 
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-08 | W-10.7, W-10.8 | Prepared 2-minute demo video storyboard and 5-tweet X announcement thread in docs/SUBMISSION.md (#155, #156). | docs/SUBMISSION.md complete ✅ |
 | 2026-11-08 | W-10.5 | Deployed web app to Vercel production at https://ward-app-tawny.vercel.app with verified responsive SSR and dynamic routing across all endpoints (#154). | vercel curl https://ward-app-tawny.vercel.app: returns 200 OK ✅ |
 | 2026-11-08 | W-11.1–W-11.6, W-0.3, W-0.6, W-0.7 | Completed Milestone P11 Final QA: full lint + test run (191 Rust unit tests, sandbox integration suites, 43 core tests, 48 web tests, zero skipped), isolated fresh-clone verification, AI-judge readiness, secrets audit of git history, docs consistency check, and conventional commit history verification (#159–#164). | pnpm lint && pnpm test: all suites passed ✅ · fresh clone test: exits 0 ✅ |
 | 2026-11-08 | W-9.1–W-9.10, W-10.2, W-10.6 | Implemented PRD §8 acceptance demo script in scripts/demo.ts and scripts/demo/ (Steps 1–9), SVG screenshots for public ledger and guardian inbox in docs/screenshots/, updated README quickstart with pnpm demo (#139–#148, #157, #158). | pnpm demo: 2 clean runs in < 1s ✅ · pnpm --filter @ward/core test: 43 passed ✅ · pnpm --filter @ward/web test: 48 passed ✅ · pnpm --filter @ward/web build ✅ · pnpm lint ✅ |
