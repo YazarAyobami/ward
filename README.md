@@ -60,6 +60,7 @@ flowchart TD
 4. **DAO Separation:** Sputnik DAO handles guardian replacement, caregiver appointment, and payee addition. The DAO never moves money.
 
 ### Web Application (`apps/web`)
+- **Live Deployment:** [https://ward-app-tawny.vercel.app](https://ward-app-tawny.vercel.app)
 - **Landing Page (`/`):** Explains the property-grabbing problem, 4-step protection flow, and demo links.
 - **Trust Creation Wizard (`/create`):** Multi-step wizard with live validation from `@ward/core`:
   - Validates child shares sum to exactly 10,000 bps (100%) via `rules.validateShares`.

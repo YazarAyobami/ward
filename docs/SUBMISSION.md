@@ -25,10 +25,11 @@ Ward is an autonomous on-chain trust built in Rust on NEAR that protects childre
 4. **Anti-Theft Timelocks:** Settlor withdrawals above the free cap are timelocked, allowing guardians across 2 distinct circles to veto unauthorized transfers if the parent's phone is stolen.
 5. **Chain Abstraction:** Settlors living abroad can fund trusts with any token across chains (Tron, Ethereum, Solana, Bitcoin) via NEAR Intents and Chain Signatures MPC.
 
-### Testnet Contract & Explorer
+### Testnet Contract, Explorer & Live App
+- **Live Web App:** [https://ward-app-tawny.vercel.app](https://ward-app-tawny.vercel.app)
 - **Ward Smart Contract:** `ward.testnet` ([NearBlocks Explorer](https://testnet.nearblocks.io/address/ward.testnet))
 - **Mock FT Token (tUSDC):** `tusdc.testnet` ([NearBlocks Explorer](https://testnet.nearblocks.io/address/tusdc.testnet))
-- **Demo Trust #0:** "Ada & Tobi Education & Care Trust"
+- **Demo Trust #0:** "Ada & Tobi Education & Care Trust" ([View on Live App](https://ward-app-tawny.vercel.app/t/0))
 
 ### Technical Highlights
 - **191 unit tests** in Rust with 100% pass rate.
