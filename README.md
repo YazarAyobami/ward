@@ -116,6 +116,9 @@ pnpm test
 # Or run TypeScript core tests directly
 pnpm --filter @ward/core test
 
+# Or run web component Vitest suite (12 test suites, 48 tests)
+pnpm --filter @ward/web test
+
 # Or run individual sandbox test suites
 cargo test -p ward --test circles
 cargo test -p ward --test settlor_withdrawals

@@ -169,7 +169,7 @@ Ward is **100% ready** when all of these are true:
 | W-7.6 | M | `/t/[id]/caregiver` (allowance, new request, receipt hash) | Each action succeeds | W-6.3 | ✅ | 2026-11-07 | #134 |
 | W-7.7 | M | `/t/[id]/child` (flag, graduation) | Each action succeeds | W-6.3 | ✅ | 2026-11-08 | #135 |
 | W-7.8 | M | Accessibility + mobile pass | Checklist in Notes | W-7.1–W-7.7 | ✅ | 2026-11-08 | #136 · 360px viewport audit, skip-links, ARIA tablists, 44px touch targets |
-| W-7.9 | S | Web component tests (Vitest) | Green | W-0.2 | ⬜ |  |  |
+| W-7.9 | S | Web component tests (Vitest) | Green | W-0.2 | ✅ | 2026-11-08 | #129 · 12 test suites, 48 tests across all web components |
 
 ### P8 — Optional (Could)
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-08 | W-7.9 | Configured and completed Vitest suite for web components: 12 test files, 48 unit tests covering all components, multi-circle consensus, forms, file hashing, and accessibility (#129). Milestone P7 is now 100% complete. | pnpm --filter @ward/web test: 48 passed ✅ · next build ✅ · pnpm lint ✅ |
 | 2026-11-08 | W-7.8 | Completed accessibility and 360px mobile audit across all routes: added skip-to-content navigation, ARIA tablists and labels, min 44px tap targets, responsive single-column collapse, and Vitest suite in apps/web/test/a11y_mobile.test.tsx (#136). | pnpm --filter @ward/web test: 41 passed ✅ · next build ✅ · pnpm lint ✅ |
 | 2026-11-08 | W-7.7 | Implemented `/t/[id]/child` beneficiary portal in apps/web/app/t/[id]/child/page.tsx: emergency expenditure flag trigger (calls.flag) for beneficiaries >= 14 enforcing 2-circle review, adult graduation tranche unlock (calls.claimGraduation) for age >= 18, beneficiary switcher, and Vitest suite (#135). | pnpm --filter @ward/web test: 37 passed ✅ · next build ✅ · pnpm lint ✅ |
 | 2026-11-07 | W-7.6 | Implemented `/t/[id]/caregiver` portal in apps/web: allowance claim with live preview and calls.claimAllowance, new disbursement request form with in-browser SHA-256 receipt hashing (calls.createRequest), recent requests list, and Vitest suite (#134). | pnpm --filter @ward/web test: 34 passed ✅ · pnpm --filter @ward/web build ✅ · pnpm lint ✅ |
