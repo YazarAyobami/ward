@@ -339,7 +339,7 @@ export function ChildView({ trustId }: { trustId: number }) {
               type="button"
               onClick={handleClaimGraduation}
               disabled={!activeChild.canGraduate || activeChild.tranchesPaid >= activeChild.totalTranches || isProcessing}
-              className={`w-full sm:w-auto px-6 py-2.5 rounded-lg text-sm font-semibold transition ${
+              className={`w-full sm:w-auto px-6 py-2.5 min-h-[44px] flex items-center justify-center rounded-lg text-sm font-semibold transition ${
                 !activeChild.canGraduate || activeChild.tranchesPaid >= activeChild.totalTranches
                   ? "bg-slate-800 text-slate-500 cursor-not-allowed"
                   : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-950"
@@ -412,7 +412,7 @@ export function ChildView({ trustId }: { trustId: number }) {
                         type="button"
                         onClick={() => handleFlagRequest(req.id)}
                         disabled={!activeChild.canFlag || isProcessing}
-                        className={`w-full sm:w-auto px-4 py-2 rounded-lg text-xs font-semibold transition ${
+                        className={`w-full sm:w-auto px-4 py-2 min-h-[44px] flex items-center justify-center rounded-lg text-xs font-semibold transition ${
                           !activeChild.canFlag
                             ? "bg-slate-800 text-slate-500 cursor-not-allowed"
                             : "bg-rose-900/60 hover:bg-rose-800/80 text-rose-200 border border-rose-700/60"

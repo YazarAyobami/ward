@@ -188,11 +188,13 @@ export default function GuardianInboxPage({
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex items-center gap-2 border-b border-neutral-800 pb-2">
+      <div role="tablist" aria-label="Guardian Actions" className="flex flex-wrap items-center gap-2 border-b border-neutral-800 pb-2">
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === "requests"}
           onClick={() => setActiveTab("requests")}
-          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+          className={`px-3.5 py-2 min-h-[44px] flex items-center rounded-lg text-xs font-semibold transition-colors ${
             activeTab === "requests"
               ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
               : "text-neutral-400 hover:text-neutral-200"
@@ -202,8 +204,10 @@ export default function GuardianInboxPage({
         </button>
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === "attest"}
           onClick={() => setActiveTab("attest")}
-          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+          className={`px-3.5 py-2 min-h-[44px] flex items-center rounded-lg text-xs font-semibold transition-colors ${
             activeTab === "attest"
               ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
               : "text-neutral-400 hover:text-neutral-200"
@@ -213,8 +217,10 @@ export default function GuardianInboxPage({
         </button>
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === "emergency"}
           onClick={() => setActiveTab("emergency")}
-          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+          className={`px-3.5 py-2 min-h-[44px] flex items-center rounded-lg text-xs font-semibold transition-colors ${
             activeTab === "emergency"
               ? "bg-rose-500/20 text-rose-300 border border-rose-500/30"
               : "text-neutral-400 hover:text-neutral-200"
