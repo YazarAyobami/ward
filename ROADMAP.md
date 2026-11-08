@@ -134,7 +134,7 @@ Ward is **100% ready** when all of these are true:
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
 |---|---|---|---|---|---|---|---|
 | W-4.1 | M | Council methods (replace guardian w/ circle re-validation, set caregiver, add payee + storage) | Tests incl. non-DAO rejected | W-2.6 | ✅ | 2026-11-05 | Implemented council_replace_guardian, council_set_caregiver, council_add_payee with DAO access guards and 10 unit tests (#60, #61, #62) |
-| W-4.2 | M | `scripts/deploy-testnet.ts` | Explorer links; idempotent | P5, W-0.6 | ⬜ |  |  |
+| W-4.2 | M | `scripts/deploy-testnet.ts` | Explorer links; idempotent | P5, W-0.6 | ✅ | 2026-11-08 | #63 · idempotent wasm verification and explorer links |
 | W-4.3 | M | `scripts/seed.ts` (demo cast, shared DAO, 2 trusts) | `pnpm seed` exits 0 | W-4.2, W-0.3 | ⬜ |  |  |
 
 ### P5 — Integration test suite
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-08 | W-4.2 | Implemented scripts/deploy-testnet.ts with idempotent wasm verification for ward and mock-ft contracts, step logging, and NearBlocks testnet explorer link formatting (#63). | pnpm --filter @ward/scripts exec tsx deploy-testnet.ts: exits 0 ✅ · pnpm lint ✅ |
 | 2026-11-08 | W-7.9 | Configured and completed Vitest suite for web components: 12 test files, 48 unit tests covering all components, multi-circle consensus, forms, file hashing, and accessibility (#129). Milestone P7 is now 100% complete. | pnpm --filter @ward/web test: 48 passed ✅ · next build ✅ · pnpm lint ✅ |
 | 2026-11-08 | W-7.8 | Completed accessibility and 360px mobile audit across all routes: added skip-to-content navigation, ARIA tablists and labels, min 44px tap targets, responsive single-column collapse, and Vitest suite in apps/web/test/a11y_mobile.test.tsx (#136). | pnpm --filter @ward/web test: 41 passed ✅ · next build ✅ · pnpm lint ✅ |
 | 2026-11-08 | W-7.7 | Implemented `/t/[id]/child` beneficiary portal in apps/web/app/t/[id]/child/page.tsx: emergency expenditure flag trigger (calls.flag) for beneficiaries >= 14 enforcing 2-circle review, adult graduation tranche unlock (calls.claimGraduation) for age >= 18, beneficiary switcher, and Vitest suite (#135). | pnpm --filter @ward/web test: 37 passed ✅ · next build ✅ · pnpm lint ✅ |
