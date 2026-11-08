@@ -204,6 +204,21 @@ export interface ClaimGraduationParams {
   child_idx: number;
 }
 
+export interface CouncilReplaceGuardianParams {
+  trust_id: number;
+  old?: string;
+  old_guardian?: string;
+  new?: Guardian;
+  new_guardian?: string;
+  circle?: Circle;
+}
+
+export interface CouncilSetCaregiverParams {
+  trust_id: number;
+  account: string;
+  circle: Circle;
+}
+
 /**
  * Typed call builders for all ward smart contract interactions (W-6.3).
  */
@@ -417,6 +432,37 @@ export const calls = {
         child_idx: params.child_idx,
       },
       gas: 100n * TGAS,
+      deposit: 0n,
+    };
+  },
+
+  councilReplaceGuardian(params: CouncilReplaceGuardianParams): FunctionCall {
+    const oldAccount = params.old ?? params.old_guardian ?? "";
+    const newGuardian: Guardian = params.new ?? {
+      account: params.new_guardian ?? "",
+      circle: params.circle ?? "Community",
+    };
+    return {
+      methodName: "council_replace_guardian",
+      args: {
+        trust_id: params.trust_id,
+        old: oldAccount,
+        new: newGuardian,
+      },
+      gas: 50n * TGAS,
+      deposit: 0n,
+    };
+  },
+
+  councilSetCaregiver(params: CouncilSetCaregiverParams): FunctionCall {
+    return {
+      methodName: "council_set_caregiver",
+      args: {
+        trust_id: params.trust_id,
+        account: params.account,
+        circle: params.circle,
+      },
+      gas: 50n * TGAS,
       deposit: 0n,
     };
   },
