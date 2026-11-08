@@ -5,11 +5,11 @@
 
 | | |
 |---|---|
-| **Last updated** | 2026-11-06 |
-| **Current phase** | P7 — Web app (`apps/web`) |
-| **Next task** | W-7.1 (Layout, landing, DemoModeBanner), W-7.2 (/create wizard), then P7 routes |
-| **Must progress** | 63 / 88 Must tasks done (72%) |
-| **Overall progress** | 64 / 92 tasks done (70%) — 88 Must · 2 Should · 2 Could |
+| **Last updated** | 2026-11-08 |
+| **Current phase** | P10 — Documentation, deployment, submission |
+| **Next task** | W-10.7 (Demo video), W-10.8 (X post), P11 final QA checklist |
+| **Must progress** | 75 / 88 Must tasks done (85%) |
+| **Overall progress** | 76 / 92 tasks done (83%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
 | **Days left** | 9 |
 
