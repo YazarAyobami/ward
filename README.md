@@ -135,7 +135,10 @@ pnpm lint
 # 5. Verify testnet deployment (idempotent)
 pnpm --filter @ward/scripts exec tsx deploy-testnet.ts
 
-# 6. Run web app locally or run web component tests
+# 6. Seed demo trusts, guardians, and shared Sputnik DAO
+pnpm seed
+
+# 7. Run web app locally or run web component tests
 pnpm --filter @ward/web dev
 pnpm --filter @ward/web test
 pnpm --filter @ward/web build
