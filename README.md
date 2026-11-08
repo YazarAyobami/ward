@@ -84,6 +84,10 @@ flowchart TD
   - Submit extraordinary disbursement requests (`PayeePayment`, `LargeSpend`, `SetChildAccount`) using `calls.createRequest`.
   - In-browser SHA-256 document hashing for uploading tuition invoices and hospital receipts (`receipt_hash`).
   - Track open and past requests with real-time guardian consensus progress.
+- **Child Beneficiary Portal (`/t/[id]/child`):** Rights and distribution portal for beneficiaries:
+  - Exercise emergency flag veto on suspicious or unverified expense requests (available at age $\ge 14$, `calls.flag`), enforcing 2-circle multi-guardian consensus.
+  - Claim adult graduation tranche payouts (available at age $\ge 18$, `calls.claimGraduation`) across annual disbursement milestones.
+  - Multi-sibling profile switcher to inspect individual beneficiary share allocations and rights status.
 
 ---
 

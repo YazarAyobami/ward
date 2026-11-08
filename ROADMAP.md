@@ -167,7 +167,7 @@ Ward is **100% ready** when all of these are true:
 | W-7.4 | M | `/t/[id]/fund` deposit | Deposit succeeds | W-6.3 | ✅ | 2026-11-06 | #132 |
 | W-7.5 | M | `/t/[id]/guardian` inbox (attest, approve/reject with circle progress, veto, pause) | Each action succeeds | W-6.3 | ✅ | 2026-11-06 | #127, #128, #133 |
 | W-7.6 | M | `/t/[id]/caregiver` (allowance, new request, receipt hash) | Each action succeeds | W-6.3 | ✅ | 2026-11-07 | #134 |
-| W-7.7 | M | `/t/[id]/child` (flag, graduation) | Each action succeeds | W-6.3 | ⬜ |  |  |
+| W-7.7 | M | `/t/[id]/child` (flag, graduation) | Each action succeeds | W-6.3 | ✅ | 2026-11-08 | #135 |
 | W-7.8 | M | Accessibility + mobile pass | Checklist in Notes | W-7.1–W-7.7 | ⬜ |  |  |
 | W-7.9 | S | Web component tests (Vitest) | Green | W-0.2 | ⬜ |  |  |
 
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-08 | W-7.7 | Implemented `/t/[id]/child` beneficiary portal in apps/web/app/t/[id]/child/page.tsx: emergency expenditure flag trigger (calls.flag) for beneficiaries >= 14 enforcing 2-circle review, adult graduation tranche unlock (calls.claimGraduation) for age >= 18, beneficiary switcher, and Vitest suite (#135). | pnpm --filter @ward/web test: 37 passed ✅ · next build ✅ · pnpm lint ✅ |
 | 2026-11-07 | W-7.6 | Implemented `/t/[id]/caregiver` portal in apps/web: allowance claim with live preview and calls.claimAllowance, new disbursement request form with in-browser SHA-256 receipt hashing (calls.createRequest), recent requests list, and Vitest suite (#134). | pnpm --filter @ward/web test: 34 passed ✅ · pnpm --filter @ward/web build ✅ · pnpm lint ✅ |
 | 2026-11-06 | W-7.5 | Implemented `/t/[id]/guardian` governance inbox, `RequestCard` component, and `ApprovalProgress` component in apps/web (#127, #128, #133). | pnpm --filter ./apps/web test: 30 passed ✅ · pnpm --filter ./apps/web build ✅ · pnpm lint ✅ |
 | 2026-11-06 | W-7.4 | Implemented `/t/[id]/fund` deposit page with `ft_transfer_call` call builder and cross-chain any-chain dry-run quote slot in apps/web (#132). | pnpm --filter ./apps/web test: 24 passed ✅ · pnpm --filter ./apps/web build ✅ · pnpm lint ✅ |
