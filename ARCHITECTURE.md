@@ -3,7 +3,6 @@
 > Companion to `PRD.md`. Short version for agents: `ARCHITECTURE_ESSENTIALS.md`.
 > v2 (4 Nov 2026) applies the hard-questions review; §14 is the decision log.
 > Live task list and status: `ROADMAP.md`. **Update it in every contribution.** File layout: `project_structure.md`.
-> Items marked **VERIFY** were not confirmed against live docs.
 
 ---
 
@@ -41,8 +40,8 @@
 | Contract | Rust, `near-sdk` 5.30, `cargo-near` | `ward.<you>.testnet` |
 | Tests | `near-workspaces` (sandbox, `fast_forward`), unit tests | Real Sputnik wasm in sandbox, pinned version |
 | Approved extra deps (2026-11-04) | `near-contract-standards` 5.30 (mock-ft NEP-141/145) · Vitest 5.1 (web tests) |
-| Token | Mock NEP-141 `tusdc.<you>.testnet` (6 dp, implements NEP-145 storage) | Mainnet USDC on NEAR **VERIFY** id |
-| Council | Sputnik DAO v2. **Demo uses one DAO** shared by the demo trusts | Factory **VERIFY** (`sputnik-v2.testnet` / `sputnik-dao.near`) |
+| Token | Mock NEP-141 `tusdc.<you>.testnet` (6 dp, implements NEP-145 storage) | Native USDC `17208628f84f5d6974225404428748ba9574650c.factory.bridge.near` / `usdc.near` |
+| Council | Sputnik DAO v2. **Demo uses one DAO** shared by the demo trusts | Factory: `sputnik-v2.testnet` / `sputnik-dao.near` |
 | Frontend | Next.js 16, TypeScript, Tailwind, `@near-wallet-selector`, `near-api-js` | Vercel |
 | Backend | Node 22 + Hono (`ward-api`) | Stretch features only |
 | AI (stretch) | NEAR AI Cloud `https://cloud-api.near.ai/v1` | TEE model, attestation + response signature |
