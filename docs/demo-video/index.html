@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --bg: #07090e;
+        --card-bg: #0f131d;
+        --card-border: #1e2638;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --text-muted: #64748b;
+        --emerald: #10b981;
+        --emerald-glow: rgba(16, 185, 129, 0.2);
+        --amber: #f59e0b;
+        --purple: #8b5cf6;
+        --blue: #3b82f6;
+        --rose: #f43f5e;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--bg);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: var(--text-primary);
+        -webkit-font-smoothing: antialiased;
+      }
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        background: radial-gradient(circle at 50% 20%, #151b2a 0%, #07090e 80%);
+      }
+      .scene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1920px;
+        height: 1080px;
+        padding: 80px 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .top-nav {
+        position: absolute;
+        top: 40px;
+        left: 120px;
+        right: 120px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-bottom: 24px;
+        z-index: 100;
+      }
+      .logo-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .logo-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 24px;
+        color: #fff;
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+      }
+      .logo-text {
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+      .logo-tagline {
+        font-size: 15px;
+        color: var(--text-secondary);
+        font-weight: 500;
+        margin-left: 8px;
+        padding-left: 14px;
+        border-left: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .badge {
+        padding: 8px 18px;
+        border-radius: 9999px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .badge-amber {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+      }
+      .badge-emerald {
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+      }
+      .badge-purple {
+        background: rgba(139, 92, 246, 0.15);
+        color: #c084fc;
+        border: 1px solid rgba(139, 92, 246, 0.3);
+      }
+      .badge-blue {
+        background: rgba(59, 130, 246, 0.15);
+        color: #60a5fa;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+      }
+      .badge-rose {
+        background: rgba(244, 63, 94, 0.15);
+        color: #fb7185;
+        border: 1px solid rgba(244, 63, 94, 0.3);
+      }
+      .hero-title {
+        font-size: 64px;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        text-align: center;
+        max-width: 1400px;
+        margin-bottom: 24px;
+      }
+      .hero-subtitle {
+        font-size: 26px;
+        color: var(--text-secondary);
+        max-width: 1100px;
+        text-align: center;
+        line-height: 1.5;
+        margin-bottom: 48px;
+      }
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 28px;
+        width: 100%;
+        max-width: 1680px;
+      }
+      .card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 20px;
+        padding: 36px 30px;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+      .card-glow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+      }
+      .card-title {
+        font-size: 22px;
+        font-weight: 700;
+        margin-top: 14px;
+        margin-bottom: 12px;
+        color: #fff;
+      }
+      .card-desc {
+        font-size: 16px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+      .card-meta {
+        margin-top: auto;
+        padding-top: 20px;
+        font-family: monospace;
+        font-size: 14px;
+        color: var(--text-muted);
+      }
+      .flow-container {
+        width: 100%;
+        max-width: 1560px;
+        background: rgba(15, 19, 29, 0.9);
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        padding: 48px;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+      }
+      .step-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 32px;
+      }
+      .step-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .step-num {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 20px;
+      }
+      .step-heading {
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      .step-body {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 40px;
+        align-items: center;
+      }
+      .stat-box {
+        background: #090b10;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 24px 28px;
+      }
+      .stat-label {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+      .stat-val {
+        font-size: 36px;
+        font-weight: 800;
+        color: #fff;
+      }
+      .terminal {
+        background: #040508;
+        border: 1px solid #1e2638;
+        border-radius: 16px;
+        padding: 28px;
+        font-family: monospace;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #e2e8f0;
+        box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+      }
+      .term-green { color: #34d399; font-weight: 700; }
+      .term-cyan { color: #38bdf8; }
+      .term-amber { color: #fbbf24; }
+      .term-rose { color: #f43f5e; }
+      .term-dim { color: #64748b; }
+      .circle-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .progress-bar-wrap {
+        width: 100%;
+        height: 10px;
+        background: #1e2638;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-top: 14px;
+      }
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #10b981, #34d399);
+        border-radius: 5px;
+      }
+      .cta-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: #10b981;
+        color: #040508;
+        font-weight: 800;
+        font-size: 20px;
+        padding: 18px 40px;
+        border-radius: 16px;
+        box-shadow: 0 0 40px rgba(16, 185, 129, 0.4);
+      }
+      .url-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 14px 28px;
+        border-radius: 16px;
+        font-size: 18px;
+        font-family: monospace;
+        color: #38bdf8;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="105" data-width="1920" data-height="1080">
+      
+      <!-- Persistent Top Navbar -->
+      <div class="top-nav">
+        <div class="logo-group">
+          <div class="logo-icon">W</div>
+          <div class="logo-text">Ward</div>
+          <div class="logo-tagline">Children's Trust on NEAR</div>
+        </div>
+        <div style="display: flex; gap: 14px;">
+          <div class="badge badge-emerald">NEAR Protocol</div>
+          <div class="badge badge-blue">Testnet: ward.testnet</div>
+        </div>
+      </div>
+
+      <!-- Scene 1: The Problem (0s - 14s) -->
+      <div id="s1" class="scene clip" data-start="0" data-duration="14" data-track-index="0">
+        <div class="badge badge-rose" style="margin-bottom: 24px;">The Global Injustice</div>
+        <h1 class="hero-title">Property Grabbing Strips 30% to 40%<br>of Orphans of Their Inheritance</h1>
+        <p class="hero-subtitle">
+          When a parent dies in sub-Saharan Africa, relatives often seize houses, land, and bank funds.<br>
+          Giving a single relative a crypto key or wallet doesn't protect the child — it invites expropriation.
+        </p>
+        <div class="cards-grid" style="max-width: 1440px;">
+          <div class="card">
+            <div class="card-glow" style="background: var(--rose);"></div>
+            <div class="stat-label">Affected Families</div>
+            <div class="stat-val" style="color: var(--rose);">30% – 40%</div>
+            <div class="card-desc" style="margin-top: 12px;">Widows &amp; orphans dispossessed (World Bank / HRW studies).</div>
+          </div>
+          <div class="card">
+            <div class="card-glow" style="background: var(--amber);"></div>
+            <div class="stat-label">Traditional Wills</div>
+            <div class="stat-val" style="color: var(--amber);">3–7 Years</div>
+            <div class="card-desc" style="margin-top: 12px;">Trapped in corrupt probate courts while children drop out of school.</div>
+          </div>
+          <div class="card">
+            <div class="card-glow" style="background: #ef4444;"></div>
+            <div class="stat-label">Single-Key Crypto</div>
+            <div class="stat-val" style="color: #ef4444;">Single Point</div>
+            <div class="card-desc" style="margin-top: 12px;">Whoever holds the seed phrase controls 100% of the funds.</div>
+          </div>
+          <div class="card">
+            <div class="card-glow" style="background: var(--emerald);"></div>
+            <div class="stat-label">Ward Solution</div>
+            <div class="stat-val" style="color: var(--emerald);">4 Circles</div>
+            <div class="card-desc" style="margin-top: 12px;">On-chain mathematical checks and balances no relative can bypass.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 2: Core Invariant — Circle Diversity (14s - 28s) -->
+      <div id="s2" class="scene clip" data-start="14" data-duration="14" data-track-index="1">
+        <div class="badge badge-emerald" style="margin-bottom: 24px;">Core Architecture Invariant</div>
+        <h1 class="hero-title">Circle Diversity on NEAR<br>No Single Relative or Clan Can Collude</h1>
+        <p class="hero-subtitle">
+          Guardians are strictly partitioned into 4 distinct social circles. Quorum of 3 votes forces consensus across circles.
+        </p>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-glow" style="background: var(--blue);"></div>
+            <div class="circle-pill" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">Maternal Circle</div>
+            <div class="card-title">Maternal Aunt</div>
+            <div class="card-desc">Protects children's personal well-being; monitors unauthorized withdrawal attempts.</div>
+            <div class="card-meta">aunt.ward-demo.testnet</div>
+          </div>
+          <div class="card">
+            <div class="card-glow" style="background: var(--amber);"></div>
+            <div class="circle-pill" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">Paternal Circle</div>
+            <div class="card-title">Paternal Uncle</div>
+            <div class="card-desc">Appointed primary caregiver; claims living allowance; cannot approve his own requests.</div>
+            <div class="card-meta">uncle.ward-demo.testnet</div>
+          </div>
+          <div class="card">
+            <div class="card-glow" style="background: var(--purple);"></div>
+            <div class="circle-pill" style="background: rgba(139, 92, 246, 0.15); color: #c084fc;">Institution Circle</div>
+            <div class="card-title">School Teacher</div>
+            <div class="card-desc">Verifies educational needs; approves direct school fee payments to school account.</div>
+            <div class="card-meta">teacher.ward-demo.testnet</div>
+          </div>
+          <div class="card">
+            <div class="card-glow" style="background: var(--rose);"></div>
+            <div class="circle-pill" style="background: rgba(244, 63, 94, 0.15); color: #fb7185;">Community Circle</div>
+            <div class="card-title">Community Pastor</div>
+            <div class="card-desc">Independent community arbiter; verifies hospital bills and rejects fraudulent expenses.</div>
+            <div class="card-meta">pastor.ward-demo.testnet</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 3: Steps 1 & 2 — Creation & Cross-Chain Funding (28s - 42s) -->
+      <div id="s3" class="scene clip" data-start="28" data-duration="14" data-track-index="2">
+        <div class="flow-container">
+          <div class="step-header">
+            <div class="step-title-wrap">
+              <div class="step-num">1</div>
+              <div class="step-heading">Trust Creation &amp; Multichain Deposit</div>
+            </div>
+            <div class="badge badge-emerald">Steps 1 &amp; 2 • Acceptance Test</div>
+          </div>
+          <div class="step-body">
+            <div>
+              <div class="stat-box" style="margin-bottom: 20px;">
+                <div class="stat-label">Trust Label</div>
+                <div style="font-size: 26px; font-weight: 800; color: #fff;">Ada &amp; Tobi Education &amp; Care Trust</div>
+                <div style="margin-top: 8px; font-size: 15px; color: var(--text-secondary);">
+                  Beneficiaries: Ada (50% share, 10y) • Tobi (50% share, 7y)
+                </div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">Chain Abstraction Inflow</div>
+                <div style="font-size: 22px; font-weight: 700; color: #34d399;">2,000 tUSDC Deposited</div>
+                <div style="margin-top: 8px; font-size: 14px; color: var(--text-secondary);">
+                  Funded via NEAR Intents cross-chain dry-run quote ("Pay from USDT on Tron")
+                </div>
+              </div>
+            </div>
+            <div class="terminal">
+              <div class="term-dim">// 1. Settlor creates trust with 4 circles</div>
+              <div><span class="term-cyan">calls</span>.createTrust({</div>
+              <div>&nbsp;&nbsp;label: <span class="term-green">"Ada &amp; Tobi"</span>,</div>
+              <div>&nbsp;&nbsp;guardians: [aunt, uncle, teacher, pastor],</div>
+              <div>&nbsp;&nbsp;children: [{ label: "Ada" }, { label: "Tobi" }]</div>
+              <div>}) <span class="term-green">✔ Verified (rules.validateGuardians)</span></div>
+              <div style="margin-top: 14px;" class="term-dim">// 2. Cross-chain deposit attached</div>
+              <div><span class="term-cyan">calls</span>.deposit({ amount: <span class="term-amber">"2000000000"</span> })</div>
+              <div class="term-green">✔ NEP-141 ft_transfer_call confirmed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 4: Steps 3 & 4 — Social Death Attestations & Spend Checks (42s - 56s) -->
+      <div id="s4" class="scene clip" data-start="42" data-duration="14" data-track-index="3">
+        <div class="flow-container">
+          <div class="step-header">
+            <div class="step-title-wrap">
+              <div class="step-num">2</div>
+              <div class="step-heading">Social Death Quorum &amp; Rejection of Bad Spends</div>
+            </div>
+            <div class="badge badge-amber">Steps 3 &amp; 4 • Acceptance Test</div>
+          </div>
+          <div class="step-body">
+            <div>
+              <div class="stat-box" style="margin-bottom: 20px;">
+                <div class="stat-label">Attestation Quorum (3 / 4 Circles)</div>
+                <div style="display: flex; gap: 8px; margin-top: 6px;">
+                  <span class="circle-pill" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">✓ Aunt (Maternal)</span>
+                  <span class="circle-pill" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">✓ Uncle (Paternal)</span>
+                  <span class="circle-pill" style="background: rgba(139, 92, 246, 0.2); color: #c084fc;">✓ Teacher (Inst.)</span>
+                </div>
+                <div class="progress-bar-wrap"><div class="progress-bar" style="width: 100%;"></div></div>
+                <div style="margin-top: 8px; font-size: 13px; color: #34d399;">Waiting period elapses → Trust status = ACTIVE</div>
+              </div>
+              <div class="stat-box" style="border-color: rgba(244, 63, 94, 0.3);">
+                <div class="stat-label" style="color: var(--rose);">Unauthorized Expense Intercepted</div>
+                <div style="font-size: 20px; font-weight: 700; color: #fff;">1,500 USDC "Personal Medical"</div>
+                <div style="margin-top: 6px; font-size: 14px; color: #fb7185;">
+                  Uncle cannot vote on his own request. Pastor rejects after clinic invoice check!
+                </div>
+              </div>
+            </div>
+            <div class="terminal">
+              <div class="term-dim">// Step 3: Quorum activated</div>
+              <div><span class="term-cyan">calls</span>.attestDeath({ trust_id: 0 }) <span class="term-green">✔ Aunt</span></div>
+              <div><span class="term-cyan">calls</span>.attestDeath({ trust_id: 0 }) <span class="term-green">✔ Uncle</span></div>
+              <div><span class="term-cyan">calls</span>.attestDeath({ trust_id: 0 }) <span class="term-green">✔ Teacher</span></div>
+              <div class="term-green">✔ finalize_activation → Trust #0 ACTIVE</div>
+              <div style="margin-top: 14px;" class="term-dim">// Step 4: Unauthorized spend vetoed</div>
+              <div><span class="term-cyan">calls</span>.createRequest({ amount: <span class="term-amber">1500</span>, to: uncle })</div>
+              <div><span class="term-cyan">calls</span>.reject({ request_id: 1 }) <span class="term-rose">✖ Pastor Rejected</span></div>
+              <div class="term-rose">✖ Spend halted: 0 tokens moved</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 5: Steps 5 & 6 — Direct Tuition & DAO Clan Defense (56s - 70s) -->
+      <div id="s5" class="scene clip" data-start="56" data-duration="14" data-track-index="4">
+        <div class="flow-container">
+          <div class="step-header">
+            <div class="step-title-wrap">
+              <div class="step-num">3</div>
+              <div class="step-heading">Direct School Payout &amp; Sputnik DAO Defense</div>
+            </div>
+            <div class="badge badge-purple">Steps 5 &amp; 6 • Acceptance Test</div>
+          </div>
+          <div class="step-body">
+            <div>
+              <div class="stat-box" style="margin-bottom: 20px;">
+                <div class="stat-label">Direct-to-Payee Payout</div>
+                <div style="font-size: 28px; font-weight: 800; color: #34d399;">350.00 USDC Tuition</div>
+                <div style="margin-top: 6px; font-size: 14px; color: var(--text-secondary);">
+                  Approved by Teacher. Paid directly to <span style="color:#38bdf8;">school.testnet</span> — caregiver cannot intercept.
+                </div>
+              </div>
+              <div class="stat-box" style="border-color: rgba(244, 63, 94, 0.3);">
+                <div class="stat-label" style="color: var(--rose);">Sputnik DAO Clan Attack Blocked</div>
+                <div style="font-size: 18px; font-weight: 700; color: #fff;">Paternal Clan Tries to Swap Teacher</div>
+                <div style="margin-top: 6px; font-size: 14px; color: #fb7185;">
+                  Proposal to add 3rd paternal relative blocked by smart contract: Max 2 guardians per circle!
+                </div>
+              </div>
+            </div>
+            <div class="terminal">
+              <div class="term-dim">// Step 5: Direct payee disbursement</div>
+              <div><span class="term-cyan">calls</span>.createRequest({</div>
+              <div>&nbsp;&nbsp;kind: { PayeePayment: { to: <span class="term-cyan">"school.testnet"</span>, amount: 350 } }</div>
+              <div>})</div>
+              <div><span class="term-cyan">calls</span>.approve({ request_id: 2 }) <span class="term-green">✔ Teacher approved</span></div>
+              <div class="term-green">✔ Disbursed directly to school wallet</div>
+              <div style="margin-top: 14px;" class="term-dim">// Step 6: Sputnik DAO attack blocked</div>
+              <div><span class="term-cyan">rules</span>.validateGuardians(3_paternal_guardians)</div>
+              <div class="term-rose">✖ Panicked: E08_CIRCLE_LIMIT (Max 2 per circle)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 6: Steps 7 & 8 — Timelock Theft Defense & Child Graduation (70s - 84s) -->
+      <div id="s6" class="scene clip" data-start="70" data-duration="14" data-track-index="5">
+        <div class="flow-container">
+          <div class="step-header">
+            <div class="step-title-wrap">
+              <div class="step-num">4</div>
+              <div class="step-heading">Stolen Phone Timelock &amp; Beneficiary Sovereignty</div>
+            </div>
+            <div class="badge badge-emerald">Steps 7 &amp; 8 • Acceptance Test</div>
+          </div>
+          <div class="step-body">
+            <div>
+              <div class="stat-box" style="margin-bottom: 20px;">
+                <div class="stat-label">Phone Theft Timelock &amp; Veto</div>
+                <div style="font-size: 20px; font-weight: 700; color: #fff;">1,500 USDC Unauthorized Withdrawal</div>
+                <div style="margin-top: 6px; font-size: 14px; color: var(--text-secondary);">
+                  Held in 7-day timelock. Aunt + Teacher combine 2 circles to permanently cancel theft!
+                </div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">Beneficiary Rights (Ages 14 &amp; 18)</div>
+                <div style="font-size: 20px; font-weight: 700; color: #c084fc;">Ada Sovereign Custody</div>
+                <div style="margin-top: 6px; font-size: 14px; color: var(--text-secondary);">
+                  • Age 14: Emergency flag veto on suspicious caregiver requests.<br>
+                  • Age 18: Claims 1/3 graduation tranche directly to <span style="color:#38bdf8;">ada.ward-demo.testnet</span>.
+                </div>
+              </div>
+            </div>
+            <div class="terminal">
+              <div class="term-dim">// Step 7: Stolen phone attack cancelled</div>
+              <div><span class="term-cyan">calls</span>.withdraw({ amount: 1500 }) <span class="term-amber">⏳ Delayed (Over Cap)</span></div>
+              <div><span class="term-cyan">calls</span>.vetoWithdrawal() <span class="term-green">✔ Aunt (Maternal)</span></div>
+              <div><span class="term-cyan">calls</span>.vetoWithdrawal() <span class="term-green">✔ Teacher (Institution)</span></div>
+              <div class="term-green">✔ 2-circle quorum cancels theft; funds safe</div>
+              <div style="margin-top: 14px;" class="term-dim">// Step 8: Child graduation at 18</div>
+              <div><span class="term-cyan">calls</span>.claimGraduation({ child: 0 })</div>
+              <div class="term-green">✔ Tranche 1/3 disbursed directly to Ada's wallet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 7: Production App & Automated Acceptance (84s - 96s) -->
+      <div id="s7" class="scene clip" data-start="84" data-duration="12" data-track-index="6">
+        <div class="badge badge-emerald" style="margin-bottom: 20px;">Production Ready &amp; Automated</div>
+        <h1 class="hero-title" style="font-size: 56px;">Live on Vercel &amp; Automated Acceptance Test</h1>
+        <div style="display: flex; gap: 32px; width: 100%; max-width: 1560px; margin-top: 24px;">
+          <div class="stat-box" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 48px 32px;">
+            <div class="logo-icon" style="width: 64px; height: 64px; font-size: 36px; margin-bottom: 18px;">W</div>
+            <div style="font-size: 28px; font-weight: 800; color: #fff;">Deployed Web Application</div>
+            <div class="url-pill" style="margin-top: 16px; margin-bottom: 24px;">
+              https://ward-app-tawny.vercel.app
+            </div>
+            <div style="font-size: 16px; color: var(--text-secondary); line-height: 1.6;">
+              Full interactive UI: Create Trust Wizard, Public Ledger (`/t/0`), Guardian Governance Inbox, and Caregiver / Child Portals.
+            </div>
+          </div>
+          <div class="terminal" style="flex: 1.2; font-size: 14px;">
+            <div class="term-green" style="font-size: 16px;">$ pnpm demo</div>
+            <div class="term-dim">==================================================================</div>
+            <div>Ward End-to-End PRD §8 Acceptance Demo</div>
+            <div class="term-dim">==================================================================</div>
+            <div>▶ [Step 1] Create 'Ada &amp; Tobi' Trust with 4 independent circles <span class="term-green">✔ PASS</span></div>
+            <div>▶ [Step 2] Deposit 2,000 tUSDC &amp; simulate cross-chain quote <span class="term-green">✔ PASS</span></div>
+            <div>▶ [Step 3] Submit 3 death attestations → Active <span class="term-green">✔ PASS</span></div>
+            <div>▶ [Step 4] Caregiver allowance; 1,500 spend rejected <span class="term-green">✔ PASS</span></div>
+            <div>▶ [Step 5] School fees paid directly to school.testnet <span class="term-green">✔ PASS</span></div>
+            <div>▶ [Step 6] Paternal-side DAO capture fails (circle limit) <span class="term-green">✔ PASS</span></div>
+            <div>▶ [Step 7] Stolen-phone withdrawal delayed &amp; vetoed <span class="term-green">✔ PASS</span></div>
+            <div>▶ [Step 8] 14yo child flags; sovereign graduation at 18 <span class="term-green">✔ PASS</span></div>
+            <div>▶ [Step 9] Public ledger shows immutable history <span class="term-green">✔ PASS</span></div>
+            <div class="term-dim">==================================================================</div>
+            <div class="term-green" style="font-size: 15px;">✔ ALL 9 ACCEPTANCE STEPS PASSED IN 0.00s (&lt; 5 min)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 8: Outro & Call to Action (96s - 105s) -->
+      <div id="s8" class="scene clip" data-start="96" data-duration="9" data-track-index="7">
+        <div class="logo-icon" style="width: 80px; height: 80px; font-size: 44px; margin-bottom: 24px;">W</div>
+        <h1 class="hero-title" style="font-size: 64px; margin-bottom: 16px;">Ward</h1>
+        <p class="hero-subtitle" style="font-size: 24px; margin-bottom: 40px;">
+          A children's trust on NEAR that no single relative can empty.<br>
+          Protecting the next generation from property grabbing.
+        </p>
+        <div style="display: flex; gap: 24px; align-items: center;">
+          <div class="url-pill" style="font-size: 20px; font-weight: 700;">https://ward-app-tawny.vercel.app</div>
+          <div class="url-pill" style="font-size: 20px; color: #fff;">github.com/YazarAyobami/ward</div>
+        </div>
+        <div style="margin-top: 36px; display: flex; gap: 16px;">
+          <div class="badge badge-emerald">191 Contract Tests</div>
+          <div class="badge badge-blue">7 Sandbox Integration Suites</div>
+          <div class="badge badge-purple">100% Green CI</div>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+
+      // Scene 1: 0 - 14s
+      tl.to("#s1", { opacity: 1, duration: 0.5 }, 0);
+      tl.to("#s1", { opacity: 0, duration: 0.5 }, 13.5);
+
+      // Scene 2: 14 - 28s
+      tl.to("#s2", { opacity: 1, duration: 0.5 }, 14);
+      tl.to("#s2", { opacity: 0, duration: 0.5 }, 27.5);
+
+      // Scene 3: 28 - 42s
+      tl.to("#s3", { opacity: 1, duration: 0.5 }, 28);
+      tl.to("#s3", { opacity: 0, duration: 0.5 }, 41.5);
+
+      // Scene 4: 42 - 56s
+      tl.to("#s4", { opacity: 1, duration: 0.5 }, 42);
+      tl.to("#s4", { opacity: 0, duration: 0.5 }, 55.5);
+
+      // Scene 5: 56 - 70s
+      tl.to("#s5", { opacity: 1, duration: 0.5 }, 56);
+      tl.to("#s5", { opacity: 0, duration: 0.5 }, 69.5);
+
+      // Scene 6: 70 - 84s
+      tl.to("#s6", { opacity: 1, duration: 0.5 }, 70);
+      tl.to("#s6", { opacity: 0, duration: 0.5 }, 83.5);
+
+      // Scene 7: 84 - 96s
+      tl.to("#s7", { opacity: 1, duration: 0.5 }, 84);
+      tl.to("#s7", { opacity: 0, duration: 0.5 }, 95.5);
+
+      // Scene 8: 96 - 105s
+      tl.to("#s8", { opacity: 1, duration: 0.5 }, 96);
+      tl.set({}, {}, 105);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

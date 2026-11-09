@@ -24,3 +24,7 @@ dist/
 next-env.d.ts
 .vercel
 .env*
+
+# HyperFrames
+.hyperframes/
+

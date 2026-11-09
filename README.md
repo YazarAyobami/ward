@@ -94,7 +94,9 @@ flowchart TD
   - WCAG touch target compliance ($\ge 44\text{px}$ tap targets for interactive elements).
   - Screen reader accessible with semantic headings, skip-to-content links, ARIA tablists, and live status banners.
 
-### Interface Preview
+### Demo Video & Interface Preview
+
+- **Video Walkthrough:** [`docs/demo.mp4`](docs/demo.mp4) (105-second motion demo covering problem, multi-circle invariant, acceptance tests, and live web app)
 
 #### Public Trust Ledger (`/t/[id]`)
 ![Public Trust Ledger](docs/screenshots/public_ledger.svg)

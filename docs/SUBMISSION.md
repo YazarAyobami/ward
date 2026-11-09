@@ -27,6 +27,7 @@ Ward is an autonomous on-chain trust built in Rust on NEAR that protects childre
 
 ### Testnet Contract, Explorer & Live App
 - **Live Web App:** [https://ward-app-tawny.vercel.app](https://ward-app-tawny.vercel.app)
+- **Demo Video:** [`docs/demo.mp4`](docs/demo.mp4) (105-second MP4 walkthrough)
 - **Ward Smart Contract:** `ward.testnet` ([NearBlocks Explorer](https://testnet.nearblocks.io/address/ward.testnet))
 - **Mock FT Token (tUSDC):** `tusdc.testnet` ([NearBlocks Explorer](https://testnet.nearblocks.io/address/tusdc.testnet))
 - **Demo Trust #0:** "Ada & Tobi Education & Care Trust" ([View on Live App](https://ward-app-tawny.vercel.app/t/0))
