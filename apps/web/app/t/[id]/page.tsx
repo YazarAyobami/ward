@@ -3,6 +3,9 @@ import Link from "next/link";
 import {
   createViewClient,
   formatAmount,
+  deriveTrustStage,
+  getTrustStageDetails,
+  deriveWithdrawalTimelockStage,
   Circle,
   Trust,
   RequestKind,
@@ -12,10 +15,10 @@ import { DemoModeBanner } from "@/components/DemoModeBanner";
 import { RulesSummary } from "@/components/RulesSummary";
 import { Timeline, TimelineEvent } from "@/components/Timeline";
 
-// Default demo trust for testnet visualization and explorer previews
+// Default demo trust for testnet visualization and explorer previews (Trust #0)
 const DEMO_TRUST: Trust = {
   id: 0,
-  label: "Kofi & Amara Education & Care Trust",
+  label: "Ada & Tobi Education & Care Trust",
   settlor: "parent.testnet",
   dao: "ward-dao.sputnik-dao.near",
   caregiver: "caregiver.testnet",
@@ -23,12 +26,13 @@ const DEMO_TRUST: Trust = {
   guardians: [
     { account: "maternal_aunt.testnet", circle: "Maternal" },
     { account: "paternal_uncle.testnet", circle: "Paternal" },
-    { account: "elder_okonkwo.testnet", circle: "Community" },
+    { account: "pastor_community.testnet", circle: "Community" },
+    { account: "teacher_institute.testnet", circle: "Institution" },
   ],
   children: [
     {
-      label: "Amara",
-      account: "amara.testnet",
+      label: "Ada",
+      account: "ada.testnet",
       birth_ts: "1483228800000000000",
       share_bps: 5000,
       paid_out: "0",
@@ -36,8 +40,8 @@ const DEMO_TRUST: Trust = {
       alive: true,
     },
     {
-      label: "Kofi",
-      account: "kofi.testnet",
+      label: "Tobi",
+      account: "tobi.testnet",
       birth_ts: "1577836800000000000",
       share_bps: 5000,
       paid_out: "0",
@@ -55,8 +59,8 @@ const DEMO_TRUST: Trust = {
   rules: {
     allowance_amount: "500000000", // 500 USDC
     allowance_period: "2592000000000000", // 30 days
-    large_threshold: "2000000000", // 2000 USDC
-    death_quorum: 2,
+    large_threshold: "1500000000", // 1500 USDC
+    death_quorum: 3,
     waiting_period: "1209600000000000", // 14 days
     withdraw_free_cap: "1000000000", // 1000 USDC
     withdraw_delay: "604800000000000", // 7 days
@@ -93,7 +97,7 @@ const DEMO_EVENTS: TimelineEvent[] = [
     timestamp: "2026-11-01",
     amount: "25,000 USDC",
     actor: "parent.testnet",
-    description: "Settlor established the trust with 3 guardians across Maternal, Paternal, and Community circles.",
+    description: "Settlor established the trust with 4 guardians across Maternal, Paternal, Community, and Institution circles.",
   },
   {
     id: "evt-2",
@@ -111,9 +115,13 @@ const DEMO_EVENTS: TimelineEvent[] = [
     kind: "DeathAttestation",
     status: "Completed",
     timestamp: "2026-11-04",
-    actor: "elder_okonkwo.testnet",
-    description: "Quorum of 2 reached. 14-day cancellation window started.",
-    approvals: [{ account: "elder_okonkwo.testnet", circle: "Community" }],
+    actor: "pastor_community.testnet",
+    description: "Quorum of 3 reached across distinct circles. 14-day cancellation window started.",
+    approvals: [
+      { account: "maternal_aunt.testnet", circle: "Maternal" },
+      { account: "paternal_uncle.testnet", circle: "Paternal" },
+      { account: "pastor_community.testnet", circle: "Community" },
+    ],
   },
   {
     id: "evt-4",
@@ -137,27 +145,27 @@ const DEMO_EVENTS: TimelineEvent[] = [
 
 const STATUS_BADGES: Record<string, { bg: string; text: string; border: string }> = {
   Funding: {
-    bg: "bg-blue-500/15",
-    text: "text-blue-300",
+    bg: "bg-blue-500/10",
+    text: "text-blue-400",
     border: "border-blue-500/30",
   },
   DeathClaimed: {
-    bg: "bg-amber-500/15",
-    text: "text-amber-300",
+    bg: "bg-amber-500/10",
+    text: "text-amber-400",
     border: "border-amber-500/30",
   },
   Active: {
-    bg: "bg-emerald-500/15",
-    text: "text-emerald-300",
+    bg: "bg-emerald-500/10",
+    text: "text-emerald-400",
     border: "border-emerald-500/30",
   },
   Graduating: {
-    bg: "bg-purple-500/15",
-    text: "text-purple-300",
+    bg: "bg-purple-500/10",
+    text: "text-purple-400",
     border: "border-purple-500/30",
   },
   Closed: {
-    bg: "bg-neutral-800",
+    bg: "bg-neutral-800/50",
     text: "text-neutral-400",
     border: "border-neutral-700",
   },
@@ -238,8 +246,12 @@ export default async function TrustPage({
     {}
   );
 
+  const trustStage = deriveTrustStage(trust);
+  const stageDetails = getTrustStageDetails(trustStage);
+  const withdrawalStage = deriveWithdrawalTimelockStage(trust);
+
   return (
-    <div className="w-full">
+    <div className="w-full bg-[#07090e] text-neutral-100">
       {/* Demo Mode Banner when time_scale != 1 */}
       <DemoModeBanner timeScale={trust.rules.time_scale} />
 
@@ -249,22 +261,22 @@ export default async function TrustPage({
           <div>
             <Link
               href="/"
-              className="text-xs text-neutral-400 hover:text-amber-400 transition-colors inline-flex items-center gap-1 mb-2"
+              className="text-xs font-mono text-neutral-400 hover:text-amber-400 transition-colors inline-flex items-center gap-1 mb-2"
             >
-              ← Back to Overview
+              &larr; Back to Overview
             </Link>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-neutral-100 tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                 {trust.label || `Trust #${trust.id}`}
               </h1>
               <span
-                className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}
+                className={`px-2.5 py-0.5 rounded text-xs font-mono font-semibold border ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}
               >
                 {statusLabel}
               </span>
             </div>
             <p className="text-xs font-mono text-neutral-500 mt-1">
-              Settlor: {trust.settlor} · Trust ID: #{trust.id}
+              Settlor: {trust.settlor} · Trust ID: #{trust.id} · Token: {trust.token}
             </p>
           </div>
 
@@ -272,78 +284,132 @@ export default async function TrustPage({
           <div className="flex flex-wrap items-center gap-2">
             <Link
               href={`/t/${trust.id}/fund`}
-              className="px-3 py-2 min-h-[44px] flex items-center rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-colors"
+              className="px-3 py-2 min-h-[44px] flex items-center rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-semibold font-mono transition-colors"
             >
               Deposit Funds
             </Link>
             <Link
               href={`/t/${trust.id}/guardian`}
-              className="px-3 py-2 min-h-[44px] flex items-center rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-medium transition-colors"
+              className="px-3 py-2 min-h-[44px] flex items-center rounded bg-[#0e121b] hover:bg-white/[0.06] text-neutral-200 border border-white/10 text-xs font-medium font-mono transition-colors"
             >
               Guardian Inbox
             </Link>
             <Link
               href={`/t/${trust.id}/caregiver`}
-              className="px-3 py-2 min-h-[44px] flex items-center rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-medium transition-colors"
+              className="px-3 py-2 min-h-[44px] flex items-center rounded bg-[#0e121b] hover:bg-white/[0.06] text-neutral-200 border border-white/10 text-xs font-medium font-mono transition-colors"
             >
               Caregiver Portal
             </Link>
             <Link
               href={`/t/${trust.id}/child`}
-              className="px-3 py-2 min-h-[44px] flex items-center rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-medium transition-colors"
+              className="px-3 py-2 min-h-[44px] flex items-center rounded bg-[#0e121b] hover:bg-white/[0.06] text-neutral-200 border border-white/10 text-xs font-medium font-mono transition-colors"
             >
               Child Portal
             </Link>
           </div>
         </div>
 
+        {/* Explicit State Machine Lifecycle Banner */}
+        <div
+          data-testid="trust-lifecycle-banner"
+          data-trust-stage={trustStage.stage}
+          className="p-5 rounded-lg border border-white/10 bg-[#0e121b] flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-mono"
+        >
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-neutral-400 uppercase tracking-wider text-[11px]">
+                Trust Lifecycle Stage:
+              </span>
+              <span className="px-2 py-0.5 rounded font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                {trustStage.label}
+              </span>
+            </div>
+            <p className="text-neutral-400 font-sans text-xs">
+              {stageDetails.description}
+            </p>
+          </div>
+          {trustStage.stage === "Active" && (
+            <div className="text-left sm:text-right sm:border-l sm:border-white/10 sm:pl-4">
+              <div className="text-neutral-500 uppercase font-mono text-[10px]">Claimable Caregiver Allowance</div>
+              <div className="font-mono font-bold text-base text-emerald-400">
+                {formatAmount(trustStage.allowanceDue, 6, "USDC")}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Anti-Theft Timelock Security Banner if Pending */}
+        {withdrawalStage.stage === "ReviewWindow" && (
+          <div
+            data-testid="withdrawal-timelock-banner"
+            data-withdrawal-stage={withdrawalStage.stage}
+            className="p-5 rounded-lg border border-rose-500/40 bg-rose-950/20 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-mono"
+          >
+            <div>
+              <div className="font-bold text-rose-300 flex items-center gap-2">
+                <span>⚠️</span>
+                <span>Pending Over-Cap Withdrawal Under 7-Day Timelock</span>
+              </div>
+              <p className="text-rose-200/80 mt-1 font-sans">
+                Amount: {formatAmount(withdrawalStage.amount, 6, "USDC")} · Vetoed by {withdrawalStage.vetoCount}/2 circles. Guardians can cancel unauthorized withdrawals before time expires.
+              </p>
+            </div>
+            <Link
+              href={`/t/${trust.id}/guardian`}
+              className="px-3 py-1.5 rounded bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-500/40 font-semibold text-center whitespace-nowrap min-h-[44px] flex items-center justify-center"
+            >
+              Review &amp; Veto in Guardian Inbox &rarr;
+            </Link>
+          </div>
+        )}
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl bg-neutral-900/80 border border-neutral-800">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
-              Total Trust Balance
+          <div className="p-5 rounded-lg bg-[#0e121b] border border-white/10 space-y-1">
+            <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-neutral-500">
+              Total Protected Balance
             </span>
-            <div className="mt-1 text-xl sm:text-2xl font-bold font-mono text-neutral-100">
+            <div className="text-2xl font-bold font-mono text-white">
               {balanceFormatted}
             </div>
-            <p className="mt-1 text-[11px] text-neutral-400">
-              Locked in NEP-141 token contract
+            <p className="text-[11px] text-neutral-400 font-mono">
+              Locked in NEP-141 USDC contract
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-neutral-900/80 border border-neutral-800">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+          <div className="p-5 rounded-lg bg-[#0e121b] border border-white/10 space-y-1">
+            <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-neutral-500">
               Designated Caregiver
             </span>
-            <div className="mt-1 text-sm font-semibold font-mono text-neutral-100 truncate">
+            <div className="text-sm font-semibold font-mono text-neutral-200 truncate">
               {trust.caregiver}
             </div>
             <div className="mt-1 flex items-center gap-1.5">
               <CircleBadge circle={trust.caregiver_circle} size="sm" />
-              <span className="text-[11px] text-neutral-400">Receives monthly living allowance</span>
+              <span className="text-[11px] text-neutral-400">Monthly allowance recipient</span>
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-neutral-900/80 border border-neutral-800">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+          <div className="p-5 rounded-lg bg-[#0e121b] border border-white/10 space-y-1">
+            <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-neutral-500">
               Guardian Council
             </span>
-            <div className="mt-1 text-xl sm:text-2xl font-bold text-neutral-100">
+            <div className="text-2xl font-bold font-mono text-white">
               {trust.guardians.length} Guardians
             </div>
-            <p className="mt-1 text-[11px] text-neutral-400">
+            <p className="text-[11px] text-neutral-400 font-mono">
               Across {Object.keys(guardiansByCircle).length} distinct social circles
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-neutral-900/80 border border-neutral-800">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+          <div className="p-5 rounded-lg bg-[#0e121b] border border-white/10 space-y-1">
+            <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-neutral-500">
               Protected Heirs
             </span>
-            <div className="mt-1 text-xl sm:text-2xl font-bold text-neutral-100">
+            <div className="text-2xl font-bold font-mono text-white">
               {trust.children.length} Children
             </div>
-            <p className="mt-1 text-[11px] text-neutral-400">
+            <p className="text-[11px] text-neutral-400 font-mono">
               100% total inheritance allocated
             </p>
           </div>
@@ -352,13 +418,13 @@ export default async function TrustPage({
         {/* Guardians by Circle & Beneficiaries */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Guardians Grouped by Circle */}
-          <div className="p-5 rounded-2xl bg-neutral-900/70 border border-neutral-800 space-y-4">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-neutral-400">
+          <div className="p-6 rounded-lg bg-[#0e121b] border border-white/10 space-y-4">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-400">
                 Guardians Grouped by Circle
               </h3>
               <span className="text-xs text-neutral-500 font-mono">
-                ≤ 2 per circle
+                &le; 2 per circle
               </span>
             </div>
 
@@ -366,7 +432,7 @@ export default async function TrustPage({
               {Object.entries(guardiansByCircle).map(([circle, accounts]) => (
                 <div
                   key={circle}
-                  className="p-3 rounded-xl bg-neutral-950 border border-neutral-800/80 space-y-2"
+                  className="p-3.5 rounded border border-white/[0.06] bg-[#07090e] space-y-2"
                 >
                   <div className="flex items-center justify-between">
                     <CircleBadge circle={circle as Circle} size="sm" />
@@ -382,7 +448,7 @@ export default async function TrustPage({
                         className="text-xs font-mono text-neutral-300 flex items-center justify-between"
                       >
                         <span>{acc}</span>
-                        <span className="text-[10px] text-neutral-500">Verified</span>
+                        <span className="text-[10px] text-neutral-500 font-mono">Verified Attestor</span>
                       </div>
                     ))}
                   </div>
@@ -392,9 +458,9 @@ export default async function TrustPage({
           </div>
 
           {/* Children & Shares */}
-          <div className="p-5 rounded-2xl bg-neutral-900/70 border border-neutral-800 space-y-4">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-neutral-400">
+          <div className="p-6 rounded-lg bg-[#0e121b] border border-white/10 space-y-4">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-400">
                 Children &amp; Share Allocation
               </h3>
               <span className="text-xs text-neutral-500 font-mono">
@@ -408,7 +474,7 @@ export default async function TrustPage({
                 return (
                   <div
                     key={idx}
-                    className="p-3 rounded-xl bg-neutral-950 border border-neutral-800/80 space-y-2"
+                    className="p-3.5 rounded border border-white/[0.06] bg-[#07090e] space-y-2"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -421,19 +487,19 @@ export default async function TrustPage({
                           </span>
                         )}
                       </div>
-                      <span className="font-mono text-xs font-bold text-amber-300">
+                      <span className="font-mono text-xs font-bold text-amber-400">
                         {percent}%
                       </span>
                     </div>
 
-                    <div className="w-full h-1.5 rounded-full bg-neutral-800 overflow-hidden">
+                    <div className="w-full h-1.5 rounded-full bg-neutral-900 overflow-hidden border border-white/[0.04]">
                       <div
                         className="h-full bg-amber-500 rounded-full"
                         style={{ width: `${percent}%` }}
                       />
                     </div>
 
-                    <div className="flex justify-between text-[11px] text-neutral-500">
+                    <div className="flex justify-between text-[11px] font-mono text-neutral-500">
                       <span>Status: {child.alive ? "Active Beneficiary" : "Deceased"}</span>
                       <span>Graduation Tranches: {child.tranches_paid}/{trust.rules.graduation_tranches}</span>
                     </div>
@@ -445,7 +511,7 @@ export default async function TrustPage({
         </div>
 
         {/* Rules in Plain Language */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-neutral-900/70 border border-neutral-800">
+        <div className="p-6 rounded-lg bg-[#0e121b] border border-white/10">
           <RulesSummary
             rules={trust.rules}
             caregiver={trust.caregiver}
@@ -454,7 +520,7 @@ export default async function TrustPage({
         </div>
 
         {/* Public Activity Timeline */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-neutral-900/70 border border-neutral-800">
+        <div className="p-6 rounded-lg bg-[#0e121b] border border-white/10">
           <Timeline events={events} />
         </div>
       </div>

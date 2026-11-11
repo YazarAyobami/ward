@@ -121,6 +121,10 @@ export function RequestCard({
 
   return (
     <div
+      data-testid="request-card"
+      data-request-id={request.id}
+      data-status={status}
+      data-child-flagged={Boolean(request.child_flagged)}
       className={`p-4 sm:p-5 rounded-2xl bg-neutral-900/90 border border-neutral-800 space-y-4 ${className}`}
     >
       {/* Header: ID, Kind, Status */}
@@ -134,7 +138,7 @@ export function RequestCard({
               {title}
             </h3>
             {request.child_flagged && (
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">
                 🚩 CHILD FLAGGED
               </span>
             )}

@@ -47,6 +47,7 @@ export function CircleBadge({ circle, size = "sm", className = "" }: CircleBadge
 
   return (
     <span
+      data-circle={circle}
       className={`inline-flex items-center gap-1.5 font-medium rounded-full border ${style.bg} ${style.text} ${style.border} ${sizeClasses} ${className}`}
     >
       <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} aria-hidden="true" />

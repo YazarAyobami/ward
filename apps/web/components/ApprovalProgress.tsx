@@ -42,7 +42,13 @@ export function ApprovalProgress({
   const neededText = needed || defaultNeededText;
 
   return (
-    <div className={`space-y-2.5 ${className}`}>
+    <div
+      data-testid="approval-progress"
+      data-satisfied={isSatisfied}
+      data-required-circles={targetCircles}
+      data-approved-circles={currentCount}
+      className={`space-y-2.5 ${className}`}
+    >
       {/* Progress header & status text */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
         <span className="font-semibold text-neutral-300">Circle Consensus</span>
