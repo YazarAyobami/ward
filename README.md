@@ -74,7 +74,7 @@ flowchart TD
 - **Fund Deposit Portal (`/t/[id]/fund`):** Trust funding interface:
   - Direct NEP-141 token deposits using `calls.deposit` and `ft_transfer_call`.
   - Amount presets and raw unit parsing via `parseAmount`.
-  - Any-chain cross-chain quote slot for multichain funding simulations via NEAR Chain Signatures.
+  - Any-chain funding quote: a live NEAR Intents 1Click **dry-run** quote (USDT on Tron or Ethereum, USDC on Base → USDC on NEAR, mainnet prices). Display only: nothing is sent and no deposit address is created. The testnet trust itself holds mock tUSDC.
 - **Guardian Governance Inbox (`/t/[id]/guardian`):** Multi-circle governance hub for council members:
   - Submit and verify death attestations with certified hash proof (`calls.attestDeath`).
   - Review and vote on disbursement requests with `RequestCard` and live `ApprovalProgress`.

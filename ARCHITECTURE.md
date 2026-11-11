@@ -221,7 +221,7 @@ Each child's share is snapshotted at activation: `share = balance_at_activation 
   - Check `text == model:sha256(req):sha256(resp)` and that the signer equals the attested `signing_address`.
   - Finally `post_ai_review` is called, using a function-call key scoped to that method.
   - The result is advisory.
-- **Funding quote:** `POST /quote` proxies to 1Click `/v0/quote` with `dry: true`. The page shows "you could fund this from USDT on Tron: X in, Y out". Nothing is tracked.
+- **Funding quote:** 1Click `/v0/quote` with `dry: true` (no API key needed; CORS is open). The request builder and response parser live in `packages/core/src/quote.ts`, which can't build a non-dry request. `/t/[id]/fund` calls 1Click from the browser, so the quote works on the deployed site without `apps/api`; `POST /quote` in `apps/api` is the same call as a zod-validated proxy. The page shows "you send X USDT on Tron, the trust would receive Y USDC on NEAR". Nothing is tracked. 1Click is mainnet only, so the quote prices real USDC while the testnet trust holds mock tUSDC.
 
 ## 10. Frontend
 | Route | Content |
