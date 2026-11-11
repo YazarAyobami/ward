@@ -89,11 +89,12 @@ Same as Admit's mock token: NEP-141/145 plus an open `mint`. Testnet and sandbox
 | `packages/core/src/rules.ts` | mirror of `rules.rs` (UI previews, e.g., live circle checks in `/create`) |
 | `packages/core/src/contract.ts` | the only place that knows method names and argument shapes |
 | `packages/core/src/format.ts`, `config.ts` | amounts (bigint), explorer URLs |
+| `packages/core/src/quote.ts` | 1Click dry-run quote: request builder, response parser, `fetchDryQuote` (W-8.2) |
 | `apps/web/app/page.tsx` | landing |
 | `apps/web/app/create/page.tsx` | create-trust wizard |
 | `apps/web/app/t/[id]/page.tsx` | public ledger |
 | `apps/web/app/t/[id]/{fund,guardian,caregiver,child}/page.tsx` | role pages |
-| `apps/web/components/*` | CircleBadge, GuardianPicker, RulesSummary, RequestCard, ApprovalProgress, Timeline, DemoModeBanner |
+| `apps/web/components/*` | CircleBadge, GuardianPicker, RulesSummary, RequestCard, ApprovalProgress, Timeline, DemoModeBanner, FundingQuote |
 | `apps/web/lib/wallet.ts` | wallet-selector setup |
 | `apps/api/src/routes/{receipts,ai,quote}.ts` | **Could only**: receipt storage, AI check, dry-run quote |
 | `scripts/{deploy-testnet,seed,demo}.ts`, `scripts/lib/*` | testnet automation; `demo.ts` = PRD §8 |

@@ -5,13 +5,13 @@
 
 | | |
 |---|---|
-| **Last updated** | 2026-11-09 |
+| **Last updated** | 2026-11-11 |
 | **Current phase** | P10 — Documentation, deployment, submission |
 | **Next task** | W-10.10 (Submit hackathon form upon user review and approval) |
 | **Must progress** | 87 / 88 Must tasks done (99%) |
 | **Overall progress** | 89 / 92 tasks done (97%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
-| **Days left** | 9 |
+| **Days left** | 3 |
 
 ---
 
@@ -175,7 +175,7 @@ Ward is **100% ready** when all of these are true:
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
 |---|---|---|---|---|---|---|---|
 | W-8.1 | C | AI receipt check (NEAR AI Cloud attestation + signature; `post_ai_review`) | Verified panel renders | All M done | ⬜ |  |  |
-| W-8.2 | C | 1Click dry-run quote on `/fund` | Quote shown | All M done | ⬜ |  |  |
+| W-8.2 | C | 1Click dry-run quote on `/fund` | Quote shown | All M done | 🟡 | 2026-11-11 | #138 · core quote module + browser FundingQuote card + POST /quote proxy; quote confirmed live against 1Click. In progress until #138 closes and the /fund flow is clicked through in a browser |
 
 ### P9 — Demo script (PRD §8 = acceptance test)
 | ID | Pri | Task | Done when | Depends | Status | Done | Notes |
@@ -229,6 +229,7 @@ Ward is **100% ready** when all of these are true:
 ## 6. Changelog (newest first)
 | Date | Tasks | Change | Tests |
 |---|---|---|---|
+| 2026-11-11 | W-8.2 | Implemented the 1Click dry-run funding quote on `/t/[id]/fund`: request builder and response parser in `packages/core/src/quote.ts`, browser-side `FundingQuote` card, zod-validated `POST /quote` proxy in `apps/api`, plus `packages/core/src/machines.ts` deriving trust stage, withdrawal timelock stage and create-wizard steps for the public ledger and `/create`; landing page and role pages restyled; `next.config.ts` keeps no hardcoded LAN dev origin (#138). | `pnpm lint`: exit 0 · `pnpm test`: exit 0 (232 Rust tests across 13 suites, 65 core, 87 web in 15 files, 3 api + 1 pre-existing scaffold todo) · live `POST` to 1Click `/v0/quote` from this machine returned amountIn 10000000, amountOut 9999214, est 35s |
 | 2026-11-09 | W-10.7 | Rendered 105-second demo video (docs/demo.mp4) via HyperFrames motion engine showcasing problem statement, 4-circle diversity invariant, PRD §8 acceptance test suite, and live Vercel web app (#155). | docs/demo.mp4 (6.0MB, 105s, 1920x1080 30fps) verified ✅ · ffprobe exit 0 ✅ |
 | 2026-11-08 | W-10.7, W-10.8 | Prepared 2-minute demo video storyboard and 5-tweet X announcement thread in docs/SUBMISSION.md (#155, #156). | docs/SUBMISSION.md complete ✅ |
 | 2026-11-08 | W-10.5 | Deployed web app to Vercel production at https://ward-app-tawny.vercel.app with verified responsive SSR and dynamic routing across all endpoints (#154). | vercel curl https://ward-app-tawny.vercel.app: returns 200 OK ✅ |

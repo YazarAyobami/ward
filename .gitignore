@@ -22,6 +22,7 @@ dist/
 
 # Next.js generated
 next-env.d.ts
+apps/web/AGENTS.md
 .vercel
 .env*
 

@@ -5,6 +5,8 @@ import Link from "next/link";
 import {
   calls,
   rules,
+  deriveWizardSteps,
+  WizardStepStatus,
   Circle,
   Guardian,
   ChildInput,
@@ -71,6 +73,16 @@ export default function CreateTrustPage() {
     guardians as Guardian[],
     caregiver
   );
+
+  const wizardSteps = deriveWizardSteps({
+    label,
+    caregiver,
+    caregiverCircle,
+    children: childInputs,
+    guardians: guardians as Guardian[],
+    token,
+    deathQuorum,
+  });
 
   const totalSharePercent =
     children.reduce((acc, c) => acc + c.share_bps, 0) / 100;
@@ -165,34 +177,40 @@ export default function CreateTrustPage() {
       {/* Wizard Steps Navigation */}
       <nav aria-label="Creation Steps" className="mb-8">
         <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
-          {[
-            { id: 1, name: "Basics" },
-            { id: 2, name: "Children" },
-            { id: 3, name: "Guardians" },
-            { id: 4, name: "Rules" },
-            { id: 5, name: "Review" },
-          ].map((s) => (
+          {wizardSteps.map((s: WizardStepStatus) => (
             <button
-              key={s.id}
+              key={s.step}
               type="button"
-              onClick={() => setStep(s.id as 1 | 2 | 3 | 4 | 5)}
-              className={`py-2 px-1 text-center rounded text-xs font-medium transition-colors border ${
-                step === s.id
+              data-step={s.step}
+              data-complete={s.isComplete}
+              onClick={() => {
+                if (s.canEnter || step > s.step) {
+                  setStep(s.step);
+                }
+              }}
+              className={`py-2 px-1 text-center rounded text-xs font-medium transition-colors border min-h-[44px] ${
+                step === s.step
                   ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
-                  : step > s.id
+                  : s.isComplete
                   ? "bg-neutral-900 text-neutral-300 border-neutral-700"
-                  : "bg-neutral-950 text-neutral-500 border-neutral-800"
+                  : "bg-neutral-950 text-neutral-500 border-neutral-800 opacity-60"
               }`}
             >
-              <span className="block text-[10px] text-neutral-500">Step {s.id}</span>
-              <span className="truncate block">{s.name}</span>
+              <span className="block text-[10px] text-neutral-500">
+                Step {s.step} {s.isComplete && "✓"}
+              </span>
+              <span className="truncate block">{s.title.split(" ")[0]}</span>
             </button>
           ))}
         </div>
       </nav>
 
       {/* Step Content */}
-      <div className="bg-neutral-900/70 border border-neutral-800 rounded-2xl p-5 sm:p-8">
+      <div
+        data-wizard-step={step}
+        data-step-complete={wizardSteps[step - 1]?.isComplete}
+        className="bg-neutral-900/70 border border-neutral-800 rounded-2xl p-5 sm:p-8"
+      >
         {/* Step 1: Basics & Caregiver */}
         {step === 1 && (
           <div className="space-y-6">

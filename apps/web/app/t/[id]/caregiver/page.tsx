@@ -215,13 +215,18 @@ export function CaregiverView({ trustId }: { trustId: number }) {
   const regularAllowanceBigInt = BigInt(trust.allowanceAmount || "0");
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 p-4 sm:p-8">
+    <main
+      data-testid="caregiver-portal"
+      data-allowance-due={allowanceDue}
+      data-trust-id={trustId}
+      className="min-h-screen bg-neutral-950 text-neutral-100 p-4 sm:p-8"
+    >
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header navigation */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-neutral-800">
           <div>
-            <div className="flex items-center gap-2 text-xs text-slate-400 mb-1">
-              <Link href={`/t/${trustId}`} className="text-cyan-400 hover:underline">
+            <div className="flex items-center gap-2 text-xs text-neutral-400 mb-1">
+              <Link href={`/t/${trustId}`} className="text-amber-400 hover:underline">
                 ← Trust #{trustId}
               </Link>
               <span>/</span>
@@ -230,7 +235,7 @@ export function CaregiverView({ trustId }: { trustId: number }) {
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
               Caregiver Operations
             </h1>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-sm text-neutral-400 mt-1">
               Manage regular child maintenance allowance claims and submit extraordinary disbursement requests.
             </p>
           </div>

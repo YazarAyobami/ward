@@ -3,6 +3,7 @@
 import { useState, use } from "react";
 import Link from "next/link";
 import { calls, parseAmount } from "@ward/core";
+import { FundingQuote } from "@/components/FundingQuote";
 
 export default function FundTrustPage({
   params,
@@ -19,10 +20,8 @@ export default function FundTrustPage({
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Cross-chain dry-run quote state
+  // Any-chain dry-run quote panel (W-8.2)
   const [showCrossChain, setShowCrossChain] = useState(false);
-  const [sourceChain, setSourceChain] = useState("Base (Sepolia)");
-  const [quoteSimulated, setQuoteSimulated] = useState(false);
 
   const wardContract = process.env.NEXT_PUBLIC_WARD_CONTRACT || "ward.testnet";
 
@@ -64,10 +63,6 @@ export default function FundTrustPage({
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleSimulateQuote = () => {
-    setQuoteSimulated(true);
   };
 
   return (
@@ -219,7 +214,7 @@ export default function FundTrustPage({
                 </span>
               </h2>
               <p className="text-xs text-neutral-400 mt-0.5">
-                Simulate cross-chain funding via NEAR Chain Signatures &amp; Intents.
+                See what funding from another chain would cost: a live NEAR Intents 1Click dry-run quote. Nothing is sent.
               </p>
             </div>
 
@@ -232,74 +227,7 @@ export default function FundTrustPage({
             </button>
           </div>
 
-          {showCrossChain && (
-            <div className="pt-3 border-t border-neutral-800 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div>
-                  <label className="block text-neutral-400 mb-1">
-                    Source Blockchain
-                  </label>
-                  <select
-                    value={sourceChain}
-                    onChange={(e) => {
-                      setSourceChain(e.target.value);
-                      setQuoteSimulated(false);
-                    }}
-                    className="w-full px-3 py-1.5 bg-neutral-950 border border-neutral-700 rounded text-neutral-200"
-                  >
-                    <option value="Base (Sepolia)">Base (Sepolia)</option>
-                    <option value="Arbitrum (Sepolia)">Arbitrum (Sepolia)</option>
-                    <option value="Ethereum (Sepolia)">Ethereum (Sepolia)</option>
-                    <option value="Solana (Devnet)">Solana (Devnet)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-neutral-400 mb-1">
-                    Source Amount
-                  </label>
-                  <div className="px-3 py-1.5 bg-neutral-950 border border-neutral-700 rounded text-neutral-200 font-mono">
-                    {amountStr || "1000"} USDC
-                  </div>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleSimulateQuote}
-                className="w-full py-2 px-3 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-semibold transition-colors"
-              >
-                Get Dry-Run Cross-Chain Quote
-              </button>
-
-              {quoteSimulated && (
-                <div className="p-3.5 rounded-xl bg-neutral-950 border border-neutral-800 space-y-2 text-xs">
-                  <div className="flex justify-between text-neutral-400">
-                    <span>Source Asset:</span>
-                    <span className="text-neutral-200 font-mono">
-                      {amountStr || "1000"} USDC on {sourceChain}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-neutral-400">
-                    <span>Solver / Relayer Fee (0.1%):</span>
-                    <span className="text-neutral-200 font-mono">
-                      {(Number(amountStr || "1000") * 0.001).toFixed(2)} USDC
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-neutral-400">
-                    <span>Est. Time to Settlement:</span>
-                    <span className="text-emerald-400 font-mono">~12 seconds</span>
-                  </div>
-                  <div className="pt-2 border-t border-neutral-800 flex justify-between font-bold text-neutral-100">
-                    <span>Net Deposited into Trust #{trustId}:</span>
-                    <span className="text-amber-300 font-mono">
-                      {(Number(amountStr || "1000") * 0.999).toFixed(2)} USDC
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+          {showCrossChain && <FundingQuote trustId={trustId} amount={amountStr} />}
         </div>
       </div>
     </div>
