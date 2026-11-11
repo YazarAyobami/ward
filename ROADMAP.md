@@ -5,13 +5,13 @@
 
 | | |
 |---|---|
-| **Last updated** | 2026-11-09 |
+| **Last updated** | 2026-11-11 |
 | **Current phase** | P10 — Documentation, deployment, submission |
 | **Next task** | W-10.10 (Submit hackathon form upon user review and approval) |
 | **Must progress** | 87 / 88 Must tasks done (99%) |
 | **Overall progress** | 89 / 92 tasks done (97%) — 88 Must · 2 Should · 2 Could |
 | **Submission deadline** | 14 Nov 2026, 23:59 UTC (internal target: **14 Nov 18:00 UTC**) |
-| **Days left** | 9 |
+| **Days left** | 3 |
 
 ---
 
